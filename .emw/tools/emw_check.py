@@ -13,6 +13,12 @@ What it checks:
     - every entry's frontmatter matches knowledge-entry.schema.json
     - every entry file is listed in the index
     - status rules: verified needs non-reasoned evidence; superseded needs superseded_by
+  Learning tracks (.emw/tracks/*.yaml, when present)
+    - each track matches track.schema.json
+    - 'extends' resolves; stage numbers are unique and in order
+    - every stage skill is defined in the track or the track it extends
+    - a skill's target level never goes down from one stage to the next
+    - every project brief file exists; unused skills are reported
   Project records (only when .emw-project/ or .project-knowledge/ exist)
     - onboarding-status.yaml status and referenced files
     - skill-ledger.yaml levels, and M3/M4 claims backed by evidence
@@ -102,6 +108,16 @@ def validate(value: object, schema: dict, path: str = "") -> list[str]:
             return [f"{where}: expected a list"]
         for i, item in enumerate(value):
             problems += validate(item, schema.get("items", {}), f"{path}[{i}]")
+    elif expected == "integer":
+        if not isinstance(value, int) or isinstance(value, bool):
+            return [f"{where}: expected a whole number"]
+        if "minimum" in schema and value < schema["minimum"]:
+            problems.append(f"{where}: {value} is below {schema['minimum']}")
+        if "maximum" in schema and value > schema["maximum"]:
+            problems.append(f"{where}: {value} is above {schema['maximum']}")
+    elif expected == "boolean":
+        if not isinstance(value, bool):
+            return [f"{where}: expected true or false"]
     elif expected == "string":
         if not isinstance(value, str):
             return [f"{where}: expected text"]
@@ -473,6 +489,91 @@ def check_assessment_cadence(tasks: list, skills: dict[str, dict], every: int,
             rep.warn(f"{where} {sid}", f"used in {count} tasks {last}; run a short check without AI "
                                        "(see .emw/assessments/) and record it in skill-ledger.yaml")
 
+# --- learning tracks ---------------------------------------------------------
+
+def check_tracks(root: Path, rep: Report) -> int:
+    """Validate .emw/tracks/*.yaml. Returns the number of track files checked."""
+    tracks_dir = root / ".emw" / "tracks"
+    if not tracks_dir.is_dir():
+        return 0
+    try:
+        schema = json.loads((tracks_dir / "track.schema.json").read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        rep.error(rel(tracks_dir, root), f"cannot load track.schema.json: {exc}")
+        return 0
+
+    tracks: dict[str, dict] = {}
+    files: dict[str, Path] = {}
+    for path in sorted(tracks_dir.glob("*.yaml")):
+        data = load_yaml(path, rep, root)
+        where = rel(path, root)
+        if not isinstance(data, dict):
+            if data is not None:
+                rep.error(where, "track file is not a mapping")
+            continue
+        for problem in validate(data, schema):
+            rep.error(where, problem)
+        tid = data.get("id")
+        if tid != path.stem:
+            rep.error(where, f"id {tid!r} must match the file name '{path.stem}'")
+        if isinstance(tid, str):
+            if tid in tracks:
+                rep.error(where, f"duplicate track id {tid}")
+            tracks[tid] = data
+            files[tid] = path
+
+    for tid, data in tracks.items():
+        where = rel(files[tid], root)
+        own = {s.get("id"): s for s in data.get("skills") or [] if isinstance(s, dict)}
+        if len(own) != len([s for s in data.get("skills") or [] if isinstance(s, dict)]):
+            rep.error(where, "duplicate skill id in skills")
+        known = set(own)
+        parent = data.get("extends")
+        if parent:
+            if parent == tid:
+                rep.error(where, "a track cannot extend itself")
+            elif parent not in tracks:
+                rep.error(where, f"extends '{parent}', but .emw/tracks/{parent}.yaml does not exist")
+            else:
+                known |= {s.get("id") for s in tracks[parent].get("skills") or [] if isinstance(s, dict)}
+
+        stages = [s for s in data.get("stages") or [] if isinstance(s, dict)]
+        numbers = [s.get("number") for s in stages]
+        if numbers != sorted(numbers) or len(set(numbers)) != len(numbers):
+            rep.error(where, f"stage numbers {numbers} must be unique and in ascending order")
+        last_target: dict[str, str] = {}
+        used: set[str] = set()
+        for stage in stages:
+            at = f"{where} stage {stage.get('number')}"
+            seen_here: set[str] = set()
+            for item in stage.get("skills") or []:
+                if not isinstance(item, dict):
+                    continue
+                sid, target = item.get("id"), item.get("target")
+                if sid in seen_here:
+                    rep.error(at, f"skill '{sid}' is listed twice")
+                seen_here.add(sid)
+                if sid not in known:
+                    rep.error(at, f"skill '{sid}' is not defined in this track or the one it extends")
+                    continue
+                used.add(sid)
+                if target in LEVELS:
+                    prev = last_target.get(sid)
+                    if prev and LEVELS.index(target) < LEVELS.index(prev):
+                        rep.error(at, f"target for '{sid}' drops from {prev} to {target}")
+                    last_target[sid] = target
+            brief = (stage.get("project") or {}).get("brief")
+            if isinstance(brief, str) and not (tracks_dir / brief).is_file():
+                rep.error(at, f"project brief '{brief}' does not exist under .emw/tracks/")
+            if not stage.get("skills"):
+                rep.warn(at, "stage lists no skills, so its gate checks nothing")
+        for sid in sorted(set(own) - used):
+            # the shared core defines skills that language tracks use later
+            if not any(t.get("extends") == tid for t in tracks.values()):
+                rep.warn(where, f"skill '{sid}' is defined but no stage uses it")
+    return len(tracks)
+
+
 # --- main -------------------------------------------------------------------------
 
 def main(argv: list[str] | None = None) -> int:
@@ -493,12 +594,15 @@ def main(argv: list[str] | None = None) -> int:
     rep = Report()
     shared = check_knowledge(kb, entry_schema, index_schema, rep, root, "shared")
     has_project = check_project(root, entry_schema, index_schema, rep)
+    track_count = check_tracks(root, rep)
 
     for w in rep.warnings:
         print(f"WARN  {w}")
     for e in rep.errors:
         print(f"ERROR {e}")
     scope = "shared knowledge + project records" if has_project else "shared knowledge"
+    if track_count:
+        scope += f" + {track_count} tracks"
     print(f"emw_check: {scope}; {shared} shared entries; "
           f"{len(rep.errors)} errors, {len(rep.warnings)} warnings")
     failed = rep.errors or (args.strict and rep.warnings)

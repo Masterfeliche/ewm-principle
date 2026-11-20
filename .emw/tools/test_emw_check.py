@@ -151,6 +151,39 @@ class EmwCheckTests(unittest.TestCase):
         code, _ = self.repo.run("--strict")
         self.assertEqual(code, 1)
 
+    def _copy_tracks(self):
+        shutil.copytree(FRAMEWORK / ".emw" / "tracks", self.repo.root / ".emw" / "tracks")
+        return self.repo.root / ".emw" / "tracks" / "php.yaml"
+
+    def test_shipped_tracks_pass(self):
+        self._copy_tracks()
+        code, out = self.repo.run("--strict")
+        self.assertEqual(code, 0, out)
+        self.assertIn("2 tracks", out)
+
+    def test_track_rules_catch_planted_errors(self):
+        php = self._copy_tracks()
+        text = php.read_text(encoding="utf-8")
+        # unknown skill, a target that goes down, and a missing brief
+        text = text.replace("- {id: php.syntax-types, target: M3}",
+                            "- {id: php.syntax-types, target: M3}\n      - {id: php.nonexistent, target: M2}", 1)
+        text = text.replace("- {id: php.oop, target: M3}",
+                            "- {id: php.oop, target: M3}\n      - {id: php.syntax-types, target: M1}", 1)
+        text = text.replace('brief: "briefs/php-stage-5.md"', 'brief: "briefs/missing.md"', 1)
+        php.write_text(text, encoding="utf-8")
+        code, out = self.repo.run()
+        self.assertEqual(code, 1)
+        self.assertIn("stage 1: skill 'php.nonexistent' is not defined", out)
+        self.assertIn("stage 2: target for 'php.syntax-types' drops from M3 to M1", out)
+        self.assertIn("stage 5: project brief 'briefs/missing.md' does not exist", out)
+
+    def test_track_id_must_match_file_and_parent_must_exist(self):
+        php = self._copy_tracks()
+        (php.parent / "core.yaml").rename(php.parent / "kernel.yaml")
+        code, out = self.repo.run()
+        self.assertEqual(code, 1)
+        self.assertIn("id 'core' must match the file name 'kernel'", out)
+
 
 if __name__ == "__main__":
     unittest.main()

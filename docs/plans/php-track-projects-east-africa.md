@@ -1,5 +1,7 @@
 # PHP Track Projects: Dar es Salaam, Tanzania and East Africa
 
+> **Superseded (21 Nov 2026).** Deeper research corrected this menu: see `resources/research/East Africa software problems for PHP projects.md`. Main changes: bus ticketing is regulated (learn-only), ClickPesa has no sandbox, phone prefixes no longer identify the operator, and savings-group tools should keep records only and never hold money.
+
 Project menu for the PHP (Laravel) track, built around problems people in Tanzania and East Africa actually have. Each stage has one core project and alternatives. All run against sandboxes and test data only.
 
 Research date: 20 Nov 2026. Figures marked (press) come from news coverage of the source, not the source document itself. Items marked (general knowledge) were not checked in this research.

@@ -62,10 +62,12 @@ Each stage lists what to learn, the project that proves it, and the main free or
 | 1 | PHP 8.5/8.6 with `strict_types`; arrays, functions, closures; Composer and PSR-4; first Pest tests | Command-line tool (for example a CSV report generator) with tests |
 | 2 | Forms, sessions, cookies; PDO prepared statements; `password_hash`; XSS escaping and CSRF tokens; OOP (interfaces, enums, readonly, exceptions); a hand-built router and small container; PHPStan | Plain-PHP app with login and CRUD on a tiny framework you wrote, deployed on a cheap VPS |
 | 3 | Laravel 13: routing, Eloquent, validation, auth and policies, queues, mail; Livewire or Inertia; Sanctum API; Pest 5, Pint, Larastan; Docker or DDEV; GitHub Actions | Deployed multi-role app plus a tested REST API with OpenAPI docs |
-| 4 | PHPStan level 8+; Redis caching; queues with retries and idempotency; payments and signed webhooks; profiling; Rector upgrades; Symfony 7.4 LTS/8 as a second framework (DI container, Doctrine, Messenger) | Multi-tenant SaaS with billing, or a webhook-ingestion pipeline |
-| 5 | Stateless scaling; indexes, replicas, connection pooling; Octane or FrankenPHP worker mode with leak monitoring; containers or Bref; OpenTelemetry; k6 | Load-tested production service with dashboards and a performance report |
+| 4 | Laravel in depth: PHPStan level 8+; Redis caching; Horizon queues with retries and idempotency; payments and signed webhooks; Reverb for real-time; Pulse or Nightwatch monitoring; profiling; Rector upgrades; writing a Laravel package; reading the framework source (container, request lifecycle, Eloquent) | Multi-tenant SaaS with billing, or a webhook-ingestion pipeline |
+| 5 | Stateless scaling; indexes, replicas, connection pooling; Laravel Octane on FrankenPHP worker mode with leak monitoring; containers or Bref; OpenTelemetry; k6 | Load-tested production service with dashboards and a performance report |
 
-Resources: php.net manual, PHP The Right Way, Program With Gio, Exercism PHP, Laracasts "Laravel From Scratch (2026)", "Symfony: The Fast Track".
+**One framework:** Laravel is the only framework on this track. It is used by 64% of PHP developers and named in about a third of UK PHP job ads, and depth in one framework is worth more to a beginner than half-knowledge of two. The Stage 2 hand-built mini-framework is a one-off exercise to make Laravel's routing, container and middleware understandable, not a second framework. Symfony is an optional elective after Stage 4 for learners heading to enterprise, Drupal or Shopware work ("Symfony: The Fast Track").
+
+Resources: php.net manual, PHP The Right Way, Program With Gio, Exercism PHP, Laracasts "Laravel From Scratch (2026)", the Laravel docs.
 
 ### .NET (C#) track
 *Best for: salaried enterprise work, ERP and business systems, Azure. Steepest first three months; the platform then covers most of production for you.*

@@ -11,7 +11,7 @@ Use for a meaningful feature, enhancement, refactor, or bug fix with non-trivial
 7. Identify the concepts the human should own or demonstrate.
 8. Agree on the plan before substantial implementation. Preserve human approval for sensitive or irreversible decisions.
 9. Implement incrementally within scope. Record assistance level A0–A4.
-10. Verify behavior and security; report checks actually run and checks not run.
+10. Verify behavior and security; report checks actually run and checks not run. If `emw_check` reports a skill used here is overdue for a check without AI, offer one short assessment (`.emw/assessments/`) or a Prompt 11 practice session; the developer may decline.
 11. Update project delivery records and mastery records separately. Add one entry to `.emw-project/task-log.yaml` (id, date, summary, mode, assistance, skills, mode_reason if needed) and run `python .emw/tools/emw_check.py`.
 12. Use Prompt 08 to capture any durable, verified lesson. Do not create knowledge entries for trivial changes.
 

@@ -286,14 +286,17 @@ def check_project(root: Path, entry_schema: dict, index_schema: dict, rep: Repor
     return True
 
 
-def check_skill_ledger(path: Path, rep: Report, root: Path) -> dict[str, str] | None:
-    """Validate the ledger; return {skill id: current_level}."""
+def check_skill_ledger(path: Path, rep: Report, root: Path) -> dict[str, dict] | None:
+    """Validate the ledger; return {skill id: {"level": .., "last_check": date or None}}.
+
+    last_check is the latest evidence date produced with assistance A0-A2,
+    i.e. the last time the developer showed the skill without solution-level AI help."""
     data = load_yaml(path, rep, root)
     if not isinstance(data, dict):
         return None
     where = rel(path, root)
     seen: set[str] = set()
-    levels: dict[str, str] = {}
+    levels: dict[str, dict] = {}
     for i, skill in enumerate(data.get("skills") or []):
         if not isinstance(skill, dict):
             rep.error(where, f"skills[{i}] is not a mapping")
@@ -311,8 +314,13 @@ def check_skill_ledger(path: Path, rep: Report, root: Path) -> dict[str, str] | 
         if skill.get("confidence") not in ("low", "medium", "high"):
             rep.error(at, f"confidence {skill.get('confidence')!r} is not low, medium or high")
         level = skill.get("current_level")
-        levels[sid] = level
         evidence = skill.get("evidence") or []
+        if not isinstance(evidence, list):
+            rep.error(at, "evidence must be a list")
+            evidence = []
+        checks = [str(e["date"]) for e in evidence if isinstance(e, dict)
+                  and e.get("assistance") in ("A0", "A1", "A2") and _is_date(e.get("date"))]
+        levels[sid] = {"level": level, "last_check": max(checks) if checks else None}
         if level in LEVELS and level != "M0" and not evidence:
             rep.error(at, f"current_level {level} has no evidence; use M0 until evidence exists")
         if level in ("M3", "M4"):
@@ -321,9 +329,18 @@ def check_skill_ledger(path: Path, rep: Report, root: Path) -> dict[str, str] | 
             if not independent:
                 rep.error(at, f"{level} needs at least one evidence item with assistance A0-A2 "
                               "(A3/A4 work cannot show independent application)")
+            elif not any(e.get("verified_by") == "human" for e in independent):
+                rep.error(at, f"{level} needs an A0-A2 evidence item with verified_by: human "
+                              "(a lead or peer saw it; the agent cannot certify its own assessment)")
         for j, e in enumerate(evidence):
-            if isinstance(e, dict) and e.get("assistance") not in (None, *ASSISTANCE):
+            if not isinstance(e, dict):
+                continue
+            if e.get("assistance") not in (None, *ASSISTANCE):
                 rep.error(at, f"evidence[{j}] assistance {e.get('assistance')!r} is not A0-A4")
+            if e.get("verified_by") not in (None, "human", "self"):
+                rep.error(at, f"evidence[{j}] verified_by {e.get('verified_by')!r} is not human or self")
+            if "date" in e and not _is_date(e.get("date")):
+                rep.error(at, f"evidence[{j}] date {e.get('date')!r} is not YYYY-MM-DD")
         if level in LEVELS and skill.get("target_level") in LEVELS:
             if LEVELS.index(level) > LEVELS.index(skill["target_level"]):
                 rep.warn(at, "current level is above target; raise the target or check the evidence")
@@ -335,6 +352,7 @@ def check_skill_ledger(path: Path, rep: Report, root: Path) -> dict[str, str] | 
 DEFAULT_POLICY = {
     "default_mode_by_level": {"M0": 1, "M1": 1, "M2": 2, "M3": "any", "M4": "any"},
     "mode4_min_level": "M3",
+    "assessment_every": 4,
 }
 
 
@@ -359,10 +377,14 @@ def load_policy(path: Path, rep: Report, root: Path) -> dict:
     if policy.get("mode4_min_level") not in LEVELS:
         rep.error(where, f"mode4_min_level {policy.get('mode4_min_level')!r} is not one of {LEVELS}")
         policy["mode4_min_level"] = "M3"
+    every = policy.get("assessment_every")
+    if not isinstance(every, int) or isinstance(every, bool) or every < 1:
+        rep.error(where, f"assessment_every {every!r} must be a whole number of tasks, 1 or more")
+        policy["assessment_every"] = 4
     return policy
 
 
-def check_task_log(path: Path, skills: dict[str, str] | None, policy: dict,
+def check_task_log(path: Path, skills: dict[str, dict] | None, policy: dict,
                    rep: Report, root: Path) -> None:
     data = load_yaml(path, rep, root)
     where = rel(path, root)
@@ -417,8 +439,8 @@ def check_task_log(path: Path, skills: dict[str, str] | None, policy: dict,
         for sid in task_skills:
             if sid not in skills:
                 rep.error(at, f"skill '{sid}' is not in skill-ledger.yaml")
-            elif skills[sid] in LEVELS:
-                known.append((sid, skills[sid]))
+            elif skills[sid]["level"] in LEVELS:
+                known.append((sid, skills[sid]["level"]))
         if not known or mode is None:
             continue
         weakest_id, weakest = min(known, key=lambda kv: LEVELS.index(kv[1]))
@@ -431,6 +453,25 @@ def check_task_log(path: Path, skills: dict[str, str] | None, policy: dict,
             rep.error(at, f"Mode 4 on {weakest_id} ({weakest}) is below mode4_min_level "
                           f"{policy['mode4_min_level']}; add mode_reason")
 
+    if skills:
+        check_assessment_cadence(tasks, skills, policy["assessment_every"], rep, where)
+
+
+def check_assessment_cadence(tasks: list, skills: dict[str, dict], every: int,
+                             rep: Report, where: str) -> None:
+    """Warn when a skill has been used in `every` or more logged tasks since its last
+    no-AI check (latest A0-A2 evidence). Skills at M4 are exempt."""
+    for sid, info in skills.items():
+        if info["level"] == "M4":
+            continue
+        since = info["last_check"]
+        count = sum(1 for t in tasks if isinstance(t, dict)
+                    and isinstance(t.get("skills"), list) and sid in t["skills"]
+                    and _is_date(t.get("date")) and (since is None or str(t["date"]) > since))
+        if count >= every:
+            last = f"since {since}" if since else "with no check without AI yet"
+            rep.warn(f"{where} {sid}", f"used in {count} tasks {last}; run a short check without AI "
+                                       "(see .emw/assessments/) and record it in skill-ledger.yaml")
 
 # --- main -------------------------------------------------------------------------
 

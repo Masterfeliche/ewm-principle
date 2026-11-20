@@ -18,5 +18,6 @@ Report:
 6. Next week's learning-aware engineering focus.
 7. One concrete way to reduce AI assistance on a previously practiced concept.
 8. Useful knowledge discoveries captured or awaiting review.
+9. Skills `emw_check` reports as overdue for a check without AI, and the share of logged tasks per mode and assistance level this week (from `.emw-project/task-log.yaml`).
 
 Do not promote mastery from merged or generated code alone. A feature's delivery status and the developer's mastery status remain separate.

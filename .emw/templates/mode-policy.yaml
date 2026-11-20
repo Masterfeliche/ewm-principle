@@ -10,3 +10,6 @@ default_mode_by_level:
   M4: any
 # Mode 4 (bounded delegation) on a skill below this level always needs a mode_reason.
 mode4_min_level: M3
+# After this many logged tasks touch a skill without a new A0-A2 evidence item,
+# emw_check warns that a short check without AI is due (see .emw/assessments/ or Prompt 11).
+assessment_every: 4

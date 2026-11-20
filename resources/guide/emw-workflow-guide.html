@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EMW Workflow Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a short opener (three paths, the three scales as ladders), then the guide as a long read with a contents rail. */
+:root {
+  --bg: #f5f7f6;
+  --surface: #ffffff;
+  --fg: #14201c;
+  --muted: #586661;
+  --line: #dbe2df;
+  --soft: #eaf0ed;
+  --accent: #17765a;
+  --accent-soft: #dff1ea;
+  --warn: #9a5b00;
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1513; --surface: #161e1b; --fg: #e6ece9; --muted: #9caaa5; --line: #29332f; --soft: #1d2623;
+    --accent: #5fcfa7; --accent-soft: #17342b; --warn: #e0a84a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1513; --surface: #161e1b; --fg: #e6ece9; --muted: #9caaa5; --line: #29332f; --soft: #1d2623;
+  --accent: #5fcfa7; --accent-soft: #17342b; --warn: #e0a84a; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font: 16px/1.65 var(--body); }
+.wrap { max-width: 1160px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Opener */
+.opener { background: var(--surface); border-bottom: 1px solid var(--line); }
+.opener .wrap { padding-block: 36px 32px; }
+.kicker { font: 600 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 12px; }
+.opener h1 { font: 700 clamp(30px, 4.4vw, 44px)/1.08 var(--display); margin: 0 0 12px; max-width: 20ch; text-wrap: balance; }
+.opener .lede { color: var(--muted); max-width: 62ch; margin: 0; font-size: 17px; }
+
+.paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 26px; }
+.path { display: flex; flex-direction: column; gap: 6px; text-align: left; font: inherit; color: inherit; cursor: pointer; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.path:hover { border-color: var(--accent); }
+.path b { font: 600 17px/1.25 var(--display); }
+.path span { font-size: 14px; color: var(--muted); }
+.path em { font: 500 13px/1 var(--display); font-style: normal; color: var(--accent); margin-top: 6px; }
+
+.scales { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 22px; margin-top: 30px; }
+.scale h2 { font: 600 13px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+.rungs { display: grid; gap: 4px; }
+.rung { display: grid; grid-template-columns: 44px 1fr; gap: 10px; align-items: baseline; font-size: 14px; padding: 6px 10px; border-radius: 6px; background: color-mix(in srgb, var(--accent) calc(var(--i) * 7%), var(--soft)); }
+.rung code { font: 500 13px/1 var(--mono); color: var(--fg); }
+.scale p { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+.rule { margin-top: 26px; padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 10px 10px 0; font-size: 15px; max-width: 78ch; }
+
+/* Guide */
+main { padding-block: 34px 64px; }
+.layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 44px; }
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 18px); align-self: start; max-height: calc(100vh - 40px); overflow-y: auto; font-size: 13px; }
+.rail .label { font: 600 11px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.rail a { display: block; color: var(--muted); text-decoration: none; padding: 6px 0 6px 10px; border-left: 2px solid var(--line); line-height: 1.35; }
+.rail a:hover { color: var(--fg); border-left-color: var(--accent); }
+.rail a.sub { padding-left: 22px; font-size: 12.5px; }
+article { min-width: 0; max-width: 76ch; }
+article h2 { font: 600 26px/1.2 var(--display); margin: 48px 0 12px; padding-top: 18px; border-top: 1px solid var(--line); text-wrap: balance; scroll-margin-top: 16px; }
+article h2:first-child { margin-top: 0; border-top: 0; padding-top: 0; }
+article h3 { font: 600 18px/1.3 var(--display); margin: 28px 0 8px; scroll-margin-top: 16px; }
+article a { color: var(--accent); text-underline-offset: 2px; }
+article strong { font-weight: 600; }
+article code { font: 13.5px/1 var(--mono); background: var(--soft); padding: 2px 5px; border-radius: 4px; }
+article pre { background: var(--soft); border: 1px solid var(--line); padding: 14px; border-radius: 10px; overflow-x: auto; }
+article pre code { background: none; padding: 0; line-height: 1.55; }
+article ul, article ol { padding-left: 22px; }
+article li + li { margin-top: 4px; }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 12px/1.3 var(--body); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--soft); }
+tr:last-child td { border-bottom: 0; }
+.loading { color: var(--muted); }
+footer { color: var(--muted); font-size: 13px; margin-top: 40px; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; gap: 16px; }
+  .rail { position: static; max-height: none; border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: var(--surface); }
+  .rail details summary { cursor: pointer; font: 600 13px/1 var(--display); }
+}
+@media (min-width: 861px) { .rail details > summary { display: none; } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<section class="opener">
+  <div class="wrap">
+    <p class="kicker">Engineering Mastery Workflow</p>
+    <h1>Use AI to build software, and still be able to build it yourself</h1>
+    <p class="lede">How to use the workflow end to end: learning a language from zero, working on a project that already exists, and leading a team. Pick where you are.</p>
+
+    <div class="paths">
+      <button class="path" type="button" data-goto="4-learning-with-a-track"><b>I am learning a language</b><span>Follow a track: six stages, a project for each, a gate to move on.</span><em>Go to section 4 →</em></button>
+      <button class="path" type="button" data-goto="5-an-ongoing-project"><b>I have a project to deliver</b><span>Onboard the codebase, then let your skill level set how much the AI does.</span><em>Go to section 5 →</em></button>
+      <button class="path" type="button" data-goto="6-teams"><b>I lead a team</b><span>Set the policy once, turn on the checker, and be the human who verifies.</span><em>Go to section 6 →</em></button>
+    </div>
+
+    <div class="scales">
+      <div class="scale">
+        <h2>Mode: how you work with the AI</h2>
+        <div class="rungs">
+          <div class="rung" style="--i:4"><code>1</code><span>You type; the AI hints</span></div>
+          <div class="rung" style="--i:3"><code>2</code><span>Plan together; you write the core</span></div>
+          <div class="rung" style="--i:2"><code>3</code><span>The AI drafts; you audit</span></div>
+          <div class="rung" style="--i:1"><code>4</code><span>The AI does routine work</span></div>
+        </div>
+        <p>Darker means more of the work is yours.</p>
+      </div>
+      <div class="scale">
+        <h2>Mastery: what you can do</h2>
+        <div class="rungs">
+          <div class="rung" style="--i:0"><code>M0</code><span>No evidence yet</span></div>
+          <div class="rung" style="--i:1"><code>M1</code><span>Can explain it</span></div>
+          <div class="rung" style="--i:2"><code>M2</code><span>Can use it with help</span></div>
+          <div class="rung" style="--i:3"><code>M3</code><span>Can build and debug it alone</span></div>
+          <div class="rung" style="--i:4"><code>M4</code><span>Can adapt it and teach it</span></div>
+        </div>
+      </div>
+      <div class="scale">
+        <h2>Assistance: help a piece of work had</h2>
+        <div class="rungs">
+          <div class="rung" style="--i:4"><code>A0</code><span>None beyond documentation</span></div>
+          <div class="rung" style="--i:3"><code>A1</code><span>A hint or explanation</span></div>
+          <div class="rung" style="--i:2"><code>A2</code><span>Pseudocode or a pointer</span></div>
+          <div class="rung" style="--i:1"><code>A3</code><span>The AI wrote part</span></div>
+          <div class="rung" style="--i:0"><code>A4</code><span>The AI wrote it</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="rule"><strong>The two rules that tie them together.</strong> Work done at A3 or A4 never proves M3. And M3 or M4 needs at least one piece of low-help evidence that a person saw.</p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="layout">
+    <aside class="rail"><details open><summary>Contents</summary><div class="label">In this guide</div><div id="toc"></div></details></aside>
+    <div>
+      <article id="article"><p class="loading">Loading the guide…</p></article>
+      <footer>From <code>docs/GUIDE.md</code> in the EMW repository. Track projects use sandboxes and invented data only.</footer>
+    </div>
+  </div>
+</main>
+
+<script id="guide" type="application/json">"# Using EMW End to End\n\nA practical guide to the Engineering Mastery Workflow: for learning a language from zero, for working on a project that already exists, and for leading a team.\n\n## 1. What EMW does\n\nAI coding tools let you ship code you do not understand. EMW keeps the AI useful while making sure you can still do the work yourself. It does three things:\n\n1. **Decides how much the AI does.** The less you have proved you know, the more you do yourself and the more the AI only coaches.\n2. **Keeps two records, never one.** What was delivered, and what you can do without AI. Finishing a feature does not count as proof you learned it.\n3. **Checks the records.** A small tool refuses claims that have no evidence.\n\nThe whole thing is files in your repository. Any coding agent that reads `AGENTS.md` can follow it.\n\n### The three scales you will see everywhere\n\n| Scale | Values | Meaning |\n|---|---|---|\n| **Mode** (how you work with the AI) | 1 | You reason and type; the AI asks questions and gives hints |\n| | 2 | You plan together; you write the core logic; the AI helps and reviews |\n| | 3 | The AI drafts; you audit it and show you understand it |\n| | 4 | The AI does narrow, routine work you already know well |\n| **Mastery level** (what you can do) | M0 | No evidence yet |\n| | M1 | Can explain what it is for |\n| | M2 | Can use it with hints, examples or AI help |\n| | M3 | Can build, test, explain and debug it without solution-level help |\n| | M4 | Can handle unfamiliar cases, compare alternatives and teach it |\n| **Assistance** (how much help a piece of work had) | A0 | None beyond documentation |\n| | A1 | A hint or explanation |\n| | A2 | Pseudocode or a pointer to the right function |\n| | A3 | The AI wrote part of it |\n| | A4 | The AI wrote it |\n\nTwo rules tie them together. Work done at A3 or A4 never proves M3. And M3 or M4 needs at least one piece of low-help evidence that **a person** saw.\n\n## 2. Set up\n\nYou need Python 3.9 or newer and PyYAML (`pip install pyyaml`).\n\nCopy these from the EMW repository into the root of your own repository:\n\n| Copy | Why |\n|---|---|\n| `.emw/` | The rules, prompts, templates, tracks and tools |\n| `AGENTS.md` | The contract every agent reads first. If you already have one, merge the EMW text into it |\n| `CLAUDE.md` and `.claude/` | For Claude Code: slash commands and skills |\n| `opencode.json` and `.opencode/` | For OpenCode |\n| `GEMINI.md`, `.cursor/rules/emw.mdc`, `.github/copilot-instructions.md` | For Gemini CLI, Cursor, Copilot (one pointer file each) |\n| `.github/workflows/emw-check.yml` | Optional: runs the checker on every pull request |\n\nThen check it works:\n\n```bash\npython .emw/tools/emw_check.py\n```\n\nYour own records never go inside `.emw/`. They live in two folders the workflow creates for you: `.emw-project/` (status and ledgers) and `.project-knowledge/` (lessons about this project).\n\n## 3. Pick your path\n\n| You are… | Go to |\n|---|---|\n| Learning a language from zero, or adding a second one | Section 4: learning with a track |\n| Working on a real codebase and want to keep your skills | Section 5: an ongoing project |\n| Leading a team or mentoring juniors | Section 6: teams |\n\nYou can do both 4 and 5. They use the same skill ledger.\n\n## 4. Learning with a track\n\nA track is a training plan for one language: six stages, a project for each, and a gate you must pass to move on. There are four: `php`, `dotnet`, `go`, `python`. All start with the same Stage 0.\n\n| Stage | Ends with | Rough time at 10–15 hours a week |\n|---|---|---|\n| 0 Ground floor | A page online, a Git repository, first SQL queries | 2–4 weeks |\n| 1 Language foundations | A tested command-line tool | 2–3 months |\n| 2 Web and database | A small web app with login, deployed | 2–3 months |\n| 3 Framework and professional habits | A deployed app or API with tests and CI | 3–6 months |\n| 4 Production engineering | A system with background work, caching and monitoring | 6–12 months |\n| 5 Systems and scale | A load-tested service and a performance report | ongoing |\n\nThe times are estimates. Nobody is behind.\n\n### Step 1: start\n\nMake a new repository for your learning, install EMW (section 2), then:\n\n```bash\npython .emw/tools/emw_track.py start php\n```\n\nIn Claude Code or OpenCode you can type `/emw-track start php` instead. This creates your progress file and adds the Stage 0 skills to your skill ledger at M0.\n\n### Step 2: see where you are\n\n```bash\npython .emw/tools/emw_track.py status\n```\n\nIt shows your stage, each skill against its target, the project brief to read, and a checklist of what the gate still needs.\n\n### Step 3: read the brief\n\nEach stage has a brief in `.emw/tracks/briefs/`. It gives the problem, what to build, the edge cases you must handle, and a \"works when\" checklist. It contains no solution code. Read `house-rules.md` once too: money as whole shillings, Kiswahili and English, sandbox only, never hold other people's money.\n\n### Step 4: build it, typing the code yourself\n\nIn Stages 0–2 the AI is a coach. Start a session with:\n\n```\n/emw-practice <the thing you are working on>\n```\n\nIt sets a small task, asks what you expect to be hard, and gives one hint at a time: a question, then the concept, then pseudocode, then the name of a function to look up. It does not show a full solution before you have tried. If you insist, it will give the answer and the work is recorded as A4, which does not count toward your gate.\n\nWhy this way: what makes code stick is producing it from your own head. Reading or pasting an answer teaches very little.\n\n### Step 5: record what you did\n\nAfter each real piece of work, add an evidence item to that skill in `.emw-project/skill-ledger.yaml`:\n\n```yaml\n- date: \"2026-12-03\"\n  type: \"implement\"      # implement | debug | modify | explain | transfer | rebuild\n  assistance: \"A1\"\n  verified_by: \"self\"    # \"human\" only when a mentor or peer saw it\n  task: \"Wrote the amount parser and its tests; needed one hint on regular expressions\"\n```\n\nWhen the evidence supports it, raise `current_level`. The agent can help you write the entry and suggest a level. It must not invent evidence or mark anything as human-verified.\n\n### Step 6: pass the gate\n\n| The gate needs | How you meet it |\n|---|---|\n| shipped | `python .emw/tools/emw_track.py ship --url <repository or live address>` |\n| levels | Every stage skill at its target |\n| human | One low-help item (A0–A2) that a mentor or peer saw: `verified_by: human` |\n| rebuild | The piece named in the brief, rebuilt from memory at least 7 days after the stage began: `type: rebuild` |\n| transfer | The brief's stretch change, done at A0 or A1: `type: transfer` |\n| check | `emw_check` passes |\n\nThen:\n\n```bash\npython .emw/tools/emw_track.py next\n```\n\nIf anything is missing it tells you what. If the gate is met it opens the next stage and adds its skills. Evidence from an earlier stage does not count again.\n\n### What a week looks like\n\n- **Most days:** work on the stage project with `/emw-practice`. Record evidence as you go.\n- **Once a week:** run `/emw-weekly`. It lists what you practised, what is weak, and gives you one short exercise without AI.\n- **When the checker says a skill is due:** do a 10–20 minute check without AI: predict what code does, trace it, or fix a planted bug.\n- **A week after building something important:** rebuild it from memory. That is the strongest evidence you can record.\n\n### Find a human\n\nThe gate will not open without a person. Arrange a mentor, a senior colleague, or a study partner on the same track before you start. Fifteen minutes of someone watching you explain or change your code is enough for one stage.\n\n### A second language\n\nThe shared skills (Git, HTTP, SQL, testing, security, Docker, CI) carry over, so Stage 1 of a second track takes weeks, not months. One learner follows one track per repository; start the second in a new repository and copy the evidence for the shared `core.` skills across.\n\n## 5. An ongoing project\n\nUse this when you already have a codebase and real work to deliver.\n\n### First session: onboard the project\n\nOpen the repository in your agent and run `/emw-onboard` (or ask it to follow `.emw/prompts/01-project-onboarding.md`). It reads the code and creates:\n\n| File | What it holds |\n|---|---|\n| `.emw-project/project-profile.md` | What the product is, the stack, the architecture, the risks |\n| `.emw-project/delivery-ledger.md` | Features, decisions, defects, checks run |\n| `.emw-project/skill-ledger.yaml` | The skills this project needs, your level in each, and the evidence |\n| `.emw-project/task-log.yaml` | One line per meaningful task: mode, assistance, skills |\n| `.emw-project/mode-policy.yaml` | Your team's defaults for how much the AI does |\n| `.project-knowledge/` | Lessons and rules specific to this project |\n\nLevels start low on purpose. Raise them as you record evidence. Review the profile and correct anything the agent got wrong.\n\n### Every task: one of two paths\n\n**Quick path, for trivial work.** A change is trivial when it is about 30 lines or fewer, touches nothing high-risk (login, permissions, tenants, payments, secrets, personal data, destructive database changes, deployment), and only uses skills you already hold at M3. The agent just does it and reports three things: what it ran, what it did not run, and risks.\n\n**Full path, for everything else.** Start with `/emw-feature <what you want>`. The agent then:\n\n1. Looks up relevant knowledge from earlier work.\n2. Reads the code and tests before proposing anything.\n3. **Proposes a mode** from your mode policy and your level in the weakest skill involved. With the built-in policy, M0–M1 means Mode 1, M2 means Mode 2, M3 and above means any mode.\n4. Agrees the plan with you: scope, what \"done\" means, edge cases, tests, and which parts you will own.\n5. Builds in small steps, in that mode.\n6. Verifies, and reports what was checked and what was not.\n7. Updates the delivery ledger, adds a line to the task log, and records evidence on your skills.\n\n### When you need speed\n\nYou can always pick a mode with less practice than the default. Say so, give the reason, and it is written into the task log as `mode_reason`:\n\n```yaml\n- id: \"T-0042\"\n  date: \"2026-12-03\"\n  summary: \"Hotfix: invoice total rounding\"\n  mode: 4\n  assistance: \"A4\"\n  skills: [\"backend.money\"]\n  mode_reason: \"Production incident; will redo in Mode 2 as T-0043\"\n```\n\nWithout a reason the checker fails. With one it passes. The point is that skipping the learning is a decision someone made, not something that happened by default.\n\n### The other commands\n\n| Command | Use it when |\n|---|---|\n| `/emw-learn <technology>` | The task needs something you do not know yet |\n| `/emw-debug <problem>` | Something is broken. You state a hypothesis before any code changes |\n| `/emw-review` | A change, yours or the AI's, needs review |\n| `/emw-capture <lesson>` | You found something worth remembering: a root cause, a rule, a trap |\n| `/emw-weekly` | Once a week: progress, gaps, and one exercise without AI |\n| `/emw-practice <skill>` | A skill is overdue for a check, or you want to learn by doing |\n\n### Checks without AI\n\nAfter a skill has been used in four logged tasks with no new low-help evidence, the checker warns that a check is due. Do a short one from `.emw/assessments/` or a practice session, and record it. This is how the ledger stays honest on a project where the AI writes a lot.\n\n### High-risk work\n\nWhatever the mode, a person approves and independently verifies anything touching login and permissions, tenant separation, payments, secrets, personal data, destructive database changes and production deployment. The AI may help. It is never the only checker.\n\n### Knowledge that lasts\n\n`/emw-capture` writes a short entry to `.project-knowledge/` with the problem, the cause, the fix, the evidence and the limits. The agent looks these up before the next meaningful task, so the same bug is not rediscovered. Entries are marked draft, proposed or verified, and only verified ones are treated as fact.\n\n## 6. Teams\n\n### Set the policy once\n\nEdit `.emw-project/mode-policy.yaml`:\n\n```yaml\ndefault_mode_by_level:\n  M0: 1\n  M1: 1\n  M2: 2\n  M3: any\n  M4: any\nmode4_min_level: M3     # full delegation below this level needs a written reason\nassessment_every: 4     # tasks per skill before a check without AI is due\n```\n\nStricter for a team of juniors, looser for seniors in familiar code. The agent proposes modes from this file, so nobody has to police it by hand.\n\n### Turn on the checker in CI\n\nCopy `.github/workflows/emw-check.yml`. Every pull request then fails if the records are inconsistent: a Mode 4 task on a weak skill with no reason, an M3 claim with no human-verified evidence, a task naming a skill that does not exist.\n\n### Be the human in the loop\n\nA lead's main job in EMW is the one thing the AI cannot do: watch someone do the work and mark it `verified_by: human`. Fifteen minutes per person per fortnight covers most of it. Ask them to explain a piece of code, change it while you watch, or find a bug you planted.\n\n### Read the records\n\n| Look at | To learn |\n|---|---|\n| `task-log.yaml` | How much work each person does in each mode and at each assistance level, and how often defaults are overridden |\n| `skill-ledger.yaml` | Who can do what without AI, and which claims are thinly supported |\n| `emw_check` warnings | Which skills are overdue for a check |\n| `/emw-weekly` | A summary of all three |\n\nUse these to coach and to plan who works on what. Do not use them for performance reviews: people stop recording honestly the moment the ledger is used against them.\n\n### Onboarding a junior\n\nStart them on a track (section 4) for their first weeks, then move them to the real project (section 5) with the same skill ledger. The shared `core.` skills they proved on the track count on the project.\n\n## 7. The files, in one place\n\n| File | Who writes it | What it is for |\n|---|---|---|\n| `AGENTS.md` | EMW | The rules the agent follows |\n| `.emw/core/` | EMW | Detailed rules: modes, lifecycle, mastery, verification, knowledge |\n| `.emw/prompts/` | EMW | One prompt per kind of task |\n| `.emw/tracks/` | EMW | Learning tracks and project briefs |\n| `.emw/tools/emw_check.py` | EMW | Checks every record |\n| `.emw/tools/emw_track.py` | EMW | Starts and follows a track |\n| `.emw-project/skill-ledger.yaml` | You and the agent | Skills, levels, evidence |\n| `.emw-project/task-log.yaml` | You and the agent | One line per meaningful task |\n| `.emw-project/mode-policy.yaml` | Team lead | How much the AI does by default |\n| `.emw-project/delivery-ledger.md` | You and the agent | What was built, decided and verified |\n| `.emw-project/track.yaml` | `emw_track.py` | Your stage on a track. Never edit by hand |\n| `.project-knowledge/` | You and the agent | Lessons about this project |\n\n## 8. Command reference\n\n| Slash command | Tool or prompt behind it |\n|---|---|\n| `/emw-onboard` | Prompt 01: set up records for a project |\n| `/emw-feature` | Prompt 02: plan and build a change |\n| `/emw-learn` | Prompt 03: learn a technology while building |\n| `/emw-review` | Prompt 05: review a change |\n| `/emw-debug` | Prompt 06: investigate a defect |\n| `/emw-capture` | Prompt 08: save a verified lesson |\n| `/emw-weekly` | Prompt 09: weekly progress and gaps |\n| `/emw-practice` | Prompt 11: you type, the AI hints |\n| `/emw-track` | Prompt 12 and `emw_track.py`: start, status, ship, next |\n\nSlash commands exist for Claude Code and OpenCode. In other agents, ask in words (\"follow the EMW feature prompt for…\") or paste the prompt file.\n\n```bash\npython .emw/tools/emw_check.py            # check all records\npython .emw/tools/emw_check.py --strict   # also fail on warnings\npython .emw/tools/emw_track.py status     # where you are on a track\n```\n\n## 9. Common mistakes\n\n| Mistake | What to do instead |\n|---|---|\n| Asking for the solution \"just this once\" in Stages 0–2 | Ask for the next hint. If you take the answer, record A4 and rebuild it from memory later |\n| Raising a level because the feature shipped | Raise it when there is evidence you did it with little help |\n| Marking your own work `verified_by: human` | Only a person who saw it can be the human |\n| Logging every tiny edit | Log meaningful tasks. Trivial work takes the quick path and is not logged |\n| Editing `track.yaml` to get past a gate | Meet the gate. The file is the tool's, not yours |\n| Using the ledger to judge people | Use it to coach and plan |\n| Letting records go stale | Run `/emw-weekly`; fix what `emw_check` reports |\n\n## 10. When the checker complains\n\n| Message | Meaning | Fix |\n|---|---|---|\n| `current_level M2 has no evidence` | A level was set with nothing behind it | Add evidence, or set the level back to M0 |\n| `M3 needs at least one evidence item with assistance A0-A2` | All the evidence was AI-heavy | Do one piece of the work with little help and record it |\n| `M3 needs an A0-A2 evidence item with verified_by: human` | Nobody saw it | Ask a mentor or peer to watch, then record it |\n| `mode 4 gives less support than the policy default` | Work was delegated on a weak skill | Add `mode_reason`, or redo it in the default mode |\n| `skill 'x' is not in skill-ledger.yaml` | The task log names an unknown skill | Add the skill to the ledger or fix the id |\n| `used in 4 tasks … run a short check without AI` | A check is due (a warning) | Do a 10–20 minute check and record it |\n| `entry is not listed in index.yaml` | A knowledge file is missing from the index | Add it to the index |\n\n## 11. Limits to know\n\n- **EMW is instructions, not enforcement.** The checker validates records. It cannot see whether an agent really withheld a solution. That depends on the agent and on you.\n- **Its own effect is not measured yet.** It is built on research into AI and learning, and a method for a small trial is in `docs/research/pilot.md`, but no trial has been run.\n- **Scheduled reviews are partly built.** The gate checks one rebuild after a week. Reminders at 2 days, 1 week and 1 month are planned.\n- **The track tool rewrites `skill-ledger.yaml`,** so comments you add to that file are lost.\n- **Track projects use sandboxes and invented data only.** Real payments, real SMS sender names, real tax receipts and real people's data need a registered business and, for some activities, a licence. See `resources/research/`.\n"</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script>
+(function () {
+  var md = JSON.parse(document.getElementById("guide").textContent);
+  var article = document.getElementById("article");
+  var toc = document.getElementById("toc");
+
+  function slug(text, used) {
+    var s = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "section";
+    var base = s, i = 2;
+    while (used[s]) { s = base + "-" + i++; }
+    used[s] = true;
+    return s;
+  }
+  function esc(s) { return s.replace(/[&<]/g, function (c) { return c === "&" ? "&amp;" : "&lt;"; }); }
+
+  var tmp = document.createElement("div");
+  tmp.innerHTML = window.marked ? marked.parse(md) : "<pre>" + esc(md) + "</pre>";
+  var h1 = tmp.querySelector("h1");
+  if (h1) {
+    var intro = h1.nextElementSibling;
+    h1.remove();
+    if (intro && intro.tagName === "P") intro.remove();
+  }
+  tmp.querySelectorAll("table").forEach(function (t) {
+    var w = document.createElement("div"); w.className = "tbl";
+    t.parentNode.insertBefore(w, t); w.appendChild(t);
+  });
+  tmp.querySelectorAll("a[href^='http']").forEach(function (a) { a.target = "_blank"; a.rel = "noopener"; });
+  var used = {}, items = [];
+  tmp.querySelectorAll("h2, h3").forEach(function (h) {
+    h.id = "g-" + slug(h.textContent, used);
+    items.push('<a href="#" class="' + (h.tagName === "H3" ? "sub" : "") + '" data-target="' + h.id + '">' + esc(h.textContent) + "</a>");
+  });
+  article.innerHTML = tmp.innerHTML;
+  toc.innerHTML = items.join("");
+
+  function go(id) { var el = document.getElementById(id); if (el) el.scrollIntoView(); }
+  toc.addEventListener("click", function (e) {
+    var a = e.target.closest("a[data-target]");
+    if (!a) return;
+    e.preventDefault();
+    go(a.dataset.target);
+  });
+  document.querySelectorAll("[data-goto]").forEach(function (b) {
+    b.addEventListener("click", function () { go("g-" + b.dataset.goto); });
+  });
+})();
+</script>

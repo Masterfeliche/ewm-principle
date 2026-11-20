@@ -1,0 +1,201 @@
+<title>EMW Workflow Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a short opener (three paths, the three scales as ladders), then the guide as a long read with a contents rail. */
+:root {
+  --bg: #f5f7f6;
+  --surface: #ffffff;
+  --fg: #14201c;
+  --muted: #586661;
+  --line: #dbe2df;
+  --soft: #eaf0ed;
+  --accent: #17765a;
+  --accent-soft: #dff1ea;
+  --warn: #9a5b00;
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1513; --surface: #161e1b; --fg: #e6ece9; --muted: #9caaa5; --line: #29332f; --soft: #1d2623;
+    --accent: #5fcfa7; --accent-soft: #17342b; --warn: #e0a84a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1513; --surface: #161e1b; --fg: #e6ece9; --muted: #9caaa5; --line: #29332f; --soft: #1d2623;
+  --accent: #5fcfa7; --accent-soft: #17342b; --warn: #e0a84a; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font: 16px/1.65 var(--body); }
+.wrap { max-width: 1160px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Opener */
+.opener { background: var(--surface); border-bottom: 1px solid var(--line); }
+.opener .wrap { padding-block: 36px 32px; }
+.kicker { font: 600 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 12px; }
+.opener h1 { font: 700 clamp(30px, 4.4vw, 44px)/1.08 var(--display); margin: 0 0 12px; max-width: 20ch; text-wrap: balance; }
+.opener .lede { color: var(--muted); max-width: 62ch; margin: 0; font-size: 17px; }
+
+.paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 26px; }
+.path { display: flex; flex-direction: column; gap: 6px; text-align: left; font: inherit; color: inherit; cursor: pointer; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.path:hover { border-color: var(--accent); }
+.path b { font: 600 17px/1.25 var(--display); }
+.path span { font-size: 14px; color: var(--muted); }
+.path em { font: 500 13px/1 var(--display); font-style: normal; color: var(--accent); margin-top: 6px; }
+
+.scales { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 22px; margin-top: 30px; }
+.scale h2 { font: 600 13px/1 var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+.rungs { display: grid; gap: 4px; }
+.rung { display: grid; grid-template-columns: 44px 1fr; gap: 10px; align-items: baseline; font-size: 14px; padding: 6px 10px; border-radius: 6px; background: color-mix(in srgb, var(--accent) calc(var(--i) * 7%), var(--soft)); }
+.rung code { font: 500 13px/1 var(--mono); color: var(--fg); }
+.scale p { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+.rule { margin-top: 26px; padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 10px 10px 0; font-size: 15px; max-width: 78ch; }
+
+/* Guide */
+main { padding-block: 34px 64px; }
+.layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 44px; }
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 18px); align-self: start; max-height: calc(100vh - 40px); overflow-y: auto; font-size: 13px; }
+.rail .label { font: 600 11px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.rail a { display: block; color: var(--muted); text-decoration: none; padding: 6px 0 6px 10px; border-left: 2px solid var(--line); line-height: 1.35; }
+.rail a:hover { color: var(--fg); border-left-color: var(--accent); }
+.rail a.sub { padding-left: 22px; font-size: 12.5px; }
+article { min-width: 0; max-width: 76ch; }
+article h2 { font: 600 26px/1.2 var(--display); margin: 48px 0 12px; padding-top: 18px; border-top: 1px solid var(--line); text-wrap: balance; scroll-margin-top: 16px; }
+article h2:first-child { margin-top: 0; border-top: 0; padding-top: 0; }
+article h3 { font: 600 18px/1.3 var(--display); margin: 28px 0 8px; scroll-margin-top: 16px; }
+article a { color: var(--accent); text-underline-offset: 2px; }
+article strong { font-weight: 600; }
+article code { font: 13.5px/1 var(--mono); background: var(--soft); padding: 2px 5px; border-radius: 4px; }
+article pre { background: var(--soft); border: 1px solid var(--line); padding: 14px; border-radius: 10px; overflow-x: auto; }
+article pre code { background: none; padding: 0; line-height: 1.55; }
+article ul, article ol { padding-left: 22px; }
+article li + li { margin-top: 4px; }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 12px/1.3 var(--body); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--soft); }
+tr:last-child td { border-bottom: 0; }
+.loading { color: var(--muted); }
+footer { color: var(--muted); font-size: 13px; margin-top: 40px; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; gap: 16px; }
+  .rail { position: static; max-height: none; border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: var(--surface); }
+  .rail details summary { cursor: pointer; font: 600 13px/1 var(--display); }
+}
+@media (min-width: 861px) { .rail details > summary { display: none; } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<section class="opener">
+  <div class="wrap">
+    <p class="kicker">Engineering Mastery Workflow</p>
+    <h1>Use AI to build software, and still be able to build it yourself</h1>
+    <p class="lede">How to use the workflow end to end: learning a language from zero, working on a project that already exists, and leading a team. Pick where you are.</p>
+
+    <div class="paths">
+      <button class="path" type="button" data-goto="4-learning-with-a-track"><b>I am learning a language</b><span>Follow a track: six stages, a project for each, a gate to move on.</span><em>Go to section 4 →</em></button>
+      <button class="path" type="button" data-goto="5-an-ongoing-project"><b>I have a project to deliver</b><span>Onboard the codebase, then let your skill level set how much the AI does.</span><em>Go to section 5 →</em></button>
+      <button class="path" type="button" data-goto="6-teams"><b>I lead a team</b><span>Set the policy once, turn on the checker, and be the human who verifies.</span><em>Go to section 6 →</em></button>
+    </div>
+
+    <div class="scales">
+      <div class="scale">
+        <h2>Mode: how you work with the AI</h2>
+        <div class="rungs">
+          <div class="rung" style="--i:4"><code>1</code><span>You type; the AI hints</span></div>
+          <div class="rung" style="--i:3"><code>2</code><span>Plan together; you write the core</span></div>
+          <div class="rung" style="--i:2"><code>3</code><span>The AI drafts; you audit</span></div>
+          <div class="rung" style="--i:1"><code>4</code><span>The AI does routine work</span></div>
+        </div>
+        <p>Darker means more of the work is yours.</p>
+      </div>
+      <div class="scale">
+        <h2>Mastery: what you can do</h2>
+        <div class="rungs">
+          <div class="rung" style="--i:0"><code>M0</code><span>No evidence yet</span></div>
+          <div class="rung" style="--i:1"><code>M1</code><span>Can explain it</span></div>
+          <div class="rung" style="--i:2"><code>M2</code><span>Can use it with help</span></div>
+          <div class="rung" style="--i:3"><code>M3</code><span>Can build and debug it alone</span></div>
+          <div class="rung" style="--i:4"><code>M4</code><span>Can adapt it and teach it</span></div>
+        </div>
+      </div>
+      <div class="scale">
+        <h2>Assistance: help a piece of work had</h2>
+        <div class="rungs">
+          <div class="rung" style="--i:4"><code>A0</code><span>None beyond documentation</span></div>
+          <div class="rung" style="--i:3"><code>A1</code><span>A hint or explanation</span></div>
+          <div class="rung" style="--i:2"><code>A2</code><span>Pseudocode or a pointer</span></div>
+          <div class="rung" style="--i:1"><code>A3</code><span>The AI wrote part</span></div>
+          <div class="rung" style="--i:0"><code>A4</code><span>The AI wrote it</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="rule"><strong>The two rules that tie them together.</strong> Work done at A3 or A4 never proves M3. And M3 or M4 needs at least one piece of low-help evidence that a person saw.</p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="layout">
+    <aside class="rail"><details open><summary>Contents</summary><div class="label">In this guide</div><div id="toc"></div></details></aside>
+    <div>
+      <article id="article"><p class="loading">Loading the guide…</p></article>
+      <footer>From <code>docs/GUIDE.md</code> in the EMW repository. Track projects use sandboxes and invented data only.</footer>
+    </div>
+  </div>
+</main>
+
+<script id="guide" type="application/json">/*__GUIDE__*/""</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script>
+(function () {
+  var md = JSON.parse(document.getElementById("guide").textContent);
+  var article = document.getElementById("article");
+  var toc = document.getElementById("toc");
+
+  function slug(text, used) {
+    var s = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "section";
+    var base = s, i = 2;
+    while (used[s]) { s = base + "-" + i++; }
+    used[s] = true;
+    return s;
+  }
+  function esc(s) { return s.replace(/[&<]/g, function (c) { return c === "&" ? "&amp;" : "&lt;"; }); }
+
+  var tmp = document.createElement("div");
+  tmp.innerHTML = window.marked ? marked.parse(md) : "<pre>" + esc(md) + "</pre>";
+  var h1 = tmp.querySelector("h1");
+  if (h1) {
+    var intro = h1.nextElementSibling;
+    h1.remove();
+    if (intro && intro.tagName === "P") intro.remove();
+  }
+  tmp.querySelectorAll("table").forEach(function (t) {
+    var w = document.createElement("div"); w.className = "tbl";
+    t.parentNode.insertBefore(w, t); w.appendChild(t);
+  });
+  tmp.querySelectorAll("a[href^='http']").forEach(function (a) { a.target = "_blank"; a.rel = "noopener"; });
+  var used = {}, items = [];
+  tmp.querySelectorAll("h2, h3").forEach(function (h) {
+    h.id = "g-" + slug(h.textContent, used);
+    items.push('<a href="#" class="' + (h.tagName === "H3" ? "sub" : "") + '" data-target="' + h.id + '">' + esc(h.textContent) + "</a>");
+  });
+  article.innerHTML = tmp.innerHTML;
+  toc.innerHTML = items.join("");
+
+  function go(id) { var el = document.getElementById(id); if (el) el.scrollIntoView(); }
+  toc.addEventListener("click", function (e) {
+    var a = e.target.closest("a[data-target]");
+    if (!a) return;
+    e.preventDefault();
+    go(a.dataset.target);
+  });
+  document.querySelectorAll("[data-goto]").forEach(function (b) {
+    b.addEventListener("click", function () { go("g-" + b.dataset.goto); });
+  });
+})();
+</script>

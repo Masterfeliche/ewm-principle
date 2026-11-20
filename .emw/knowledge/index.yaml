@@ -1,17 +1,45 @@
 # Shared EMW Knowledge Index
-# Add one record per knowledge document. Keep this index concise and searchable.
+# One record per knowledge document. Validate with: python .emw/tools/emw_check.py
 schema_version: 1
-updated_at: ""
-entries: []
-# Entry metadata fields:
-# - id: "KB-0001"
-#   title: "Descriptive, searchable title"
-#   path: "debugging/example.md"
-#   category: "debugging"
-#   status: "verified"
-#   confidence: "high"
-#   technologies: ["Python", "PostgreSQL"]
-#   tags: ["transactions", "idempotency"]
-#   applies_to: "Short applicability statement"
-#   reviewed_at: "YYYY-MM-DD"
-#   supersedes: []
+updated_at: "2026-11-20"
+entries:
+  - id: "KB-SEC-0001"
+    title: "Derive tenant scope from server-side identity on every object access"
+    path: "security/tenant-scope-from-server-identity.md"
+    category: "security"
+    status: "proposed"
+    confidence: "high"
+    technologies: ["Any web backend", "SQL databases"]
+    tags: ["multi-tenancy", "authorization", "idor", "bola"]
+    applies_to: "Multi-tenant systems where customers share an API or database"
+    reviewed_at: "2026-11-20"
+  - id: "KB-INT-0001"
+    title: "Verify webhook signatures and process events idempotently"
+    path: "integrations/webhook-signature-and-idempotency.md"
+    category: "integration"
+    status: "proposed"
+    confidence: "high"
+    technologies: ["HTTP webhooks", "Payment gateways"]
+    tags: ["payments", "webhooks", "idempotency", "signatures"]
+    applies_to: "Inbound callbacks that change money or order state"
+    reviewed_at: "2026-11-20"
+  - id: "KB-DBG-0001"
+    title: "Find the commit that introduced a regression with git bisect"
+    path: "debugging-playbooks/bisect-regressions.md"
+    category: "debugging"
+    status: "proposed"
+    confidence: "high"
+    technologies: ["Git"]
+    tags: ["regression", "git", "bisect"]
+    applies_to: "Regressions caused by a code change"
+    reviewed_at: "2026-11-20"
+  - id: "KB-AGT-0001"
+    title: "Report checks not run as plainly as checks that passed"
+    path: "agent-guidance/report-unrun-checks.md"
+    category: "agent-guidance"
+    status: "proposed"
+    confidence: "medium"
+    technologies: ["AI coding agents"]
+    tags: ["verification", "reporting", "agents"]
+    applies_to: "Every EMW completion report"
+    reviewed_at: "2026-11-20"

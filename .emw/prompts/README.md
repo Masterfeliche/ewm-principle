@@ -40,3 +40,15 @@ Users can open any prompt file and copy its complete prompt into an agent that d
 - "Automatically load" means the agent reads and follows the selected repository file when its trigger occurs, subject to the agent's repository-access and instruction-loading capabilities.
 - If the agent cannot read files or does not load instructions automatically, the user must paste the relevant prompt or provide the file contents.
 - Do not repeatedly run onboarding after it is complete; refresh only when major architecture, stack, ownership, or project goals change.
+
+## OpenCode shortcuts
+When using OpenCode, the same workflows are available as project slash commands in `.opencode/commands/`:
+- `/emw-onboard`
+- `/emw-feature`
+- `/emw-learn`
+- `/emw-debug`
+- `/emw-review`
+- `/emw-weekly`
+- `/emw-capture`
+
+Reusable skills are available under `.opencode/skills/`: `emw-workflow`, `emw-knowledge`, and `emw-mastery`. See [OpenCode Integration](../../docs/OPENCODE.md). The prompt files in this directory remain the canonical task instructions; OpenCode commands and skills are adapters that route to them.

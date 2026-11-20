@@ -1,14 +1,33 @@
-# KB-<ID>: <Knowledge title>
+---
+id: "KB-<ID>"
+title: "<Descriptive knowledge title>"
+status: "draft"
+confidence: "low"
+category: "debugging"
+scope: "project-local"
+summary: "<One-sentence searchable lesson>"
+context: "<Where and under what conditions this applies>"
+problem: "<Problem or question addressed>"
+root_cause_or_principle: "<Verified cause or underlying principle>"
+recommended_approach: "<Actionable recommendation>"
+alternatives: []
+technologies: []
+versions: []
+tags: []
+applicability: "<Preconditions and context>"
+evidence: []
+limitations: []
+related_entries: []
+related_adrs: []
+source_project: ""
+created_at: "YYYY-MM-DD"
+last_reviewed: "YYYY-MM-DD"
+review_trigger: ""
+supersedes: []
+superseded_by: ""
+---
 
-- **Status:** draft / proposed / verified / deprecated / superseded
-- **Confidence:** low / medium / high
-- **Category:** engineering-pattern / debugging / technology / architecture / security / integration / learning / agent-guidance / research
-- **Scope:** shared-framework / project-local
-- **Technologies and versions:**
-- **Tags:**
-- **Created:** YYYY-MM-DD
-- **Last reviewed:** YYYY-MM-DD
-- **Owner / reviewer:**
+# <Knowledge title>
 
 ## Summary
 A short, searchable statement of the lesson.
@@ -29,6 +48,7 @@ Give a safe, actionable sequence or pattern. Link to project examples rather tha
 What else could be done? When would this recommendation not fit?
 
 ## Evidence and provenance
+For every item in frontmatter `evidence`, explain how it was obtained:
 - Reproduction / test / command:
 - Observed result:
 - Source files / commit / ADR / issue:
@@ -44,3 +64,5 @@ List version constraints, failure cases, assumptions, and unverified areas.
 ## Maintenance
 - Review trigger:
 - Supersedes / superseded by:
+
+> Validate the YAML metadata against `.emw/knowledge/knowledge-entry.schema.json` when validation tooling is available. Do not label an entry verified unless its evidence supports the stated applicability.

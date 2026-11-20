@@ -7,6 +7,8 @@ Copy this directory to `.emw-project/` during onboarding:
 - `onboarding-status.yaml`
 - `delivery-ledger.md`
 - `skill-ledger.yaml`
+- `task-log.yaml`
+- `mode-policy.yaml`
 
 Create `.project-knowledge/` using `.emw/templates/project-knowledge-readme.md` and `.emw/templates/project-knowledge-index.yaml`.
 

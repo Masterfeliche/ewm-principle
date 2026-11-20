@@ -1,6 +1,6 @@
-# EMW Project Onboarding
+# EMW Project Onboarding Record
 
-> Copy this file into the target project's `.emw/` folder and complete it with the agent and human developer. Do not guess missing values.
+> The automatic onboarding instructions are in `.emw/prompts/01-project-onboarding.md`. This document is a structured record to complete during that process. Store the completed project profile at `.emw-project/project-profile.md`; do not store live project records inside the shared framework directory.
 
 ## Project identity
 - Project:
@@ -49,6 +49,7 @@
 
 ## Developer baseline
 For each relevant skill, record evidence rather than self-rating alone.
+
 | Skill | Scope (S1/S2/S3) | Initial estimate (M0–M4) | Evidence | Confidence | Next assessment |
 |---|---|---:|---|---|---|
 | | | | | | |
@@ -74,3 +75,9 @@ For each relevant skill, record evidence rather than self-rating alone.
 - Human-owned work:
 - AI-supported work:
 - Verification plan:
+
+## Onboarding status
+- Status: not-started / in-progress / complete / needs-refresh
+- Date:
+- Unresolved unknowns:
+- Human-confirmed decisions:

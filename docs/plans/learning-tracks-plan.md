@@ -137,6 +137,8 @@ Resources: official Python tutorial, CS50P, "Automate the Boring Stuff" 3rd ed.,
 
 Order: 8a → 8b (PHP first as the reference track) → 8c → 8d → 8e → 8f.
 
+**Status (21 Nov 2026):** 8a is done. 8b and 8c are done for the shared core and the PHP track (`.emw/tracks/core.yaml`, `php.yaml`, seven files under `briefs/`); .NET, Go and Python are not started. 8d, 8e and 8f are not started. The PHP project choices follow `resources/research/East Africa software problems for PHP projects.md`, which replaced the generic projects in section 3.
+
 ## 7. Open decisions
 1. **Which track to build first.** Recommendation: PHP, as the reference, then copy its shape to the other three.
 2. **Who verifies.** The gate needs a human. For a solo learner, name a mentor or peer, or use a recorded screen-share reviewed later.

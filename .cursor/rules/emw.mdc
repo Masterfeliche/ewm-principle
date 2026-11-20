@@ -1,0 +1,18 @@
+---
+description: Engineering Mastery Workflow for human–AI software engineering
+alwaysApply: true
+---
+
+# EMW — Engineering Mastery Workflow
+
+Follow the root `AGENTS.md` as the repository's portable engineering contract. Read relevant files in `.emw/core/` for detailed rules.
+
+Before meaningful work, inspect the repository, assess learning value, risk, demonstrated proficiency, novelty, complexity and deadline pressure, then select one of EMW's four collaboration modes.
+
+Use the six-stage lifecycle: ANALYZE → SPECIFY & PLAN → EXECUTE → VERIFY → CONSOLIDATE → EVOLVE.
+
+Keep two separate ledgers: engineering delivery and developer mastery. Mastery levels M0–M4 require evidence; task completion or AI-generated code does not prove mastery. Record AI assistance A0–A4.
+
+Do not fabricate test results. Give heightened scrutiny and human approval to authentication, authorization, multi-tenancy, payments, secrets, privacy, destructive migrations and production deployment.
+
+For non-trivial tasks, provide a concise plan before implementation. At completion, report changes, checks actually run, checks not run, risks, learning outcomes, and evidence (or state that evidence is unavailable).

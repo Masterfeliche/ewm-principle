@@ -10,8 +10,8 @@ Engineering Mastery Workflow (EMW) is a repository-native, agent-independent fra
 EMW makes AI assistance deliberate and adaptive. It does not prohibit generated code, but it prevents task completion from being confused with human mastery.
 
 ## Start here
-
 - [Using EMW with any coding agent](docs/USING-WITH-ANY-AGENT.md)
+- [OpenCode setup and commands](docs/OPENCODE.md)
 - [Installation guide](docs/INSTALLATION.md)
 - [Knowledge system guide](docs/KNOWLEDGE-SYSTEM.md)
 - [Root agent contract](AGENTS.md)
@@ -33,34 +33,20 @@ Meaningful tasks are assessed for learning value, risk, demonstrated proficiency
 | 4. Bounded Delegation | AI executes narrow, low-risk work | Routine, well-understood tasks with clear checks |
 
 ## Core capabilities
-
-### 1. Project Intelligence
-Understand the repository, requirements, stack, architecture, conventions, risks, and current state before changing code.
-
-### 2. Skill Intelligence
-Map project-relevant skills, prerequisites, proficiency evidence, and knowledge gaps.
-
-### 3. Task & Learning Orchestration
-Select the collaboration mode and human learning objective for each meaningful task.
-
-### 4. Collaborative Execution
-Use Socratic guidance, plan-first pairing, guided AI drafts, or bounded delegation as appropriate.
-
-### 5. Verification & Mastery
-Verify software behavior separately from the developer's ability to explain, implement, modify, and debug it independently.
-
-### 6. Knowledge Intelligence Layer
-Retrieve reusable shared and project-specific knowledge before work; capture verified lessons after meaningful discoveries; review contributions before promoting generalized knowledge to the shared EMW repository.
+1. **Project Intelligence:** understand the repository, requirements, stack, architecture, conventions, risks, and current state.
+2. **Skill Intelligence:** map project-relevant skills, prerequisites, proficiency evidence, and knowledge gaps.
+3. **Task & Learning Orchestration:** select a collaboration mode and human learning objective.
+4. **Collaborative Execution:** use Socratic guidance, plan-first pairing, guided AI drafts, or bounded delegation.
+5. **Verification & Mastery:** verify software behavior separately from the developer's ability to explain, implement, modify, and debug independently.
+6. **Knowledge Intelligence:** retrieve reusable shared and project knowledge; capture verified lessons; review contributions before promoting generalized knowledge.
 
 ## Two ledgers, never one
-
 - **Engineering Delivery Ledger:** requirements, features, decisions, implementation, tests, defects, and technical debt.
 - **Developer Mastery Ledger:** technologies/concepts, M0–M4 levels, evidence, assistance used, gaps, and next assessments.
 
 A completed feature is delivery evidence, not automatic mastery evidence.
 
 ## Proficiency scale
-
 - **M0 — Unknown:** no reliable evidence yet.
 - **M1 — Awareness:** recognizes the concept and explains its basic purpose.
 - **M2 — Guided Application:** applies it with examples, hints, or AI assistance.
@@ -68,18 +54,21 @@ A completed feature is delivery evidence, not automatic mastery evidence.
 - **M4 — Transfer & Mastery:** handles unfamiliar variations, compares alternatives, explains limitations, and teaches the concept.
 
 ## Persistent knowledge
-
 EMW keeps two distinct knowledge stores:
 - Shared, reviewed knowledge in `.emw/knowledge/`.
 - Project-specific knowledge in the consuming repository's `.project-knowledge/`.
 
-The project knowledge base is not automatically published upstream. Shared contributions require evidence, sanitization, and human approval. Knowledge entries record source, status, confidence, applicability, limitations, and review metadata.
+The project knowledge base is not automatically published upstream. Shared contributions require evidence, sanitization, and human approval.
 
-## Automatic prompts
+## Agent integrations
+- Codex and other AGENTS.md agents: root `AGENTS.md`.
+- Claude Code: `CLAUDE.md` adapter.
+- Gemini CLI: `GEMINI.md` adapter.
+- Cursor: `.cursor/rules/emw.mdc`.
+- GitHub Copilot: `.github/copilot-instructions.md`.
+- OpenCode: native `AGENTS.md` discovery, `opencode.json`, `.opencode/skills/`, and `.opencode/commands/`.
 
-Standalone prompts live in `.emw/prompts/`. The root `AGENTS.md` tells compatible agents to select them automatically based on task triggers. Examples include session start, project onboarding, feature delivery, debugging, knowledge retrieval/capture, code review, and weekly mastery review.
-
-Automatic loading depends on the agent being able to read repository files and follow project instructions. When an agent cannot do so, copy the relevant prompt into its chat.
+OpenCode users can invoke `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, and `/emw-capture`. See [OpenCode setup](docs/OPENCODE.md).
 
 ## Repository structure
 
@@ -87,6 +76,10 @@ Automatic loading depends on the agent being able to read repository files and f
 .
 ├── AGENTS.md
 ├── CLAUDE.md / GEMINI.md
+├── opencode.json
+├── .opencode/
+│   ├── skills/
+│   └── commands/
 ├── .cursor/rules/emw.mdc
 ├── .github/copilot-instructions.md
 ├── .emw/
@@ -94,19 +87,14 @@ Automatic loading depends on the agent being able to read repository files and f
 │   ├── prompts/              # Standalone, task-triggered prompts
 │   ├── knowledge/            # Shared curated knowledge and index
 │   ├── templates/            # Reusable record templates
-│   ├── assessments/          # Evidence-gathering exercises
+│   ├── assessments/
 │   └── examples/
-├── docs/
-│   ├── INSTALLATION.md
-│   ├── USING-WITH-ANY-AGENT.md
-│   └── KNOWLEDGE-SYSTEM.md
-└── CONTRIBUTING.md
+└── docs/
 ```
 
-A consuming project keeps its live project records in `.emw-project/` and project knowledge in `.project-knowledge/`, separate from upstream framework files.
+A consuming project keeps live project records in `.emw-project/` and project knowledge in `.project-knowledge/`, separate from upstream framework files.
 
 ## Design principles
-
 - Preserve human ownership of requirements and consequential decisions.
 - Start with reasoning, contracts, and pseudocode when warranted.
 - Match assistance to demonstrated proficiency.
@@ -117,9 +105,7 @@ A consuming project keeps its live project records in `.emw-project/` and projec
 - Treat EMW as a framework to evaluate and improve, not a guarantee of mastery.
 
 ## Status
-
-EMW v1.1 is a documentation-first framework with a prompt-routing system and a governed, file-based knowledge architecture. It does not require a specific language, model, IDE, agent, or vector database. Indexing and retrieval can begin with normal repository search; add automation only when actual usage justifies it.
+EMW v1.1 is a documentation-first framework with a prompt-routing system, OpenCode-native skills and commands, and a governed file-based knowledge architecture. It does not require a specific language, model, IDE, agent, or vector database. Indexing and retrieval can begin with normal repository search; add automation only when actual usage justifies it.
 
 ## License
-
 No license has been declared. Add a license before redistributing this repository under terms you intend others to rely on.

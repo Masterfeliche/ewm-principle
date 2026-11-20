@@ -38,6 +38,14 @@ The prompts are separate files so humans can open and copy them. The agent shoul
 - Keep `GEMINI.md` at the repository root.
 - Ask Gemini CLI to read `AGENTS.md` and `.emw/prompts/README.md` if these are not loaded by the active setup.
 
+### OpenCode
+
+- OpenCode natively loads root `AGENTS.md`; this is the primary EMW integration.
+- Keep `opencode.json` and merge its `instructions` array if your project already has a config.
+- OpenCode discovers skills in `.opencode/skills/` and slash commands in `.opencode/commands/`.
+- This framework provides `@emw-workflow`, `@emw-knowledge`, and `@emw-mastery` skills plus `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, and `/emw-capture` commands.
+- See [OpenCode Integration](OPENCODE.md) for setup and examples.
+
 ### GitHub Copilot
 - This repository includes `.github/copilot-instructions.md`.
 - Instruction loading differs between Copilot surfaces and configurations. When it does not read repository instructions, use the universal bootstrap prompt.

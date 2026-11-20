@@ -1,0 +1,13 @@
+schema_version: 1
+status: "not-started" # not-started | in-progress | complete | needs-refresh
+last_reviewed: ""
+project_profile: ".emw-project/project-profile.md"
+delivery_ledger: ".emw-project/delivery-ledger.md"
+skill_ledger: ".emw-project/skill-ledger.yaml"
+project_knowledge: ".project-knowledge/"
+completed_checks: []
+unknowns: []
+refresh_triggers:
+  - major architecture or stack change
+  - major product or business-model change
+  - change in project ownership or security boundary

@@ -1,0 +1,25 @@
+name: EMW check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  emw-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PyYAML
+        run: pip install pyyaml
+      - name: Validate EMW knowledge and project records
+        run: python .emw/tools/emw_check.py --strict
+      - name: Test the checker itself
+        if: hashFiles('.emw/tools/test_emw_check.py') != ''
+        run: python -m unittest discover -s .emw/tools -p "test_*.py" -v

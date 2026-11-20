@@ -22,10 +22,12 @@ Create or update:
 - `.emw-project/onboarding-status.yaml`
 - `.emw-project/delivery-ledger.md`
 - `.emw-project/skill-ledger.yaml`
+- `.emw-project/task-log.yaml` (from the template, empty)
+- `.emw-project/mode-policy.yaml` (from the template; the team lead confirms the defaults)
 - `.project-knowledge/README.md`
 - `.project-knowledge/index.yaml`
 
-Use framework templates under `.emw/templates/`. Never overwrite existing project records without inspecting and merging them.
+Use framework templates under `.emw/templates/`. Finish by running `python .emw/tools/emw_check.py` and reporting its result. Never overwrite existing project records without inspecting and merging them.
 
 ## Final onboarding report
 Provide:

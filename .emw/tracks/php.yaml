@@ -1,0 +1,197 @@
+# PHP track: from first line of PHP to a load-tested Laravel system.
+# Projects are set in Dar es Salaam, Tanzania and East Africa; see resources/research/.
+# Validate with: python .emw/tools/emw_check.py
+schema_version: 1
+id: php
+extends: core
+title: "PHP with Laravel"
+summary: "Modern PHP, then Laravel as the only framework, ending with a multi-shop point-of-sale system that survives load. Start with core Stage 0."
+framework: "Laravel 13 (Symfony is an optional elective after Stage 4)"
+researched_at: "2026-11-21"
+sources:
+  - "resources/research/PHP ecosystem mastery path.md"
+  - "resources/research/East Africa software problems for PHP projects.md"
+  - "docs/plans/learning-tracks-plan.md"
+
+skills:
+  # Language
+  - {id: php.syntax-types, name: "PHP syntax and types", scope: S2, covers: "strict_types, scalar and union types, null handling, match, string and number functions"}
+  - {id: php.arrays-functions, name: "Arrays, functions and closures", scope: S2, covers: "Array functions, sorting and grouping, closures, first-class callables"}
+  - {id: php.files-errors, name: "Files, dates and error handling", scope: S2, covers: "Reading and writing files, CSV and JSON, DateTimeImmutable, exceptions"}
+  - {id: php.composer-autoload, name: "Composer and autoloading", scope: S2, covers: "composer.json, PSR-4, semantic versions, composer audit, publishing a package"}
+  - {id: php.testing-pest, name: "Testing with Pest", scope: S2, covers: "Unit tests, datasets, expectations, testing awkward input"}
+  - {id: php.oop, name: "Object-oriented PHP", scope: S2, covers: "Classes, interfaces, enums, readonly, traits, composition, dependency injection"}
+  - {id: php.http-forms-sessions, name: "Requests, forms and sessions", scope: S2, covers: "Superglobals wrapped safely, form handling, validation, sessions, cookies, redirects"}
+  - {id: php.pdo, name: "Databases with PDO", scope: S2, covers: "Prepared statements, transactions, migrations by hand"}
+  - {id: php.routing-di, name: "Router and container internals", scope: S1, covers: "A front controller, a hand-built router, middleware, a small service container"}
+  - {id: php.static-analysis, name: "Static analysis and code style", scope: S2, covers: "PHPStan levels, generics in docblocks, Pint, Rector"}
+  - {id: php.performance, name: "Profiling and performance", scope: S2, covers: "OPcache, profiling a slow request, memory use, N+1 queries"}
+  # Laravel
+  - {id: laravel.routing-controllers, name: "Routing, controllers and views", scope: S1, covers: "Routes, controllers, middleware, Blade, form requests"}
+  - {id: laravel.eloquent, name: "Eloquent and migrations", scope: S1, covers: "Models, relationships, eager loading, migrations, factories, seeders"}
+  - {id: laravel.validation-auth, name: "Validation, authentication and policies", scope: S1, covers: "Form requests, login, roles, gates and policies"}
+  - {id: laravel.queues-notifications, name: "Queues, jobs and notifications", scope: S1, covers: "Jobs, retries, failed jobs, Horizon, SMS and mail notifications, scheduling"}
+  - {id: laravel.api, name: "REST APIs", scope: S1, covers: "API resources, Sanctum tokens, pagination, versioning, OpenAPI documentation"}
+  - {id: laravel.testing, name: "Testing Laravel apps", scope: S1, covers: "Feature tests, database tests, fakes for queues, mail and HTTP"}
+  - {id: laravel.frontend, name: "One front-end approach", scope: S1, covers: "Livewire, or Inertia with Vue or React; pick one"}
+  - {id: laravel.multitenancy, name: "Multi-tenancy", scope: S1, covers: "Tenant scoping in one place, tenant-aware jobs and caches, isolation tests"}
+  - {id: laravel.payments-webhooks, name: "Payments and webhooks", scope: S1, covers: "A gateway contract with drivers, payment state machine, signed webhooks, idempotency, reconciliation"}
+  - {id: laravel.caching, name: "Caching in Laravel", scope: S1, covers: "Cache stores, tags, invalidation, rate limiting, Redis"}
+  - {id: laravel.monitoring, name: "Monitoring and audit", scope: S1, covers: "Pulse or Nightwatch, structured logs, audit log, alerts"}
+  - {id: laravel.packages, name: "Package development", scope: S1, covers: "Extracting code into a package, service providers, config, tests, releasing"}
+  - {id: laravel.internals, name: "Reading the framework", scope: S1, covers: "Request lifecycle, the container, facades, Eloquent internals"}
+  - {id: laravel.octane, name: "Octane and worker mode", scope: S1, covers: "FrankenPHP worker mode, state between requests, memory leaks, max requests"}
+  - {id: laravel.scaling, name: "Scaling a Laravel system", scope: S1, covers: "Stateless app servers, queue workers, database indexes and pooling, read replicas"}
+
+stages:
+  - number: 1
+    name: "Language foundations"
+    outcome: "A tested command-line tool, installed with Composer, that reads messy real-world input."
+    duration_estimate: "2-3 months at 10-15 hours a week (estimate)"
+    default_mode: 1
+    skills:
+      - {id: php.syntax-types, target: M3}
+      - {id: php.arrays-functions, target: M3}
+      - {id: php.files-errors, target: M2}
+      - {id: php.composer-autoload, target: M2}
+      - {id: php.testing-pest, target: M2}
+      - {id: core.testing, target: M2}
+      - {id: core.git, target: M3}
+    project:
+      title: "Mobile-money statement analyser"
+      brief: "briefs/php-stage-1.md"
+    electives:
+      - {title: "Simu", summary: "Composer library that validates Tanzanian phone numbers, converts them to one format and guesses the operator. Recommended alongside the core project."}
+      - {title: "TANQR reader and writer", summary: "Build and parse the national merchant QR payload, with its checksum."}
+      - {title: "Share-out and loan calculator", summary: "Savings-group share-out per member, and a reducing-balance loan schedule."}
+      - {title: "Duka day-end report", summary: "Sales, cost, profit per item and low stock from a day's sales file."}
+      - {title: "Shilingi kwa maneno", summary: "Amount in words in Kiswahili and English."}
+    resources:
+      - "php.net manual (php.net/manual/en)"
+      - "PHP The Right Way (phptherightway.com)"
+      - "Program With Gio: Learn PHP The Right Way (YouTube)"
+      - "Exercism PHP track (exercism.org/tracks/php)"
+      - "Pest documentation (pestphp.com)"
+
+  - number: 2
+    name: "Web and database, built by hand"
+    outcome: "A plain-PHP web app with login, on a small framework you wrote, deployed on a server."
+    duration_estimate: "2-3 months (estimate)"
+    default_mode: 1
+    skills:
+      - {id: php.oop, target: M3}
+      - {id: php.http-forms-sessions, target: M3}
+      - {id: php.pdo, target: M3}
+      - {id: php.files-errors, target: M3}
+      - {id: php.composer-autoload, target: M3}
+      - {id: php.routing-di, target: M2}
+      - {id: php.static-analysis, target: M2}
+      - {id: core.security-basics, target: M3}
+      - {id: core.sql, target: M2}
+      - {id: core.http, target: M2}
+      - {id: core.linux-deploy, target: M2}
+    project:
+      title: "Daftari la Duka (shop ledger)"
+      brief: "briefs/php-stage-2.md"
+    electives:
+      - {title: "Michango pledge ledger", summary: "Pledges against payments for an event committee. Records money, never takes it. The gentler alternative to the core project."}
+      - {title: "VICOBA group ledger", summary: "Members, shares, social fund, loans, fines, cash count and share-out. Records only."}
+      - {title: "Rent book", summary: "Rooms, tenancies, paid-until dates, renewal reminders and the tax withheld on rent."}
+    resources:
+      - "php.net manual: PDO, sessions, password hashing"
+      - "OWASP Cheat Sheet Series (cheatsheetseries.owasp.org)"
+      - "PHPStan documentation (phpstan.org)"
+
+  - number: 3
+    name: "Laravel and professional habits"
+    outcome: "A deployed Laravel app with roles, queued work, a documented API, tests and a CI pipeline. Junior-employable."
+    duration_estimate: "3-6 months (estimate)"
+    default_mode: 2
+    skills:
+      - {id: laravel.routing-controllers, target: M3}
+      - {id: laravel.eloquent, target: M3}
+      - {id: laravel.validation-auth, target: M3}
+      - {id: laravel.api, target: M3}
+      - {id: laravel.testing, target: M3}
+      - {id: laravel.queues-notifications, target: M2}
+      - {id: laravel.frontend, target: M2}
+      - {id: php.testing-pest, target: M3}
+      - {id: core.testing, target: M3}
+      - {id: core.sql, target: M3}
+      - {id: core.http, target: M3}
+      - {id: core.docker, target: M2}
+      - {id: core.ci, target: M2}
+    project:
+      title: "Fee ledger and parent reminders for a small school"
+      brief: "briefs/php-stage-3.md"
+    electives:
+      - {title: "Seller order and delivery desk", summary: "For Instagram and WhatsApp sellers: orders, stock, payment-proof matching, rider assignment, delivery status. No existing product dominates this."}
+      - {title: "Bus parcel desk", summary: "Parcel intake, tracking reference, SMS on arrival, collection by code."}
+      - {title: "ADDO stock and registers", summary: "Medicine batches, expiry alerts and the registers small drug shops must keep."}
+      - {title: "AMCOS member and delivery records", summary: "Farmer cooperative members, deliveries by weight and grade, statements."}
+      - {title: "Bus seat booking", summary: "Two people must never get the same seat. The real market needs regulator approval.", learn_only: true}
+      - {title: "Compliant loan module", summary: "Turn the Bank of Tanzania's lending rules into testable features. Fake borrowers only.", learn_only: true}
+    resources:
+      - "Laravel documentation (laravel.com/docs)"
+      - "Laracasts: Laravel From Scratch (2026 Edition)"
+      - "Larastan and Laravel Pint documentation"
+      - "Africa's Talking simulator for SMS (africastalking.com)"
+
+  - number: 4
+    name: "Production engineering"
+    outcome: "A multi-tenant Laravel system with payments against mocks and sandboxes, background work, caching and monitoring. Looks mid-level."
+    duration_estimate: "6-12 months (estimate)"
+    default_mode: 2
+    skills:
+      - {id: laravel.multitenancy, target: M3}
+      - {id: laravel.payments-webhooks, target: M3}
+      - {id: laravel.caching, target: M3}
+      - {id: laravel.queues-notifications, target: M3}
+      - {id: laravel.monitoring, target: M2}
+      - {id: laravel.packages, target: M2}
+      - {id: laravel.internals, target: M2}
+      - {id: php.static-analysis, target: M3}
+      - {id: core.caching-queues, target: M2}
+      - {id: core.observability, target: M2}
+      - {id: core.docker, target: M3}
+      - {id: core.ci, target: M3}
+      - {id: core.linux-deploy, target: M3}
+    project:
+      title: "Duka POS for many shops"
+      brief: "briefs/php-stage-4.md"
+    electives:
+      - {title: "Group and small-SACCO records platform", summary: "Many groups on one system, a double-entry ledger, statements by SMS, a USSD menu on a simulator. Never holds money."}
+      - {title: "School-fee system for many schools", summary: "The Stage 3 project made multi-school, with simulated control numbers."}
+      - {title: "Symfony elective", summary: "Rebuild one Stage 3 feature in Symfony, for learners heading to enterprise, Drupal or Shopware work."}
+    resources:
+      - "Laravel documentation: queues, Horizon, cache, Pulse, package development"
+      - "PHPStan documentation: rule levels"
+      - "Rector documentation (getrector.com)"
+
+  - number: 5
+    name: "Systems and scale"
+    outcome: "The Stage 4 system load-tested to a stated target, with the bottlenecks fixed and a written performance report."
+    duration_estimate: "12+ months, ongoing (estimate)"
+    default_mode: 2
+    skills:
+      - {id: laravel.octane, target: M2}
+      - {id: laravel.scaling, target: M3}
+      - {id: php.performance, target: M3}
+      - {id: core.load-testing, target: M3}
+      - {id: core.caching-queues, target: M3}
+      - {id: core.observability, target: M3}
+      - {id: core.sql, target: M4}
+      - {id: core.http, target: M4}
+      - {id: core.testing, target: M4}
+      - {id: core.security-basics, target: M4}
+    project:
+      title: "End-of-month rush"
+      brief: "briefs/php-stage-5.md"
+    electives:
+      - {title: "Blackout and slow-network mode", summary: "Make key screens work offline and on a poor connection, and measure the difference."}
+      - {title: "Go regional", summary: "Add Kenya, Uganda and Rwanda behind interfaces: wallets, tax receipt systems, data rules, currencies. Recommended as the transfer check."}
+    resources:
+      - "Laravel Octane documentation"
+      - "k6 documentation (grafana.com/docs/k6)"
+      - "OpenTelemetry PHP documentation (opentelemetry.io/docs/languages/php)"
+      - "Designing Data-Intensive Applications (Kleppmann)"

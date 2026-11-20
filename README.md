@@ -9,6 +9,22 @@ Engineering Mastery Workflow (EMW) is a repository-native, agent-independent fra
 
 EMW makes AI assistance deliberate and adaptive. It does not prohibit generated code, but it prevents task completion from being confused with human mastery.
 
+## Who it is for
+- **Junior developers** who want AI help without skipping the part where they learn.
+- **Anyone learning a new stack on the job**: a new language, framework or codebase.
+- **Team leads and mentors** onboarding people, who need to know what each developer can do without the AI, not just what they shipped.
+- **Teams asking where their next seniors will come from** when routine implementation is increasingly done by AI.
+
+Experienced developers working in code they know well need it least; the quick path in `AGENTS.md` keeps it out of their way.
+
+## The problem it addresses
+Early research points the same way, though the studies are small and recent:
+- Developers learning a new library with AI scored 50% vs 67% on a follow-up quiz, with the largest gap in debugging. Those who asked for explanations kept more than those who delegated the code ([Anthropic, 2026](https://www.anthropic.com/research/AI-assistance-coding-skills)).
+- Students with unrestricted AI did better in practice and 17% worse on the exam afterwards; a version limited to hints avoided the harm ([Bastani et al., PNAS 2025](https://ideas.repec.org/a/nas/journl/v122y2025pe2422633122.html)).
+- Experienced developers were 19% slower with AI on their own repositories yet believed they were 20% faster ([METR, 2025](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/)).
+
+EMW responds with help limits set by team policy rather than chosen task by task, evidence-based skill records, and sampled checks without AI. Whether EMW itself improves outcomes is not yet measured; see the [pilot study method](docs/research/pilot.md).
+
 ## Start here
 - [Using EMW with any coding agent](docs/USING-WITH-ANY-AGENT.md)
 - [OpenCode setup and commands](docs/OPENCODE.md)
@@ -53,6 +69,12 @@ A completed feature is delivery evidence, not automatic mastery evidence.
 - **M3 — Independent Application:** implements, explains, tests, and debugs without solution-level assistance.
 - **M4 — Transfer & Mastery:** handles unfamiliar variations, compares alternatives, explains limitations, and teaches the concept.
 
+## Learning tracks
+A track is a staged path for one language: skills with target levels, one project per stage, and a gate for moving on. The shared core (Stage 0) and the PHP track (Laravel, with projects set in Tanzania and East Africa) are in `.emw/tracks/`; see [the tracks README](.emw/tracks/README.md). Tracks for .NET, Go and Python are planned. Start one with `python .emw/tools/emw_track.py start php` or `/emw-track start php`; `status` shows where you are and `next` opens the next stage once its gate is met.
+
+## Validating records
+`python .emw/tools/emw_check.py` checks knowledge entries against the JSON schemas, keeps `index.yaml` in step with the entry files, and, in a consuming project, checks the onboarding status and skill ledger (for example, M3 or M4 needs evidence produced with assistance A0–A2). It needs Python 3.9+ and PyYAML, exits non-zero on errors, and `--strict` also fails on warnings. `.github/workflows/emw-check.yml` runs it, plus the checker's own tests, on every pull request; copy it into consuming projects to enforce the records there.
+
 ## Persistent knowledge
 EMW keeps two distinct knowledge stores:
 - Shared, reviewed knowledge in `.emw/knowledge/`.
@@ -62,13 +84,13 @@ The project knowledge base is not automatically published upstream. Shared contr
 
 ## Agent integrations
 - Codex and other AGENTS.md agents: root `AGENTS.md`.
-- Claude Code: `CLAUDE.md` adapter.
+- Claude Code: `CLAUDE.md` adapter, slash commands in `.claude/commands/`, skills in `.claude/skills/`.
 - Gemini CLI: `GEMINI.md` adapter.
 - Cursor: `.cursor/rules/emw.mdc`.
 - GitHub Copilot: `.github/copilot-instructions.md`.
 - OpenCode: native `AGENTS.md` discovery, `opencode.json`, `.opencode/skills/`, and `.opencode/commands/`.
 
-OpenCode users can invoke `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, and `/emw-capture`. See [OpenCode setup](docs/OPENCODE.md).
+Claude Code and OpenCode users can invoke `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, `/emw-practice`, and `/emw-track`. See [OpenCode setup](docs/OPENCODE.md).
 
 ## Repository structure
 
@@ -80,13 +102,19 @@ OpenCode users can invoke `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-de
 ├── .opencode/
 │   ├── skills/
 │   └── commands/
+├── .claude/
+│   ├── commands/
+│   └── skills/
+├── .github/workflows/      # CI: emw_check --strict + checker tests
 ├── .cursor/rules/emw.mdc
 ├── .github/copilot-instructions.md
 ├── .emw/
+│   ├── tracks/               # Learning tracks: core + PHP, with project briefs
 │   ├── core/                 # Agent-independent EMW rules
 │   ├── prompts/              # Standalone, task-triggered prompts
 │   ├── knowledge/            # Shared curated knowledge and index
 │   ├── templates/            # Reusable record templates
+│   ├── tools/                # emw_check.py validator and its tests
 │   ├── assessments/
 │   └── examples/
 └── docs/

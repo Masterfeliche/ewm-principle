@@ -2,6 +2,16 @@
 
 This is the portable operating contract for any coding agent working in an EMW-enabled repository. Read it before meaningful engineering work. Detailed, agent-independent rules live in `.emw/core/`; reusable task prompts live in `.emw/prompts/`.
 
+## Quick path for trivial work
+A change is trivial when all of these hold: about 30 changed lines or fewer, no high-risk area (auth, tenancy, payments, secrets, privacy, crypto, destructive data changes, deployment), and every skill it touches is at M3 or above in `.emw-project/skill-ledger.yaml` (or it touches no tracked skill).
+
+For trivial work: skip knowledge retrieval, L/R/P/N/C/D ratings, mode selection and ledger updates. Make the change and report only:
+- **Ran:** each command and its observed result.
+- **Not run:** checks you skipped, and why.
+- **Risks:** anything the human should look at.
+
+If unsure whether a change is trivial, it is not: use the full workflow below.
+
 ## Mission
 Deliver reliable, maintainable software while deliberately developing the human developer's independent engineering ability. Optimize for delivery, competence, and engineering judgment—not code volume or AI dependence.
 
@@ -15,14 +25,14 @@ For a consuming software project, check whether these project-owned records exis
 
 If they are missing, incomplete, or materially stale, read and execute `.emw/prompts/01-project-onboarding.md` before feature implementation. Read-only reconnaissance may happen first. Do not repeat completed onboarding without a refresh trigger.
 
-Before meaningful work, read and follow `.emw/prompts/07-knowledge-retrieval.md`. For meaningful features use Prompt 02; for a new/weak technology use Prompt 03; for narrow Mode 4 delegation use Prompt 04; for reviews use Prompt 05; for debugging use Prompt 06; after a durable verified discovery use Prompt 08; for weekly review use Prompt 09; for upstream contribution use Prompt 10.
+Before meaningful work, read and follow `.emw/prompts/07-knowledge-retrieval.md`. For meaningful features use Prompt 02; for a new/weak technology use Prompt 03; for narrow Mode 4 delegation use Prompt 04; for reviews use Prompt 05; for debugging use Prompt 06; after a durable verified discovery use Prompt 08; for weekly review use Prompt 09; for upstream contribution use Prompt 10; for hands-on practice or an overdue check without AI use Prompt 11; when `.emw-project/track.yaml` exists or the developer asks about a learning track use Prompt 12.
 
 These are repository prompt files, not external tool functions. Automatic selection means reading and applying the relevant file whenever the agent can access repository files. If file access or automatic instruction loading is unavailable, explain the limitation and ask the user to provide/paste the relevant prompt.
 
 ## OpenCode integration
 OpenCode natively discovers root `AGENTS.md`. This repository also includes `opencode.json`, project skills under `.opencode/skills/`, and slash commands under `.opencode/commands/`.
 - Read `.opencode/skills/emw-workflow/SKILL.md` and load other EMW skills as relevant.
-- Use `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, and `/emw-capture` when applicable.
+- Use `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, `/emw-practice`, and `/emw-track` when applicable.
 - Skills are discoverable by OpenCode; invoke explicitly with `@emw-workflow`, `@emw-knowledge`, or `@emw-mastery` when needed.
 - Keep shared EMW files canonical. Do not duplicate or fork policy in OpenCode-specific commands.
 
@@ -66,6 +76,9 @@ Use project-owned files under `.emw-project/`, not shared framework templates, f
 Never claim a test, build, migration, scan, deployment, or external action succeeded unless it was actually performed and the result observed. Separate checks run, results, checks not run, and unresolved risks.
 
 Apply heightened scrutiny and human approval to authentication, authorization, multi-tenancy, payments, secrets, privacy, cryptography, destructive migrations/data deletion, and production deployment. Consult `.emw/core/verification-policy.md`.
+
+## Record validation
+After creating or changing knowledge entries, `index.yaml`, or `.emw-project/` ledgers, run `python .emw/tools/emw_check.py` and fix every reported error. Report the result; if it could not be run, say so.
 
 ## Completion report
 For meaningful work, report: engineering outcome and files changed; important assumptions and decisions; checks run and results; checks not run and unresolved risks; knowledge retrieved and captured; assistance level; evidence-backed mastery changes or absence of evidence; and next step.

@@ -29,3 +29,8 @@ Use progressive assistance: Socratic question → concept explanation → pseudo
 
 ## Assessing
 Pair verbal explanations with practical evidence for M3/M4. Use the assessment prompts in `.emw/assessments/`. Keep the developer mastery ledger separate from the engineering delivery ledger.
+
+## Practice and checks without AI
+- For hands-on learning, follow `.emw/prompts/11-practice.md`: the developer types the solution; give hints one step at a time and no complete solution before an attempt.
+- When `emw_check` reports a skill overdue, offer a short check from `.emw/assessments/` or a practice session.
+- Record `verified_by: self` unless a human lead or peer saw the work. M3/M4 need one human-verified A0–A2 item.

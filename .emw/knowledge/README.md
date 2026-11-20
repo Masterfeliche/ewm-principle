@@ -28,4 +28,6 @@ Do not treat draft or proposed entries as verified facts.
 Use `.emw/templates/knowledge-contribution.md` and Prompt 10. Project entries are not automatically promoted. Human review is required before shared publication.
 
 ## Current state
-The category structure and schema are ready. Entries should be added when supported by real evidence; do not populate this knowledge base with invented examples merely to make it look complete.
+Four seed entries show the format, each backed by a cited source (OWASP, Stripe, Git documentation) or, for agent guidance, marked as reasoned guidance. All are `proposed`: a human reviewer should check the sources before changing any to `verified`. Add further entries only when supported by real evidence.
+
+Run `python .emw/tools/emw_check.py` after any change here.

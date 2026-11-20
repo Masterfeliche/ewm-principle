@@ -18,6 +18,7 @@
 - **Implement:** create a working solution without solution-level assistance.
 - **Modify:** safely change an existing solution or add a requirement.
 - **Transfer:** solve a related but unfamiliar problem.
+- **Rebuild:** recreate something you built earlier from memory, without notes or AI, after a gap of days. Used by learning-track gates.
 - **Teach:** explain the concept clearly enough for another developer to use it.
 
 Evidence should identify the task, date, context, assistance used, and observed result. A short assessment can be more useful than a long claim.
@@ -38,6 +39,16 @@ A3/A4 work can still produce learning, but it does not by itself demonstrate M3.
 - M3 → M4: demonstrate transfer to an unfamiliar case, compare alternatives, and explain limitations.
 
 No automatic promotion based on task completion, repetition, elapsed time, or AI-generated tests. No automatic demotion based only on time; old evidence may be marked stale or lower-confidence and reassessed.
+
+## Who verified the evidence
+Each evidence item records `verified_by`:
+- **self:** the developer and agent recorded it. Useful, but the agent is assessing its own coaching.
+- **human:** a lead, peer or reviewer saw the demonstration or reviewed the work.
+
+M3 and M4 require at least one A0–A2 evidence item with `verified_by: human`. An agent may run and record assessments but cannot be the only judge of independent mastery.
+
+## Assessment cadence
+Checks without AI are sampled, not run on every task. `.emw-project/mode-policy.yaml` sets `assessment_every` (default 4): after that many logged tasks touch a skill with no new A0–A2 evidence, `emw_check` warns and the agent offers a short check from `.emw/assessments/` or a Prompt 11 practice session. Keep checks short (10–20 minutes): predict, trace, fix a planted bug, or rebuild from memory. Skills at M4 are exempt.
 
 ## Scope of mastery
 - **S1 — Project Mastery:** concepts actually used and needed to independently maintain or extend this project.

@@ -1,0 +1,319 @@
+<title>Backend Language Field Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky language switcher; overview of four stacks, then each report as a long read with a side contents rail. */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --fg: #16181d;
+  --muted: #5b6270;
+  --line: #dfe2e8;
+  --soft: #eef0f4;
+  --php: #6a6fb0;
+  --dotnet: #5b33cf;
+  --go: #0089ad;
+  --python: #2f6aa3;
+  --ea: #1b7f5c;
+  --accent: var(--php);
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111317; --surface: #181b21; --fg: #e8eaee; --muted: #a0a7b4; --line: #2b2f38; --soft: #20242c;
+    --php: #9fa3e0; --dotnet: #a68cff; --go: #4fcbe8; --python: #7fb2e5; --ea: #5fcfa3; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111317; --surface: #181b21; --fg: #e8eaee; --muted: #a0a7b4; --line: #2b2f38; --soft: #20242c;
+  --php: #9fa3e0; --dotnet: #a68cff; --go: #4fcbe8; --python: #7fb2e5; --ea: #5fcfa3; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font: 16px/1.65 var(--body); }
+body[data-lang="php"] { --accent: var(--php); }
+body[data-lang="dotnet"] { --accent: var(--dotnet); }
+body[data-lang="go"] { --accent: var(--go); }
+body[data-lang="python"] { --accent: var(--python); }
+body[data-lang="east-africa"] { --accent: var(--ea); }
+body[data-lang="overview"] { --accent: var(--fg); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+header.top .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding-block: 10px; }
+.brand { font: 600 15px/1.2 var(--display); letter-spacing: .01em; margin-right: auto; }
+.brand small { display: block; font: 500 11px/1.3 var(--body); color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+nav.tabs { display: flex; gap: 4px; overflow-x: auto; max-width: 100%; }
+nav.tabs a { font: 500 14px/1 var(--display); color: var(--muted); text-decoration: none; padding: 9px 12px; border-radius: 8px; white-space: nowrap; border: 1px solid transparent; }
+nav.tabs a:hover { color: var(--fg); background: var(--soft); }
+nav.tabs a[aria-current="page"] { color: var(--fg); border-color: var(--line); background: var(--bg); box-shadow: inset 0 -2px 0 var(--tab, var(--fg)); }
+nav.tabs a .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; background: var(--tab, var(--fg)); vertical-align: 1px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+main { padding-block: 32px 64px; }
+
+/* Overview */
+.lede { max-width: 68ch; }
+.lede h1 { font: 700 clamp(28px, 4vw, 40px)/1.1 var(--display); margin: 0 0 12px; text-wrap: balance; }
+.lede p { color: var(--muted); margin: 0; }
+.stacks { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 28px; }
+.stack { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px; text-decoration: none; color: inherit; border-top: 4px solid var(--c); }
+.stack:hover { border-color: var(--c); }
+.stack h2 { font: 700 22px/1 var(--display); margin: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.stack h2 span { font: 500 12px/1 var(--mono); color: var(--muted); }
+.stack dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 14px; }
+.stack dt { color: var(--muted); }
+.stack dd { margin: 0; font-variant-numeric: tabular-nums; }
+.stack p { margin: 0; font-size: 14px; color: var(--muted); }
+.stack .go-read { font: 500 13px/1 var(--display); color: var(--c); margin-top: auto; }
+
+section.block { margin-top: 40px; }
+section.block h2 { font: 600 20px/1.2 var(--display); margin: 0 0 4px; }
+section.block > p.sub { color: var(--muted); margin: 0 0 16px; font-size: 14px; }
+.bars { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; min-width: 0; }
+.chart h3 { font: 600 15px/1.2 var(--display); margin: 0 0 14px; }
+.bar { display: grid; grid-template-columns: 64px 1fr 72px; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 14px; }
+.bar .track { height: 12px; background: var(--soft); border-radius: 6px; overflow: hidden; }
+.bar .fill { height: 100%; background: var(--c); border-radius: 6px; }
+.bar .v { text-align: right; font: 500 13px/1 var(--mono); font-variant-numeric: tabular-nums; }
+.chart .note { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 12px/1.3 var(--body); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--soft); }
+tr:last-child td { border-bottom: 0; }
+td { font-variant-numeric: tabular-nums; }
+
+.advice { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.advice div { padding: 14px 16px; border-left: 3px solid var(--c); background: var(--surface); border-radius: 0 10px 10px 0; font-size: 14px; }
+.advice b { display: block; font: 600 15px/1.3 var(--display); margin-bottom: 4px; }
+
+.caveat { margin-top: 32px; font-size: 13px; color: var(--muted); max-width: 80ch; }
+
+/* Report view */
+.report { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 40px; }
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 76px); align-self: start; max-height: calc(100vh - 100px); overflow-y: auto; font-size: 13px; }
+.rail .label { font: 600 11px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.rail a { display: block; color: var(--muted); text-decoration: none; padding: 6px 0 6px 10px; border-left: 2px solid var(--line); line-height: 1.35; }
+.rail a:hover { color: var(--fg); border-left-color: var(--accent); }
+article { min-width: 0; max-width: 74ch; }
+article h1 { font: 700 clamp(28px, 4vw, 38px)/1.12 var(--display); margin: 0 0 18px; text-wrap: balance; }
+article h1::before { content: attr(data-kicker); display: block; font: 600 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+article h2 { font: 600 24px/1.2 var(--display); margin: 44px 0 12px; text-wrap: balance; scroll-margin-top: 90px; padding-top: 16px; border-top: 1px solid var(--line); }
+article h3 { font: 600 18px/1.3 var(--display); margin: 28px 0 8px; scroll-margin-top: 90px; }
+article p, article li { color: var(--fg); }
+article a { color: var(--accent); text-underline-offset: 2px; text-decoration-thickness: 1px; }
+article strong { font-weight: 600; }
+article code { font: 13.5px/1 var(--mono); background: var(--soft); padding: 2px 5px; border-radius: 4px; }
+article pre { background: var(--soft); padding: 14px; border-radius: 10px; overflow-x: auto; }
+article pre code { background: none; padding: 0; line-height: 1.5; }
+article ul, article ol { padding-left: 22px; }
+article li + li { margin-top: 4px; }
+article blockquote { margin: 16px 0; padding: 4px 16px; border-left: 3px solid var(--accent); color: var(--muted); }
+article .tbl { margin: 18px 0; }
+article > p:first-of-type { font-size: 17px; }
+
+.loading { color: var(--muted); }
+@media (max-width: 860px) {
+  .report { grid-template-columns: 1fr; gap: 16px; }
+  .rail { position: static; max-height: none; border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: var(--surface); }
+  .rail details summary { cursor: pointer; font: 600 13px/1 var(--display); }
+}
+@media (min-width: 861px) { .rail details > summary { display: none; } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">Backend Language Field Guide<small>Research as of 20 Nov 2026</small></div>
+    <nav class="tabs" aria-label="Reports">
+      <a href="#overview" data-tab="overview">Overview</a>
+      <a href="#php" data-tab="php" style="--tab: var(--php)"><span class="dot"></span>PHP</a>
+      <a href="#dotnet" data-tab="dotnet" style="--tab: var(--dotnet)"><span class="dot"></span>.NET</a>
+      <a href="#go" data-tab="go" style="--tab: var(--go)"><span class="dot"></span>Go</a>
+      <a href="#python" data-tab="python" style="--tab: var(--python)"><span class="dot"></span>Python</a>
+      <a href="#east-africa" data-tab="east-africa" style="--tab: var(--ea)"><span class="dot"></span>East Africa projects</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="view-overview">
+    <div class="lede">
+      <h1>Four backend stacks, one five-stage path each</h1>
+      <p>Each report covers the language, frameworks, tooling, deployment and scaling, the job market, and a staged path from beginner to deploying scalable systems. Start here to compare them, then open a report.</p>
+    </div>
+
+    <div class="stacks">
+      <a class="stack" href="#php" style="--c: var(--php)">
+        <h2>PHP <span>8.6</span></h2>
+        <dl><dt>Main framework</dt><dd>Laravel 13, Symfony 8</dd><dt>UK perm ads</dt><dd>470</dd><dt>UK median</dt><dd>£50,000</dd></dl>
+        <p>Fastest route to shipping web products and freelance work. Few junior openings.</p>
+        <span class="go-read">Read the PHP report →</span>
+      </a>
+      <a class="stack" href="#dotnet" style="--c: var(--dotnet)">
+        <h2>.NET <span>10 LTS · 11</span></h2>
+        <dl><dt>Main framework</dt><dd>ASP.NET Core, EF Core</dd><dt>UK perm ads</dt><dd>3,356 (C#)</dd><dt>UK median</dt><dd>£62,500</dd></dl>
+        <p>Enterprise, ERP and Azure work. Steeper first months, steady corporate entry.</p>
+        <span class="go-read">Read the .NET report →</span>
+      </a>
+      <a class="stack" href="#go" style="--c: var(--go)">
+        <h2>Go <span>1.27</span></h2>
+        <dl><dt>Main framework</dt><dd>Standard library, chi, Gin</dd><dt>UK perm ads</dt><dd>557</dd><dt>UK median</dt><dd>£80,000</dd></dl>
+        <p>Cloud infrastructure and high-concurrency services. Best learned as a second language.</p>
+        <span class="go-read">Read the Go report →</span>
+      </a>
+      <a class="stack" href="#python" style="--c: var(--python)">
+        <h2>Python <span>3.15</span></h2>
+        <dl><dt>Main framework</dt><dd>Django 6, FastAPI</dd><dt>UK perm ads</dt><dd>6,461</dd><dt>UK median</dt><dd>£71,991</dd></dl>
+        <p>AI, data and APIs. Most openings, and the most crowded entry level.</p>
+        <span class="go-read">Read the Python report →</span>
+      </a>
+    </div>
+
+    <section class="block">
+      <h2>UK permanent job market</h2>
+      <p class="sub">ITJobsWatch, six months to 20 Nov 2026. Bars share one scale per chart.</p>
+      <div class="bars">
+        <div class="chart">
+          <h3>Permanent job ads</h3>
+          <div class="bar" style="--c: var(--python)"><span>Python</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="v">6,461</span></div>
+          <div class="bar" style="--c: var(--dotnet)"><span>C#</span><div class="track"><div class="fill" style="width:51.9%"></div></div><span class="v">3,356</span></div>
+          <div class="bar" style="--c: var(--go)"><span>Go</span><div class="track"><div class="fill" style="width:8.6%"></div></div><span class="v">557</span></div>
+          <div class="bar" style="--c: var(--php)"><span>PHP</span><div class="track"><div class="fill" style="width:7.3%"></div></div><span class="v">470</span></div>
+          <p class="note">Most Python ads are AI, data and cloud roles. Django and FastAPI together appear in under 7% of them.</p>
+        </div>
+        <div class="chart">
+          <h3>Median salary (£)</h3>
+          <div class="bar" style="--c: var(--go)"><span>Go</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="v">80,000</span></div>
+          <div class="bar" style="--c: var(--python)"><span>Python</span><div class="track"><div class="fill" style="width:90%"></div></div><span class="v">71,991</span></div>
+          <div class="bar" style="--c: var(--dotnet)"><span>C#</span><div class="track"><div class="fill" style="width:78.1%"></div></div><span class="v">62,500</span></div>
+          <div class="bar" style="--c: var(--php)"><span>PHP</span><div class="track"><div class="fill" style="width:62.5%"></div></div><span class="v">50,000</span></div>
+          <p class="note">Go's median fell 16% this year, and 75% of Go developers have six or more years' experience.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>Side by side</h2>
+      <p class="sub">Summary of the four reports. Details and sources are in each report.</p>
+      <div class="tbl"><table>
+        <thead><tr><th></th><th>PHP</th><th>.NET (C#)</th><th>Go</th><th>Python</th></tr></thead>
+        <tbody>
+          <tr><td><b>Best for</b></td><td>Web products, freelance, WordPress and e-commerce</td><td>Enterprise, ERP, Azure, business systems</td><td>Cloud infrastructure, concurrent services</td><td>AI, data, automation, APIs</td></tr>
+          <tr><td><b>Typing</b></td><td>Gradual, checked by PHPStan</td><td>Static, compiled</td><td>Static, compiled, small language</td><td>Dynamic, optional hints (mypy, pyright)</td></tr>
+          <tr><td><b>Deployment</b></td><td>Cheapest hosting; FPM or FrankenPHP</td><td>Linux containers, Azure, VPS</td><td>One static binary in a tiny container</td><td>Containers with uv; Gunicorn or Uvicorn</td></tr>
+          <tr><td><b>First months</b></td><td>Gentle; results in minutes</td><td>Steep: types, async, DI</td><td>Quick to learn; idioms take time</td><td>Easiest start</td></tr>
+          <tr><td><b>Junior entry</b></td><td>Few openings</td><td>Steady corporate entry</td><td>Very few; second language</td><td>Most openings, most competition</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="block">
+      <h2>Which to pick</h2>
+      <p class="sub">The Stage 5 skills (SQL, caching, queues, Docker, monitoring, load testing) carry over between all four.</p>
+      <div class="advice">
+        <div style="--c: var(--dotnet)"><b>Business systems or ERP</b>.NET as your main language.</div>
+        <div style="--c: var(--python)"><b>AI and data</b>Python.</div>
+        <div style="--c: var(--php)"><b>Fast web products or freelance</b>PHP.</div>
+        <div style="--c: var(--go)"><b>Scaling and infrastructure</b>Add Go at Stages 4–5, once you know one of the others.</div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>What to build in Tanzania and East Africa</h2>
+      <p class="sub">A separate report for the PHP track: 22 project ideas checked against local evidence, researched 21 Nov 2026.</p>
+      <div class="advice">
+        <div style="--c: var(--ea)"><b>Build it (6)</b>Shop ledger with customer debt, point-of-sale for many shops, michango pledge ledger, farmer-cooperative records, order desk for Instagram and WhatsApp sellers, bus parcel desk.</div>
+        <div style="--c: var(--ea)"><b>Narrow it first (7)</b>School fees, pharmacy stock, VICOBA ledger, small-SACCO records, boda dispatch, rent book, shared-meter bill splitting.</div>
+        <div style="--c: var(--muted)"><b>Learn-only or avoid (9)</b>Bus ticketing is regulated; anything that holds other people's money needs a licence.</div>
+      </div>
+      <p class="sub" style="margin-top:14px"><a href="#east-africa" style="color: var(--ea)">Read the East Africa projects report →</a></p>
+    </section>
+
+    <p class="caveat">Job figures are UK data from ITJobsWatch; check job boards where you plan to work. Stage durations in every report are estimates, because no source measures them. Some survey figures come from secondary summaries, and each report says where.</p>
+  </section>
+
+  <section id="view-report" hidden>
+    <div class="report">
+      <aside class="rail"><details open><summary>Contents</summary><div class="label">In this report</div><div id="toc"></div></details></aside>
+      <article id="article"><p class="loading">Loading report…</p></article>
+    </div>
+  </section>
+</main>
+
+<script id="reports" type="application/json">/*__REPORTS__*/{}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script>
+(function () {
+  var REPORTS = JSON.parse(document.getElementById("reports").textContent);
+  var NAMES = { php: "PHP", dotnet: ".NET", go: "Go", python: "Python", "east-africa": "East Africa projects" };
+  var overview = document.getElementById("view-overview");
+  var reportView = document.getElementById("view-report");
+  var article = document.getElementById("article");
+  var toc = document.getElementById("toc");
+  var cache = {};
+
+  function slug(text, used) {
+    var s = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "section";
+    var base = s, i = 2;
+    while (used[s]) { s = base + "-" + i++; }
+    used[s] = true;
+    return s;
+  }
+
+  function render(lang) {
+    if (cache[lang]) return cache[lang];
+    var html = window.marked ? marked.parse(REPORTS[lang]) : "<pre>" + REPORTS[lang].replace(/[&<]/g, function (c) { return c === "&" ? "&amp;" : "&lt;"; }) + "</pre>";
+    var tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    tmp.querySelectorAll("table").forEach(function (t) {
+      var w = document.createElement("div"); w.className = "tbl";
+      t.parentNode.insertBefore(w, t); w.appendChild(t);
+    });
+    tmp.querySelectorAll("a[href^='http']").forEach(function (a) { a.target = "_blank"; a.rel = "noopener"; });
+    var h1 = tmp.querySelector("h1");
+    if (h1) h1.setAttribute("data-kicker", NAMES[lang] + " report");
+    var used = {}, items = [];
+    tmp.querySelectorAll("h2, h3").forEach(function (h) {
+      h.id = lang + "-" + slug(h.textContent, used);
+      if (h.tagName === "H2") items.push('<a href="#' + lang + '" data-target="' + h.id + '">' + h.textContent.replace(/[&<]/g, "") + "</a>");
+    });
+    cache[lang] = { html: tmp.innerHTML, toc: items.join("") };
+    return cache[lang];
+  }
+
+  function show() {
+    var tab = (location.hash || "#overview").slice(1);
+    if (!(tab in NAMES)) tab = "overview";
+    document.body.setAttribute("data-lang", tab);
+    document.querySelectorAll("nav.tabs a").forEach(function (a) {
+      if (a.dataset.tab === tab) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    if (tab === "overview") {
+      overview.hidden = false; reportView.hidden = true;
+    } else {
+      var r = render(tab);
+      article.innerHTML = r.html; toc.innerHTML = r.toc;
+      overview.hidden = true; reportView.hidden = false;
+    }
+    window.scrollTo(0, 0);
+  }
+
+  toc.addEventListener("click", function (e) {
+    var a = e.target.closest("a[data-target]");
+    if (!a) return;
+    e.preventDefault();
+    var el = document.getElementById(a.dataset.target);
+    if (el) el.scrollIntoView();
+  });
+  window.addEventListener("hashchange", show);
+  show();
+})();
+</script>

@@ -30,6 +30,12 @@ git subtree pull --prefix=.emw emw main --squash
 
 If the `emw` remote already exists, do not add it again. If the target already has an `.emw/` directory, inspect and merge it carefully before using subtree; do not overwrite local framework modifications or project data.
 
+## Claude Code
+Claude Code reads root `CLAUDE.md`. Also copy `.claude/commands/` and `.claude/skills/` for the `/emw-*` slash commands and EMW skills. If the target already has a `.claude/` directory, add these files alongside its own; do not overwrite existing commands or settings.
+
+## Validate the install
+Run `python .emw/tools/emw_check.py` from the repository root (needs `pip install pyyaml`). Run it again after onboarding and after any knowledge or ledger change. To enforce it, add the same command to CI or a pre-commit hook.
+
 ## OpenCode
 OpenCode natively reads root `AGENTS.md`. To get the richer integration, also merge the framework's `opencode.json`, `.opencode/skills/`, and `.opencode/commands/` into the target project. If the target already has `opencode.json`, merge the `instructions` array instead of replacing its settings. See [OpenCode Integration](OPENCODE.md) for commands, skills, and setup.
 

@@ -1,0 +1,12 @@
+# EMW task log: one entry per meaningful task. Validated by: python .emw/tools/emw_check.py
+# Quick-path (trivial) tasks are not logged. Keep summaries short; details belong in the delivery ledger.
+version: 1
+tasks: []
+# Example entry:
+# - id: "T-0001"
+#   date: "YYYY-MM-DD"
+#   summary: "Add tenant filter to invoice export job"
+#   mode: 2                  # 1 Socratic | 2 Plan-first | 3 Guided audit | 4 Bounded delegation
+#   assistance: "A2"         # A0 independent ... A4 AI-authored
+#   skills: ["backend.authorization"]   # ids from skill-ledger.yaml
+#   mode_reason: ""          # required when the mode gives less support than mode-policy.yaml's default

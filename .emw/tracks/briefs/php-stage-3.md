@@ -1,6 +1,6 @@
 # Stage 3 brief: Fee ledger and parent reminders for a small school
 
-**Track:** PHP (Laravel) · **Mode:** 2, plan together and you write the core logic · **Time:** 3–6 months (estimate) · Read `php-house-rules.md` first.
+**Track:** PHP (Laravel) · **Mode:** 2, plan together and you write the core logic · **Time:** 3–6 months (estimate) · Read `house-rules.md` first.
 
 ## The problem
 Small private schools bill fees in instalments. Parents pay through a bank or mobile money against a reference number, and the bursar ticks them off in a book or spreadsheet. Parents often do not know their balance, reminders are phone calls, and disputes are settled by searching for old receipts. Larger schools buy a full school system; small low-fee schools do not.

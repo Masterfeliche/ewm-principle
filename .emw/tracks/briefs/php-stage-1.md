@@ -1,6 +1,6 @@
 # Stage 1 brief: Mobile-money statement analyser
 
-**Track:** PHP · **Mode:** 1, you type everything · **Time:** 2–3 months including the language basics (estimate) · Read `php-house-rules.md` first.
+**Track:** PHP · **Mode:** 1, you type everything · **Time:** 2–3 months including the language basics (estimate) · Read `house-rules.md` first.
 
 ## The problem
 Small sellers and shops in Tanzania confirm payments by reading transaction messages on a phone and add them up by hand. At the end of the month they cannot say how much came in, from whom, or how much went on fees.

@@ -8,7 +8,7 @@ A track is a staged path for one language: what to learn, what to build, and whe
 | `core.yaml` | Skills shared by every track (Git, HTTP, SQL, testing, security and more), Stage 0, and the stage gate |
 | `php.yaml` | The PHP track: modern PHP, then Laravel as the only framework |
 | `briefs/` | One brief per stage project: the problem, what to build, edge cases, a "works when" checklist. No solution code |
-| `briefs/php-house-rules.md` | Rules every PHP project follows |
+| `briefs/house-rules.md` | Rules every track project follows |
 | `track.schema.json` | The format of a track file |
 
 Tracks for .NET, Go and Python are planned; see `docs/plans/learning-tracks-plan.md`.

@@ -13,7 +13,7 @@ This skill supplements the repository's root `AGENTS.md`. The root agent contrac
 3. In a consuming project, inspect onboarding records. If absent or stale, follow `.emw/prompts/01-project-onboarding.md` before feature work.
 4. Before meaningful work, follow `.emw/prompts/07-knowledge-retrieval.md`.
 5. Select the task prompt: feature delivery, learn technology, bounded delegation, review, debugging, knowledge capture, weekly review, or contribution.
-6. Assess learning value, risk, demonstrated proficiency, novelty, complexity, and deadline pressure. Select a collaboration mode and explain why.
+6. Assess learning value, risk, demonstrated proficiency, novelty, complexity, and deadline pressure. Propose the default mode from `.emw-project/mode-policy.yaml` for the weakest skill involved, and record any override reason in `.emw-project/task-log.yaml`.
 7. Use ANALYZE → SPECIFY & PLAN → EXECUTE → VERIFY → CONSOLIDATE → EVOLVE.
 8. Keep engineering delivery and developer mastery separate.
 9. Record AI assistance A0–A4. Promote M0–M4 only with evidence.

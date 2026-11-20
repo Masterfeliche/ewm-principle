@@ -16,6 +16,9 @@ What it checks:
   Project records (only when .emw-project/ or .project-knowledge/ exist)
     - onboarding-status.yaml status and referenced files
     - skill-ledger.yaml levels, and M3/M4 claims backed by evidence
+    - task-log.yaml fields, skill ids, and the team mode policy
+      (mode-policy.yaml, or built-in defaults): less support than the
+      default needs mode_reason
     - .project-knowledge/index.yaml and its entries, same rules as shared knowledge
 
 Exit code: 0 clean, 1 errors (or warnings with --strict), 2 could not run.
@@ -268,8 +271,14 @@ def check_project(root: Path, entry_schema: dict, index_schema: dict, rep: Repor
                     rep.error(where, f"{key} points to missing file {target}")
 
     ledger_path = proj / "skill-ledger.yaml"
+    skills: dict[str, str] | None = None
     if ledger_path.exists():
-        check_skill_ledger(ledger_path, rep, root)
+        skills = check_skill_ledger(ledger_path, rep, root)
+
+    policy = load_policy(proj / "mode-policy.yaml", rep, root)
+    log_path = proj / "task-log.yaml"
+    if log_path.exists():
+        check_task_log(log_path, skills, policy, rep, root)
 
     if pkb.exists():
         check_knowledge(pkb, project_schema(entry_schema), project_schema(index_schema),
@@ -277,12 +286,14 @@ def check_project(root: Path, entry_schema: dict, index_schema: dict, rep: Repor
     return True
 
 
-def check_skill_ledger(path: Path, rep: Report, root: Path) -> None:
+def check_skill_ledger(path: Path, rep: Report, root: Path) -> dict[str, str] | None:
+    """Validate the ledger; return {skill id: current_level}."""
     data = load_yaml(path, rep, root)
     if not isinstance(data, dict):
-        return
+        return None
     where = rel(path, root)
     seen: set[str] = set()
+    levels: dict[str, str] = {}
     for i, skill in enumerate(data.get("skills") or []):
         if not isinstance(skill, dict):
             rep.error(where, f"skills[{i}] is not a mapping")
@@ -300,6 +311,7 @@ def check_skill_ledger(path: Path, rep: Report, root: Path) -> None:
         if skill.get("confidence") not in ("low", "medium", "high"):
             rep.error(at, f"confidence {skill.get('confidence')!r} is not low, medium or high")
         level = skill.get("current_level")
+        levels[sid] = level
         evidence = skill.get("evidence") or []
         if level in LEVELS and level != "M0" and not evidence:
             rep.error(at, f"current_level {level} has no evidence; use M0 until evidence exists")
@@ -315,6 +327,109 @@ def check_skill_ledger(path: Path, rep: Report, root: Path) -> None:
         if level in LEVELS and skill.get("target_level") in LEVELS:
             if LEVELS.index(level) > LEVELS.index(skill["target_level"]):
                 rep.warn(at, "current level is above target; raise the target or check the evidence")
+    return levels
+
+
+# --- mode policy and task log ---------------------------------------------------
+
+DEFAULT_POLICY = {
+    "default_mode_by_level": {"M0": 1, "M1": 1, "M2": 2, "M3": "any", "M4": "any"},
+    "mode4_min_level": "M3",
+}
+
+
+def load_policy(path: Path, rep: Report, root: Path) -> dict:
+    """Return the team mode policy, or the built-in defaults when absent or invalid."""
+    if not path.exists():
+        return {**DEFAULT_POLICY, "_builtin": True}
+    data = load_yaml(path, rep, root)
+    where = rel(path, root)
+    if not isinstance(data, dict):
+        rep.error(where, "mode policy is not a mapping; using built-in defaults")
+        return {**DEFAULT_POLICY, "_builtin": True}
+    policy = {**DEFAULT_POLICY, **data}
+    table = policy.get("default_mode_by_level")
+    if not isinstance(table, dict):
+        rep.error(where, "default_mode_by_level must map M0-M4 to 1-4 or 'any'")
+        policy["default_mode_by_level"] = DEFAULT_POLICY["default_mode_by_level"]
+    else:
+        for lvl in LEVELS:
+            if table.get(lvl) not in (1, 2, 3, 4, "any"):
+                rep.error(where, f"default_mode_by_level.{lvl} is {table.get(lvl)!r}; use 1-4 or 'any'")
+    if policy.get("mode4_min_level") not in LEVELS:
+        rep.error(where, f"mode4_min_level {policy.get('mode4_min_level')!r} is not one of {LEVELS}")
+        policy["mode4_min_level"] = "M3"
+    return policy
+
+
+def check_task_log(path: Path, skills: dict[str, str] | None, policy: dict,
+                   rep: Report, root: Path) -> None:
+    data = load_yaml(path, rep, root)
+    where = rel(path, root)
+    if data is None:
+        return  # load_yaml already reported the problem
+    if not isinstance(data, dict) or not isinstance(data.get("tasks", []), list):
+        rep.error(where, "expected a mapping with a 'tasks' list")
+        return
+    tasks = data.get("tasks") or []
+    if tasks and skills is None:
+        rep.warn(where, "no skill-ledger.yaml; skill ids and mode policy cannot be checked")
+    if tasks and policy.get("_builtin"):
+        rep.warn(where, "no .emw-project/mode-policy.yaml; using built-in mode defaults")
+    table = policy["default_mode_by_level"]
+    min4 = LEVELS.index(policy["mode4_min_level"])
+    seen: set[str] = set()
+
+    for i, task in enumerate(tasks):
+        if not isinstance(task, dict):
+            rep.error(where, f"tasks[{i}] is not a mapping")
+            continue
+        tid = task.get("id") or f"tasks[{i}]"
+        at = f"{where} {tid}"
+        if not task.get("id"):
+            rep.error(at, "missing id")
+        elif tid in seen:
+            rep.error(at, "duplicate task id")
+        seen.add(tid)
+        if not _is_date(task.get("date")):
+            rep.error(at, f"date {task.get('date')!r} is not YYYY-MM-DD")
+        if not task.get("summary"):
+            rep.error(at, "missing summary")
+        mode = task.get("mode")
+        if mode not in (1, 2, 3, 4):
+            rep.error(at, f"mode {mode!r} is not 1, 2, 3 or 4")
+            mode = None
+        assistance = task.get("assistance")
+        if assistance not in ASSISTANCE:
+            rep.error(at, f"assistance {assistance!r} is not one of {ASSISTANCE}")
+        if mode == 1 and assistance == "A4":
+            rep.warn(at, "Mode 1 (human implements) recorded as A4 (AI-authored); check which is true")
+        task_skills = task.get("skills") or []
+        if not isinstance(task_skills, list):
+            rep.error(at, "skills must be a list of skill ids")
+            continue
+        if not task_skills:
+            rep.warn(at, "no skills listed; the mode policy cannot be applied")
+        if skills is None:
+            continue
+
+        known = []
+        for sid in task_skills:
+            if sid not in skills:
+                rep.error(at, f"skill '{sid}' is not in skill-ledger.yaml")
+            elif skills[sid] in LEVELS:
+                known.append((sid, skills[sid]))
+        if not known or mode is None:
+            continue
+        weakest_id, weakest = min(known, key=lambda kv: LEVELS.index(kv[1]))
+        reason = str(task.get("mode_reason") or "").strip()
+        default = table.get(weakest, "any")
+        if default != "any" and mode > default and not reason:
+            rep.error(at, f"mode {mode} gives less support than the policy default {default} for "
+                          f"{weakest_id} ({weakest}); add mode_reason or use mode {default}")
+        elif mode == 4 and LEVELS.index(weakest) < min4 and not reason:
+            rep.error(at, f"Mode 4 on {weakest_id} ({weakest}) is below mode4_min_level "
+                          f"{policy['mode4_min_level']}; add mode_reason")
 
 
 # --- main -------------------------------------------------------------------------

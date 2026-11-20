@@ -13,6 +13,15 @@ Score or discuss these dimensions qualitatively:
 
 Do not create false precision with numeric scores. A simple low / medium / high assessment is usually enough.
 
+## Team mode policy
+In a consuming project, `.emw-project/mode-policy.yaml` sets the default mode from the weakest skill level a task touches (built-in default: M0–M1 → Mode 1, M2 → Mode 2, M3–M4 → any mode).
+- The agent proposes the policy default; it does not pick a mode freely.
+- The human may choose a mode that gives less practice (a higher number), but the task log must record a `mode_reason`, for example a production outage. Mode 4 below `mode4_min_level` always needs a reason.
+- Choosing more support than the default (a lower number) never needs a reason.
+- Each meaningful task gets one entry in `.emw-project/task-log.yaml`; `emw_check` enforces the policy.
+
+Why: in randomized trials, AI help without limits harmed later performance, while the same AI with built-in limits did not (Bastani et al., PNAS 2025). Leaving the choice open under deadline pressure tends to end in delegation.
+
 ## Mode 1 — Human-Led / Socratic
 Use when learning value, novelty, or risk is high, or proficiency is low.
 - Human states understanding, proposes design, writes core logic.

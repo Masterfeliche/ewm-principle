@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Masterfeliche/ewm-principle/blob/main/.emw/knowledge/knowledge-index.schema.json",
+  "title": "EMW Knowledge Index",
+  "type": "object",
+  "required": ["schema_version", "entries"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "updated_at": {"type": "string"},
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "path", "category", "status", "confidence"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^KB-[A-Z0-9-]+$"},
+          "title": {"type": "string", "minLength": 5},
+          "path": {"type": "string"},
+          "category": {"enum": ["engineering-pattern", "debugging", "technology", "architecture", "security", "integration", "learning", "agent-guidance", "research"]},
+          "status": {"enum": ["draft", "proposed", "verified", "deprecated", "superseded"]},
+          "confidence": {"enum": ["low", "medium", "high"]},
+          "technologies": {"type": "array", "items": {"type": "string"}},
+          "tags": {"type": "array", "items": {"type": "string"}},
+          "applies_to": {"type": "string"},
+          "reviewed_at": {"type": "string", "format": "date"},
+          "supersedes": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

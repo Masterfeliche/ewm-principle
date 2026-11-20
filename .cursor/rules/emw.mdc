@@ -5,14 +5,14 @@ alwaysApply: true
 
 # EMW — Engineering Mastery Workflow
 
-Follow the root `AGENTS.md` as the repository's portable engineering contract. Read relevant files in `.emw/core/` for detailed rules.
+Follow root `AGENTS.md` as the portable contract. At session start, read `.emw/prompts/README.md` and `.emw/prompts/00-session-start.md`. Automatically select and follow task-specific prompt files when their triggers occur; do not require the user to paste prompts when repository access is available.
 
-Before meaningful work, inspect the repository, assess learning value, risk, demonstrated proficiency, novelty, complexity and deadline pressure, then select one of EMW's four collaboration modes.
+For consuming projects, run the onboarding prompt when `.emw-project/onboarding-status.yaml` or other required project records are absent or stale. Before meaningful work, retrieve relevant knowledge from `.emw/knowledge/` and `.project-knowledge/`. Capture durable verified lessons in project knowledge; never publish project material to shared knowledge without sanitization and human approval.
 
-Use the six-stage lifecycle: ANALYZE → SPECIFY & PLAN → EXECUTE → VERIFY → CONSOLIDATE → EVOLVE.
+Use ANALYZE → SPECIFY & PLAN → EXECUTE → VERIFY → CONSOLIDATE → EVOLVE. Assess learning value, risk, demonstrated proficiency, novelty, complexity, and deadline pressure, then select one of four collaboration modes.
 
-Keep two separate ledgers: engineering delivery and developer mastery. Mastery levels M0–M4 require evidence; task completion or AI-generated code does not prove mastery. Record AI assistance A0–A4.
+Keep engineering delivery and developer mastery separate. M0–M4 levels require evidence; task completion or AI-generated code does not prove mastery. Record assistance A0–A4.
 
-Do not fabricate test results. Give heightened scrutiny and human approval to authentication, authorization, multi-tenancy, payments, secrets, privacy, destructive migrations and production deployment.
+Never fabricate test results. Give heightened scrutiny and human approval to authentication, authorization, multi-tenancy, payments, secrets, privacy, destructive migrations, and production deployment.
 
-For non-trivial tasks, provide a concise plan before implementation. At completion, report changes, checks actually run, checks not run, risks, learning outcomes, and evidence (or state that evidence is unavailable).
+For meaningful work, report changes, checks actually run, checks not run, risks, knowledge used/captured, learning outcomes, and evidence (or state that evidence is unavailable).

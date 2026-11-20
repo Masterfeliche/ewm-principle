@@ -1,0 +1,7 @@
+---
+description: Investigate a bug using EMW's evidence-led debugging process
+---
+
+Use EMW Prompt 06 to investigate: $ARGUMENTS
+
+Retrieve relevant project and shared debugging knowledge. Reproduce the issue, separate observations from hypotheses, isolate root cause before changing code, add a regression check, and verify the fix. Capture a durable lesson only when supported by evidence.

@@ -25,6 +25,11 @@ skills:
     current_level: "M0"
     confidence: "low"
     evidence: []
+    # Evidence item shape (emw_check requires A0-A2 evidence for M3/M4):
+    # - date: "YYYY-MM-DD"
+    #   type: "implement"      # explain | predict | trace | debug | implement | modify | transfer | teach
+    #   assistance: "A1"
+    #   task: "What was done and observed"
     last_assessed: null
     next_assessment: "Explain and implement an object-level access check independently"
     notes: "Example node; replace or remove during project onboarding."

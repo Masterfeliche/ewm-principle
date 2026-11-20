@@ -67,6 +67,9 @@ Never claim a test, build, migration, scan, deployment, or external action succe
 
 Apply heightened scrutiny and human approval to authentication, authorization, multi-tenancy, payments, secrets, privacy, cryptography, destructive migrations/data deletion, and production deployment. Consult `.emw/core/verification-policy.md`.
 
+## Record validation
+After creating or changing knowledge entries, `index.yaml`, or `.emw-project/` ledgers, run `python .emw/tools/emw_check.py` and fix every reported error. Report the result; if it could not be run, say so.
+
 ## Completion report
 For meaningful work, report: engineering outcome and files changed; important assumptions and decisions; checks run and results; checks not run and unresolved risks; knowledge retrieved and captured; assistance level; evidence-backed mastery changes or absence of evidence; and next step.
 

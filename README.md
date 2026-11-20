@@ -53,6 +53,9 @@ A completed feature is delivery evidence, not automatic mastery evidence.
 - **M3 — Independent Application:** implements, explains, tests, and debugs without solution-level assistance.
 - **M4 — Transfer & Mastery:** handles unfamiliar variations, compares alternatives, explains limitations, and teaches the concept.
 
+## Validating records
+`python .emw/tools/emw_check.py` checks knowledge entries against the JSON schemas, keeps `index.yaml` in step with the entry files, and, in a consuming project, checks the onboarding status and skill ledger (for example, M3 or M4 needs evidence produced with assistance A0–A2). It needs Python 3.9+ and PyYAML, exits non-zero on errors, and `--strict` also fails on warnings.
+
 ## Persistent knowledge
 EMW keeps two distinct knowledge stores:
 - Shared, reviewed knowledge in `.emw/knowledge/`.
@@ -62,13 +65,13 @@ The project knowledge base is not automatically published upstream. Shared contr
 
 ## Agent integrations
 - Codex and other AGENTS.md agents: root `AGENTS.md`.
-- Claude Code: `CLAUDE.md` adapter.
+- Claude Code: `CLAUDE.md` adapter, slash commands in `.claude/commands/`, skills in `.claude/skills/`.
 - Gemini CLI: `GEMINI.md` adapter.
 - Cursor: `.cursor/rules/emw.mdc`.
 - GitHub Copilot: `.github/copilot-instructions.md`.
 - OpenCode: native `AGENTS.md` discovery, `opencode.json`, `.opencode/skills/`, and `.opencode/commands/`.
 
-OpenCode users can invoke `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, and `/emw-capture`. See [OpenCode setup](docs/OPENCODE.md).
+Claude Code and OpenCode users can invoke `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, and `/emw-capture`. See [OpenCode setup](docs/OPENCODE.md).
 
 ## Repository structure
 
@@ -80,6 +83,9 @@ OpenCode users can invoke `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-de
 ├── .opencode/
 │   ├── skills/
 │   └── commands/
+├── .claude/
+│   ├── commands/
+│   └── skills/
 ├── .cursor/rules/emw.mdc
 ├── .github/copilot-instructions.md
 ├── .emw/
@@ -87,6 +93,7 @@ OpenCode users can invoke `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-de
 │   ├── prompts/              # Standalone, task-triggered prompts
 │   ├── knowledge/            # Shared curated knowledge and index
 │   ├── templates/            # Reusable record templates
+│   ├── tools/                # emw_check.py validator
 │   ├── assessments/
 │   └── examples/
 └── docs/

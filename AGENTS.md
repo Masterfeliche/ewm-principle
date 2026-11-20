@@ -2,6 +2,16 @@
 
 This is the portable operating contract for any coding agent working in an EMW-enabled repository. Read it before meaningful engineering work. Detailed, agent-independent rules live in `.emw/core/`; reusable task prompts live in `.emw/prompts/`.
 
+## Quick path for trivial work
+A change is trivial when all of these hold: about 30 changed lines or fewer, no high-risk area (auth, tenancy, payments, secrets, privacy, crypto, destructive data changes, deployment), and every skill it touches is at M3 or above in `.emw-project/skill-ledger.yaml` (or it touches no tracked skill).
+
+For trivial work: skip knowledge retrieval, L/R/P/N/C/D ratings, mode selection and ledger updates. Make the change and report only:
+- **Ran:** each command and its observed result.
+- **Not run:** checks you skipped, and why.
+- **Risks:** anything the human should look at.
+
+If unsure whether a change is trivial, it is not: use the full workflow below.
+
 ## Mission
 Deliver reliable, maintainable software while deliberately developing the human developer's independent engineering ability. Optimize for delivery, competence, and engineering judgment—not code volume or AI dependence.
 

@@ -25,14 +25,14 @@ For a consuming software project, check whether these project-owned records exis
 
 If they are missing, incomplete, or materially stale, read and execute `.emw/prompts/01-project-onboarding.md` before feature implementation. Read-only reconnaissance may happen first. Do not repeat completed onboarding without a refresh trigger.
 
-Before meaningful work, read and follow `.emw/prompts/07-knowledge-retrieval.md`. For meaningful features use Prompt 02; for a new/weak technology use Prompt 03; for narrow Mode 4 delegation use Prompt 04; for reviews use Prompt 05; for debugging use Prompt 06; after a durable verified discovery use Prompt 08; for weekly review use Prompt 09; for upstream contribution use Prompt 10; for hands-on practice or an overdue check without AI use Prompt 11.
+Before meaningful work, read and follow `.emw/prompts/07-knowledge-retrieval.md`. For meaningful features use Prompt 02; for a new/weak technology use Prompt 03; for narrow Mode 4 delegation use Prompt 04; for reviews use Prompt 05; for debugging use Prompt 06; after a durable verified discovery use Prompt 08; for weekly review use Prompt 09; for upstream contribution use Prompt 10; for hands-on practice or an overdue check without AI use Prompt 11; when `.emw-project/track.yaml` exists or the developer asks about a learning track use Prompt 12.
 
 These are repository prompt files, not external tool functions. Automatic selection means reading and applying the relevant file whenever the agent can access repository files. If file access or automatic instruction loading is unavailable, explain the limitation and ask the user to provide/paste the relevant prompt.
 
 ## OpenCode integration
 OpenCode natively discovers root `AGENTS.md`. This repository also includes `opencode.json`, project skills under `.opencode/skills/`, and slash commands under `.opencode/commands/`.
 - Read `.opencode/skills/emw-workflow/SKILL.md` and load other EMW skills as relevant.
-- Use `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, and `/emw-practice` when applicable.
+- Use `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, `/emw-practice`, and `/emw-track` when applicable.
 - Skills are discoverable by OpenCode; invoke explicitly with `@emw-workflow`, `@emw-knowledge`, or `@emw-mastery` when needed.
 - Keep shared EMW files canonical. Do not duplicate or fork policy in OpenCode-specific commands.
 

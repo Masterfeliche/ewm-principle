@@ -19,6 +19,7 @@ An agent following root `AGENTS.md` must read this routing guide at session star
 | Knowledge capture | A durable lesson or non-obvious discovery is verified | [08-knowledge-capture.md](08-knowledge-capture.md) |
 | Weekly review | Weekly review requested or scheduled | [09-weekly-mastery-review.md](09-weekly-mastery-review.md) |
 | Practice | Developer wants to learn by writing code themselves, or a skill is overdue for a check without AI | [11-practice.md](11-practice.md) |
+| Learning track | Developer is on a learning track, wants to start one, or asks what is next | [12-learning-track.md](12-learning-track.md) |
 | Shared contribution | Project knowledge may be generalized for EMW upstream | [10-shared-knowledge-contribution.md](10-shared-knowledge-contribution.md) |
 
 ## Automatic onboarding rules
@@ -52,5 +53,6 @@ When using OpenCode (`.opencode/commands/`) or Claude Code (`.claude/commands/`)
 - `/emw-weekly`
 - `/emw-capture`
 - `/emw-practice`
+- `/emw-track`
 
 Reusable skills are available under `.opencode/skills/`: `emw-workflow`, `emw-knowledge`, and `emw-mastery`. See [OpenCode Integration](../../docs/OPENCODE.md). The prompt files in this directory remain the canonical task instructions; OpenCode commands and skills are adapters that route to them.

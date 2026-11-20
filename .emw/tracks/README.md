@@ -18,16 +18,54 @@ Tracks for .NET, Go and Python are planned; see `docs/plans/learning-tracks-plan
 - **`stages`**: each has an outcome, a default collaboration mode, the skills it requires with a target level (M1–M4), one core project with a brief, and optional electives.
 - **`extends: core`**: the track also uses the shared core skills, so a second language reuses what you have already proved.
 
-## Starting a track by hand
-A command to do this (`/emw-track`) is planned. Until then:
-1. In your learning repository, run EMW onboarding (Prompt 01) so `.emw-project/` exists.
-2. Copy the skills for your current stage from the track file into `.emw-project/skill-ledger.yaml`, each with `current_level: "M0"`, the stage's `target_level`, and `evidence: []`.
-3. Open the stage brief and start. In Stages 0–2 use `/emw-practice`: you type, the agent hints.
-4. Log tasks in `task-log.yaml` and evidence in `skill-ledger.yaml`. Run `python .emw/tools/emw_check.py`.
-5. Move on when the gate in `core.yaml` is met.
+## Following a track
+In your learning repository (with `.emw/` installed), use `/emw-track` in Claude Code or OpenCode, or run the tool directly:
+
+```bash
+python .emw/tools/emw_track.py start php
+```
+
+```bash
+python .emw/tools/emw_track.py status
+```
+
+```bash
+python .emw/tools/emw_track.py ship --url https://github.com/you/your-project
+```
+
+```bash
+python .emw/tools/emw_track.py next
+```
+
+- `start` creates `.emw-project/track.yaml` and adds the first stage's skills to your skill ledger at M0. A PHP learner starts at core Stage 0.
+- `status` shows your stage, each skill against its target, the project brief and the gate checklist.
+- `next` opens the next stage only when the gate is met; otherwise it lists what is missing.
+
+Day to day: read the stage brief, build the project (in Stages 0–2 use `/emw-practice`: you type, the agent hints), and record evidence on each skill in `skill-ledger.yaml`:
+
+```yaml
+- date: "2026-12-03"
+  type: "rebuild"        # implement | debug | modify | transfer | rebuild | explain ...
+  assistance: "A0"       # A0 none ... A4 the AI wrote it
+  verified_by: "self"    # "human" only when a mentor or peer saw it
+  task: "Rebuilt the router from memory with tests"
+```
+
+The skill ledger is rewritten by the tool, so comments you add to it are not kept.
 
 ## The stage gate
-A stage is passed when the project is shipped, every listed skill is at its target, one piece was rebuilt from memory a week later, the stretch change was done with little or no AI help, and at least one check was seen by a human.
+`emw_track.py next` checks six things:
+
+| Item | Met by |
+|---|---|
+| shipped | A project URL recorded with `ship --url` |
+| levels | Every stage skill at its target level |
+| human | One evidence item with low AI help (A0–A2) and `verified_by: human`, dated in this stage |
+| rebuild | One `type: rebuild` item (A0–A2) dated at least 7 days after the stage began |
+| transfer | One `type: transfer` item (A0–A1): the stretch change in the brief |
+| check | `emw_check` passes |
+
+Evidence from an earlier stage does not count toward a later gate. Reviews at 2 days, 1 week and 1 month are planned but not built.
 
 ## Checking track files
 `python .emw/tools/emw_check.py` validates every track: the format, that each stage's skills exist, that targets never go down between stages, and that every brief file is present.

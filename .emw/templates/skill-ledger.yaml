@@ -27,7 +27,7 @@ skills:
     evidence: []
     # Evidence item shape (emw_check requires A0-A2 evidence for M3/M4):
     # - date: "YYYY-MM-DD"
-    #   type: "implement"      # explain | predict | trace | debug | implement | modify | transfer | teach
+    #   type: "implement"      # explain | predict | trace | debug | implement | modify | transfer | teach | rebuild
     #   assistance: "A1"
     #   verified_by: "self"    # human = a lead or peer saw it; M3/M4 need one A0-A2 item verified by a human
     #   task: "What was done and observed"

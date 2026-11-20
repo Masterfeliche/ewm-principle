@@ -18,6 +18,7 @@
 - **Implement:** create a working solution without solution-level assistance.
 - **Modify:** safely change an existing solution or add a requirement.
 - **Transfer:** solve a related but unfamiliar problem.
+- **Rebuild:** recreate something you built earlier from memory, without notes or AI, after a gap of days. Used by learning-track gates.
 - **Teach:** explain the concept clearly enough for another developer to use it.
 
 Evidence should identify the task, date, context, assistance used, and observed result. A short assessment can be more useful than a long claim.

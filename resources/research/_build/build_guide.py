@@ -10,6 +10,7 @@ files = {
     "dotnet": "Dotnet ecosystem mastery path.md",
     "go": "Go ecosystem mastery path.md",
     "python": "Python ecosystem mastery path.md",
+    "east-africa": "East Africa software problems for PHP projects.md",
 }
 data = {k: (reports_dir / v).read_text(encoding="utf-8") for k, v in files.items()}
 payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")

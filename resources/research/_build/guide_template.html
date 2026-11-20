@@ -16,6 +16,7 @@
   --dotnet: #5b33cf;
   --go: #0089ad;
   --python: #2f6aa3;
+  --ea: #1b7f5c;
   --accent: var(--php);
   --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
   --body: "Inter", "Segoe UI", system-ui, sans-serif;
@@ -24,18 +25,19 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #111317; --surface: #181b21; --fg: #e8eaee; --muted: #a0a7b4; --line: #2b2f38; --soft: #20242c;
-    --php: #9fa3e0; --dotnet: #a68cff; --go: #4fcbe8; --python: #7fb2e5; color-scheme: dark;
+    --php: #9fa3e0; --dotnet: #a68cff; --go: #4fcbe8; --python: #7fb2e5; --ea: #5fcfa3; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #111317; --surface: #181b21; --fg: #e8eaee; --muted: #a0a7b4; --line: #2b2f38; --soft: #20242c;
-  --php: #9fa3e0; --dotnet: #a68cff; --go: #4fcbe8; --python: #7fb2e5; color-scheme: dark;
+  --php: #9fa3e0; --dotnet: #a68cff; --go: #4fcbe8; --python: #7fb2e5; --ea: #5fcfa3; color-scheme: dark;
 }
 body { background: var(--bg); color: var(--fg); font: 16px/1.65 var(--body); }
 body[data-lang="php"] { --accent: var(--php); }
 body[data-lang="dotnet"] { --accent: var(--dotnet); }
 body[data-lang="go"] { --accent: var(--go); }
 body[data-lang="python"] { --accent: var(--python); }
+body[data-lang="east-africa"] { --accent: var(--ea); }
 body[data-lang="overview"] { --accent: var(--fg); }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
 
@@ -136,6 +138,7 @@ article > p:first-of-type { font-size: 17px; }
       <a href="#dotnet" data-tab="dotnet" style="--tab: var(--dotnet)"><span class="dot"></span>.NET</a>
       <a href="#go" data-tab="go" style="--tab: var(--go)"><span class="dot"></span>Go</a>
       <a href="#python" data-tab="python" style="--tab: var(--python)"><span class="dot"></span>Python</a>
+      <a href="#east-africa" data-tab="east-africa" style="--tab: var(--ea)"><span class="dot"></span>East Africa projects</a>
     </nav>
   </div>
 </header>
@@ -223,6 +226,17 @@ article > p:first-of-type { font-size: 17px; }
       </div>
     </section>
 
+    <section class="block">
+      <h2>What to build in Tanzania and East Africa</h2>
+      <p class="sub">A separate report for the PHP track: 22 project ideas checked against local evidence, researched 21 Nov 2026.</p>
+      <div class="advice">
+        <div style="--c: var(--ea)"><b>Build it (6)</b>Shop ledger with customer debt, point-of-sale for many shops, michango pledge ledger, farmer-cooperative records, order desk for Instagram and WhatsApp sellers, bus parcel desk.</div>
+        <div style="--c: var(--ea)"><b>Narrow it first (7)</b>School fees, pharmacy stock, VICOBA ledger, small-SACCO records, boda dispatch, rent book, shared-meter bill splitting.</div>
+        <div style="--c: var(--muted)"><b>Learn-only or avoid (9)</b>Bus ticketing is regulated; anything that holds other people's money needs a licence.</div>
+      </div>
+      <p class="sub" style="margin-top:14px"><a href="#east-africa" style="color: var(--ea)">Read the East Africa projects report →</a></p>
+    </section>
+
     <p class="caveat">Job figures are UK data from ITJobsWatch; check job boards where you plan to work. Stage durations in every report are estimates, because no source measures them. Some survey figures come from secondary summaries, and each report says where.</p>
   </section>
 
@@ -239,7 +253,7 @@ article > p:first-of-type { font-size: 17px; }
 <script>
 (function () {
   var REPORTS = JSON.parse(document.getElementById("reports").textContent);
-  var NAMES = { php: "PHP", dotnet: ".NET", go: "Go", python: "Python" };
+  var NAMES = { php: "PHP", dotnet: ".NET", go: "Go", python: "Python", "east-africa": "East Africa projects" };
   var overview = document.getElementById("view-overview");
   var reportView = document.getElementById("view-report");
   var article = document.getElementById("article");

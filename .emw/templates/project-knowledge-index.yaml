@@ -1,0 +1,14 @@
+schema_version: 1
+project: ""
+updated_at: ""
+entries: []
+# Example record:
+# - id: "PKB-0001"
+#   title: "Invoice tenant-scoping rule"
+#   path: "security/invoice-tenant-scoping.md"
+#   category: "security"
+#   status: "verified"
+#   confidence: "high"
+#   technologies: ["Backend framework", "Database"]
+#   tags: ["authorization", "multi-tenancy"]
+#   reviewed_at: "YYYY-MM-DD"

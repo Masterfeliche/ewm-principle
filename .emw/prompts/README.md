@@ -1,12 +1,13 @@
 # EMW Prompt Library
 
-These prompts are first-class framework files. They are designed to be both manually copyable and automatically selected by a coding agent.
+These prompts are first-class framework files. They are designed to be manually copyable and automatically selected by a coding agent.
 
 ## Automatic selection
-An agent following the root `AGENTS.md` must read this routing guide at session start and load the relevant prompt file when its trigger occurs. The user should not need to paste a prompt for routine EMW behavior.
+An agent following root `AGENTS.md` must read this routing guide at session start and load the relevant prompt file when its trigger occurs. The user should not need to paste prompts for routine EMW behavior when the agent has repository access.
 
 | Prompt | Automatic trigger | File |
 |---|---|---|
+| Universal bootstrap | Agent does not load repository instructions; manual fallback | [00-bootstrap-any-agent.md](00-bootstrap-any-agent.md) |
 | Session start | Every new agent session or context reset | [00-session-start.md](00-session-start.md) |
 | Project onboarding | Project is new, or onboarding state/profile is missing or materially outdated | [01-project-onboarding.md](01-project-onboarding.md) |
 | Feature delivery | A meaningful feature or change is requested | [02-feature-delivery.md](02-feature-delivery.md) |
@@ -20,19 +21,19 @@ An agent following the root `AGENTS.md` must read this routing guide at session 
 | Shared contribution | Project knowledge may be generalized for EMW upstream | [10-shared-knowledge-contribution.md](10-shared-knowledge-contribution.md) |
 
 ## Automatic onboarding rules
-Treat a project as **not onboarded** when its project-owned onboarding status is absent, incomplete, or materially stale. The expected project-owned locations are:
+Treat a consuming project as **not onboarded** when project-owned onboarding state is absent, incomplete, or materially stale. Expected locations:
 - `.emw-project/onboarding-status.yaml`
 - `.emw-project/project-profile.md`
 - `.emw-project/delivery-ledger.md`
 - `.emw-project/skill-ledger.yaml`
-- `.project-knowledge/README.md`
+- `.project-knowledge/README.md` and `index.yaml`
 
-If these records are absent in a consuming project, automatically read and follow `01-project-onboarding.md`. Do not start feature implementation before a proportionate reconnaissance and onboarding baseline. The agent may perform read-only inspection first.
+If these records are absent, automatically read and follow `01-project-onboarding.md` before feature implementation. Read-only reconnaissance may happen first. Do not repeat completed onboarding without a refresh trigger.
 
-If the repository being worked on is the EMW framework repository itself, do not onboard it as an unrelated software product. Follow its contributor context and shared-knowledge rules.
+If the repository being worked on is the EMW framework repository itself, do not onboard it as an unrelated software product. Follow its contributor context and shared-knowledge governance.
 
 ## Manual use
-Users can open any prompt file and copy its complete prompt into an agent that does not reliably load repository instructions. Prompts are standalone, but they still expect the agent to inspect the repository and read the referenced EMW core policy.
+Users can open any prompt file and copy its complete prompt into an agent that does not reliably load repository instructions. The universal fallback is `00-bootstrap-any-agent.md`; task prompts are separate files and can be used directly.
 
 ## Prompt execution contract
 - A prompt file is a reusable instruction, not an executable tool or hidden function call.

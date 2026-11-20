@@ -159,7 +159,7 @@ class EmwCheckTests(unittest.TestCase):
         self._copy_tracks()
         code, out = self.repo.run("--strict")
         self.assertEqual(code, 0, out)
-        self.assertIn("2 tracks", out)
+        self.assertIn("5 tracks", out)
 
     def test_track_rules_catch_planted_errors(self):
         php = self._copy_tracks()

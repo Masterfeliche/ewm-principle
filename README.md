@@ -70,7 +70,7 @@ A completed feature is delivery evidence, not automatic mastery evidence.
 - **M4 — Transfer & Mastery:** handles unfamiliar variations, compares alternatives, explains limitations, and teaches the concept.
 
 ## Learning tracks
-A track is a staged path for one language: skills with target levels, one project per stage, and a gate for moving on. The shared core (Stage 0) and the PHP track (Laravel, with projects set in Tanzania and East Africa) are in `.emw/tracks/`; see [the tracks README](.emw/tracks/README.md). Tracks for .NET, Go and Python are planned. Start one with `python .emw/tools/emw_track.py start php` or `/emw-track start php`; `status` shows where you are and `next` opens the next stage once its gate is met.
+A track is a staged path for one language: skills with target levels, one project per stage, and a gate for moving on. The shared core (Stage 0) and four tracks (PHP with Laravel, .NET, Go, and Python), with projects set in Tanzania and East Africa, are in `.emw/tracks/`; see [the tracks README](.emw/tracks/README.md). Start one with `python .emw/tools/emw_track.py start php` or `/emw-track start php`; `status` shows where you are and `next` opens the next stage once its gate is met.
 
 ## Validating records
 `python .emw/tools/emw_check.py` checks knowledge entries against the JSON schemas, keeps `index.yaml` in step with the entry files, and, in a consuming project, checks the onboarding status and skill ledger (for example, M3 or M4 needs evidence produced with assistance A0–A2). It needs Python 3.9+ and PyYAML, exits non-zero on errors, and `--strict` also fails on warnings. `.github/workflows/emw-check.yml` runs it, plus the checker's own tests, on every pull request; copy it into consuming projects to enforce the records there.
@@ -109,7 +109,7 @@ Claude Code and OpenCode users can invoke `/emw-onboard`, `/emw-feature`, `/emw-
 ├── .cursor/rules/emw.mdc
 ├── .github/copilot-instructions.md
 ├── .emw/
-│   ├── tracks/               # Learning tracks: core + PHP, with project briefs
+│   ├── tracks/               # Learning tracks: core, PHP, .NET, Go, Python, with project briefs
 │   ├── core/                 # Agent-independent EMW rules
 │   ├── prompts/              # Standalone, task-triggered prompts
 │   ├── knowledge/            # Shared curated knowledge and index

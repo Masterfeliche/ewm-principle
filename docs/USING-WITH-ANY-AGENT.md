@@ -3,7 +3,7 @@
 EMW is agent-independent. Its core rules, knowledge, and prompts are repository files. Any agent that can inspect project files can use EMW; no particular model, IDE, subscription, or vendor is required.
 
 ## 1. One-time setup
-Install `.emw/` and the root `AGENTS.md` in your project. Add the instruction adapter for the agent you use. Preserve existing project instructions by merging rather than overwriting.
+Install `.emw/` and root `AGENTS.md` in your project. Add the instruction adapter for the agent you use. Preserve existing project instructions by merging rather than overwriting.
 
 See [Installation](INSTALLATION.md) for copy and Git subtree approaches.
 
@@ -22,12 +22,12 @@ The prompts are separate files so humans can open and copy them. The agent shoul
 ### OpenAI Codex / agents supporting AGENTS.md
 - Keep `AGENTS.md` at repository root.
 - Keep detailed rules in `.emw/core/` and prompt routing in `.emw/prompts/README.md`.
-- If the agent does not load repository instructions automatically, paste the universal bootstrap prompt below.
+- If the agent does not load repository instructions automatically, use [the universal bootstrap prompt](../.emw/prompts/00-bootstrap-any-agent.md).
 
 ### Claude Code
 - Keep `CLAUDE.md` at repository root; this repository includes a pointer to `AGENTS.md`.
 - Ensure Claude Code opens the target repository so it can read `.emw/`.
-- Use the bootstrap prompt if the instruction file is not loaded in the active session.
+- Use the universal bootstrap prompt if the instruction file is not loaded in the active session.
 
 ### Cursor
 - This repository includes `.cursor/rules/emw.mdc`.
@@ -40,17 +40,15 @@ The prompts are separate files so humans can open and copy them. The agent shoul
 
 ### GitHub Copilot
 - This repository includes `.github/copilot-instructions.md`.
-- Instruction loading differs between Copilot surfaces and configurations. When it does not read repository instructions, paste the universal bootstrap prompt.
+- Instruction loading differs between Copilot surfaces and configurations. When it does not read repository instructions, use the universal bootstrap prompt.
 
 ### Other agents (Windsurf, Cline, Roo, Continue, Aider, etc.)
 - Find the agent's documented repository-instruction mechanism.
 - Add a short adapter that points to root `AGENTS.md`, `.emw/core/`, and `.emw/prompts/`.
-- If no persistent instruction mechanism exists, paste the universal bootstrap prompt at session start and the relevant task prompt when needed.
+- If no persistent instruction mechanism exists, paste [the universal bootstrap prompt](../.emw/prompts/00-bootstrap-any-agent.md) at session start and the relevant task prompt when needed.
 
 ## 4. Universal bootstrap prompt
-Copy this into any agent that does not automatically load project instructions:
-
-> You are working in a repository that uses Engineering Mastery Workflow (EMW). Before changing code, read root AGENTS.md, .emw/prompts/README.md, .emw/prompts/00-session-start.md, and the relevant .emw/core/ policies. If this is a consuming software project, check for .emw-project/onboarding-status.yaml and .project-knowledge/. If onboarding is missing or stale, read and follow .emw/prompts/01-project-onboarding.md before feature implementation. Before meaningful work, retrieve applicable shared and project knowledge using .emw/prompts/07-knowledge-retrieval.md. Do not invent project facts, tests, evidence, or proficiency. Keep engineering delivery and developer mastery separate. Follow the appropriate task prompt automatically. First inspect and summarize the repository and recommend the smallest useful next step; do not modify code until the task plan is clear.
+The complete copyable prompt lives in [`.emw/prompts/00-bootstrap-any-agent.md`](../.emw/prompts/00-bootstrap-any-agent.md). It instructs an agent to load EMW, check onboarding state, retrieve knowledge, and follow the task-specific prompt library. Use it when a tool cannot load repository instruction files automatically.
 
 ## 5. Standalone prompt library
 Open `.emw/prompts/README.md` for the routing table. Prompts include:
@@ -84,11 +82,7 @@ You can copy any prompt file directly into an agent chat. If the agent can read 
 > Use EMW Prompt 09. Review delivery and mastery separately, provide evidence-backed M0–M4 assessments, identify gaps, and give me an independent exercise without its answer.
 
 ## 7. Knowledge behavior
-Before meaningful work, the agent retrieves from:
-- Shared EMW knowledge: `.emw/knowledge/`.
-- Project knowledge: `.project-knowledge/`.
-
-After a durable, verified discovery, it captures project knowledge. It may propose generalizing the lesson for shared EMW, but must sanitize it and obtain human approval before publication. See [Knowledge System](KNOWLEDGE-SYSTEM.md).
+Before meaningful work, the agent retrieves from shared EMW knowledge in `.emw/knowledge/` and project knowledge in `.project-knowledge/`. After a durable, verified discovery, it captures project knowledge. It may propose generalizing the lesson for shared EMW, but must sanitize it and obtain human approval before publication. See [Knowledge System](KNOWLEDGE-SYSTEM.md).
 
 ## 8. Practical rhythm
 - Session start: inspect current state and onboarding status.

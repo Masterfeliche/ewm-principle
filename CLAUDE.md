@@ -12,7 +12,7 @@ Automatically run the onboarding prompt when a consuming project's onboarding re
 
 ## Slash commands and skills
 This repository ships Claude Code commands in `.claude/commands/` and skills in `.claude/skills/`. They route to the canonical `.emw/prompts/` files and add no policy of their own.
-- `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`
+- `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, `/emw-practice`
 - Skills: `emw-workflow`, `emw-knowledge`, `emw-mastery` (loaded automatically when relevant)
 
 ## Validate records

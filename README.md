@@ -71,7 +71,7 @@ The project knowledge base is not automatically published upstream. Shared contr
 - GitHub Copilot: `.github/copilot-instructions.md`.
 - OpenCode: native `AGENTS.md` discovery, `opencode.json`, `.opencode/skills/`, and `.opencode/commands/`.
 
-Claude Code and OpenCode users can invoke `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, and `/emw-capture`. See [OpenCode setup](docs/OPENCODE.md).
+Claude Code and OpenCode users can invoke `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, and `/emw-practice`. See [OpenCode setup](docs/OPENCODE.md).
 
 ## Repository structure
 

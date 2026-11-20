@@ -18,6 +18,7 @@ An agent following root `AGENTS.md` must read this routing guide at session star
 | Knowledge retrieval | Before meaningful work, and always for high-risk work | [07-knowledge-retrieval.md](07-knowledge-retrieval.md) |
 | Knowledge capture | A durable lesson or non-obvious discovery is verified | [08-knowledge-capture.md](08-knowledge-capture.md) |
 | Weekly review | Weekly review requested or scheduled | [09-weekly-mastery-review.md](09-weekly-mastery-review.md) |
+| Practice | Developer wants to learn by writing code themselves, or a skill is overdue for a check without AI | [11-practice.md](11-practice.md) |
 | Shared contribution | Project knowledge may be generalized for EMW upstream | [10-shared-knowledge-contribution.md](10-shared-knowledge-contribution.md) |
 
 ## Automatic onboarding rules
@@ -41,8 +42,8 @@ Users can open any prompt file and copy its complete prompt into an agent that d
 - If the agent cannot read files or does not load instructions automatically, the user must paste the relevant prompt or provide the file contents.
 - Do not repeatedly run onboarding after it is complete; refresh only when major architecture, stack, ownership, or project goals change.
 
-## OpenCode shortcuts
-When using OpenCode, the same workflows are available as project slash commands in `.opencode/commands/`:
+## OpenCode and Claude Code shortcuts
+When using OpenCode (`.opencode/commands/`) or Claude Code (`.claude/commands/`), the same workflows are available as project slash commands in `.opencode/commands/`:
 - `/emw-onboard`
 - `/emw-feature`
 - `/emw-learn`
@@ -50,5 +51,6 @@ When using OpenCode, the same workflows are available as project slash commands 
 - `/emw-review`
 - `/emw-weekly`
 - `/emw-capture`
+- `/emw-practice`
 
 Reusable skills are available under `.opencode/skills/`: `emw-workflow`, `emw-knowledge`, and `emw-mastery`. See [OpenCode Integration](../../docs/OPENCODE.md). The prompt files in this directory remain the canonical task instructions; OpenCode commands and skills are adapters that route to them.

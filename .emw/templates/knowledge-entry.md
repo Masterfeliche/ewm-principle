@@ -1,33 +1,34 @@
 ---
-id: "KB-<ID>"
-title: "<Descriptive knowledge title>"
+# Example placeholder metadata. Replace these values before publishing an entry.
+id: "KB-0001"
+title: "Replace with a descriptive knowledge title"
 status: "draft"
 confidence: "low"
 category: "debugging"
 scope: "project-local"
-summary: "<One-sentence searchable lesson>"
-context: "<Where and under what conditions this applies>"
-problem: "<Problem or question addressed>"
-root_cause_or_principle: "<Verified cause or underlying principle>"
-recommended_approach: "<Actionable recommendation>"
+summary: "Replace with a concise, searchable one-sentence lesson."
+context: "Describe the system, versions, and conditions where this applies."
+problem: "Describe the problem or question addressed."
+root_cause_or_principle: "Describe the verified cause or underlying principle."
+recommended_approach: "Describe the actionable recommended approach."
 alternatives: []
 technologies: []
 versions: []
 tags: []
-applicability: "<Preconditions and context>"
+applicability: "State preconditions and applicability."
 evidence: []
 limitations: []
 related_entries: []
 related_adrs: []
 source_project: ""
-created_at: "YYYY-MM-DD"
-last_reviewed: "YYYY-MM-DD"
-review_trigger: ""
+created_at: "2026-11-20"
+last_reviewed: "2026-11-20"
+review_trigger: "State what change should trigger a review."
 supersedes: []
 superseded_by: ""
 ---
 
-# <Knowledge title>
+# Replace with the knowledge title
 
 ## Summary
 A short, searchable statement of the lesson.
@@ -65,4 +66,4 @@ List version constraints, failure cases, assumptions, and unverified areas.
 - Review trigger:
 - Supersedes / superseded by:
 
-> Validate the YAML metadata against `.emw/knowledge/knowledge-entry.schema.json` when validation tooling is available. Do not label an entry verified unless its evidence supports the stated applicability.
+> Validate frontmatter against `.emw/knowledge/knowledge-entry.schema.json` when validation tooling is available. A template filled with placeholders is not a knowledge claim. Do not label an entry verified unless the evidence supports its stated applicability.

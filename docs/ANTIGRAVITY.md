@@ -50,7 +50,14 @@ background skills — `emw-workflow`, `emw-knowledge`, `emw-mastery` — are mea
 
 **These files mirror `.claude/commands/` and `.claude/skills/`.** They are adapters with
 no policy of their own; the canonical instructions are the prompts in `.emw/prompts/`.
-Change a command in one place and change it in the others, or the integrations drift.
+Change a command in one place and change it in the others.
+
+`emw_check` holds them to each other, so drift is an error rather than something to
+remember: every integration must offer the same set of commands, their descriptions must
+match, and each copy must route to the same `.emw/prompts/` file. `name` is the one field
+that may differ, because OpenCode uses readable names where the others use slugs. The
+Antigravity bodies are exempt from the word-for-word comparison, since they are
+deliberately reworded for the missing `$ARGUMENTS` substitution.
 
 ### Arguments
 

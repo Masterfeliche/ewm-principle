@@ -385,5 +385,36 @@ class EmwCheckTests(unittest.TestCase):
         self.assertIn("id 'core' must match the file name 'kernel'", out)
 
 
+class PromptBoundaryTests(unittest.TestCase):
+    """Every prompt where the learner writes code must say where the code goes.
+
+    Prompt 03 carried no boundary at all, so /emw-learn reached the ladder's top rungs
+    without the rule that 11-practice.md states, and nothing said the work belongs in a
+    file rather than the chat box.
+    """
+
+    PROMPTS = ("03-learn-technology.md", "11-practice.md", "13-recall.md")
+
+    def prompt(self, name: str) -> str:
+        return (FRAMEWORK / ".emw" / "prompts" / name).read_text(encoding="utf-8")
+
+    def test_each_hands_on_prompt_states_the_boundary(self):
+        for name in self.PROMPTS:
+            text = self.prompt(name)
+            with self.subTest(prompt=name):
+                self.assertIn("## Where the work happens", text)
+                self.assertIn(".project-knowledge/", text)
+
+    def test_learning_prompt_requires_an_attempt_before_the_top_rungs(self):
+        text = self.prompt("03-learn-technology.md")
+        self.assertIn("full solution", text)
+        self.assertIn("before a real attempt", text)
+
+    def test_no_hands_on_prompt_invites_code_in_the_chat(self):
+        for name in self.PROMPTS:
+            with self.subTest(prompt=name):
+                self.assertIn("chat", self.prompt(name).lower())
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -120,6 +120,8 @@ It sets a small task, asks what you expect to be hard, and gives one hint at a t
 
 Why this way: what makes code stick is producing it from your own head. Reading or pasting an answer teaches very little.
 
+**Where the code goes: in a file, never in the chat box.** You write in your own editor, in a real file in the project, and you run it yourself. The chat is for hints only, and no code is pasted in either direction. Code typed into a chat box is never run, so you never read the error and never fix it — and that is half the skill. The same boundary points the other way: during a practice, learning or recall session the agent writes only to `.emw-project/` and `.project-knowledge/`, so `git status` afterwards shows your hand and nothing else. If your agent cannot read repository files, paste the attempt once you have finished it, and say so.
+
 ### Step 5: record what you did
 
 After each real piece of work, record one evidence item against that skill:
@@ -361,6 +363,7 @@ python .emw/tools/emw_recall.py plan      # the whole recall schedule
 | Using the ledger to judge people | Use it to coach and plan |
 | Letting records go stale | Run `/emw-weekly`; fix what `emw_check` reports |
 | Skipping recall checks because the code still looks familiar | Familiarity is not recall. Do the check in an empty file |
+| Writing the attempt in the chat box | Write it in a real file and run it. The chat is for hints, not code |
 
 ## 10. When the checker complains
 

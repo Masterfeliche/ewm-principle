@@ -152,6 +152,44 @@ class EmwCheckTests(unittest.TestCase):
         self.assertEqual(code, 1, out)
         self.assertIn("PKB-DBG-0001", out)
 
+    def test_the_shipped_schemas_accept_a_project_entry(self):
+        """The schema files carried ^KB- while the templates mandate PKB-, so the
+        documented 'validate against this schema' step failed every project entry."""
+        import json
+        entry = json.loads((self.repo.root / ".emw/knowledge/knowledge-entry.schema.json")
+                           .read_text(encoding="utf-8"))
+        index = json.loads((self.repo.root / ".emw/knowledge/knowledge-index.schema.json")
+                           .read_text(encoding="utf-8"))
+        self.assertEqual([], emw_check.validate(
+            "PKB-0001", entry["properties"]["id"], "id"))
+        self.assertEqual([], emw_check.validate(
+            "KB-SEC-0001", index["properties"]["entries"]["items"]["properties"]["id"], "id"))
+        self.assertEqual([], emw_check.validate("demo", index["properties"]["project"], "project"))
+        self.assertTrue(emw_check.validate("nope", entry["properties"]["id"], "id"))
+
+    def test_id_prefix_is_enforced_by_where_the_entry_lives(self):
+        self.assertIsNone(emw_check.id_prefix_problem("PKB-0001", "project"))
+        self.assertIsNone(emw_check.id_prefix_problem("KB-SEC-0001", "shared"))
+        self.assertIn("shared", emw_check.id_prefix_problem("PKB-0001", "shared"))
+        self.assertIn("PKB-", emw_check.id_prefix_problem("KB-0001", "project"))
+
+    def test_counts_read_as_english(self):
+        self.repo.write(".project-knowledge/index.yaml", """            schema_version: 1
+            project: "demo"
+            entries:
+              - id: "PKB-0001"
+                title: "An entry whose file was never written"
+                path: "learning/absent.md"
+                category: "learning"
+                status: "draft"
+                confidence: "low"
+            """)
+        code, out = self.repo.run()
+        self.assertEqual(code, 1, out)
+        self.assertIn("1 error,", out)
+        self.assertNotIn("1 errors", out)
+        self.assertIn("shared entries", out)
+
     def test_verified_needs_strong_evidence(self):
         path = self.repo.root / ".emw/knowledge/agent-guidance/report-unrun-checks.md"
         path.write_text(path.read_text(encoding="utf-8").replace(

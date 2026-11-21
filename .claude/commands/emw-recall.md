@@ -1,5 +1,5 @@
 ---
-description: Do a scheduled recall check: rebuild something from memory, no notes, no AI
+description: "Do a scheduled recall check: rebuild something from memory, no notes, no AI"
 ---
 
 Read and follow `.emw/prompts/13-recall.md` for this skill or piece of work: $ARGUMENTS

@@ -182,15 +182,22 @@ def rel(path: Path, root: Path) -> str:
         return path.as_posix()
 
 
-def project_schema(schema: dict) -> dict:
-    """Project knowledge may use PKB- ids (see project-knowledge-index template)."""
-    clone = json.loads(json.dumps(schema))
-    props = clone["properties"]
-    if "items" in props.get("entries", {}):  # index schema: ids live on each record
-        props["project"] = {"type": "string"}  # the project index template names its project
-        props = props["entries"]["items"]["properties"]
-    props["id"]["pattern"] = "^P?KB-[A-Z0-9-]+$"
-    return clone
+def id_prefix_problem(entry_id: object, label: str) -> str | None:
+    """KB- ids belong to the shared knowledge base, PKB- ids to a project's.
+
+    Both shapes are valid documents, so the schemas accept either; which one is allowed
+    depends on where the entry lives, and that is a placement rule rather than a shape
+    rule. It is enforced here because the validator in this file deliberately supports
+    only a small part of JSON Schema -- no if/then -- so a conditional in the schema
+    file would be decorative.
+    """
+    if not isinstance(entry_id, str):
+        return None
+    wanted, other = ("PKB-", "KB-") if label == "project" else ("KB-", "PKB-")
+    if entry_id.startswith(other):
+        return (f"id {entry_id!r} starts with {other} but this is the {label} "
+                f"knowledge base; use {wanted}")
+    return None
 
 
 # --- knowledge base check (shared or project) --------------------------------
@@ -219,6 +226,9 @@ def check_knowledge(kb_dir: Path, entry_schema: dict, index_schema: dict,
             rep.error(where, f"duplicate id {rid} (also used by {seen_ids[rid]})")
         elif rid:
             seen_ids[rid] = rec.get("path", "?")
+        problem = id_prefix_problem(rid, label)
+        if problem:
+            rep.error(where, problem)
         if not rec.get("path"):
             continue
         entry_path = (kb_dir / rec["path"]).resolve()
@@ -268,6 +278,9 @@ def check_entry_rules(meta: dict, where: str, rep: Report, label: str) -> None:
         rep.error(where, "status is superseded but superseded_by is empty")
     if not meta.get("limitations"):
         rep.warn(where, "no limitations listed; every entry has some")
+    problem = id_prefix_problem(meta.get("id"), label)
+    if problem:
+        rep.error(where, problem)
     if label == "shared" and meta.get("scope") == "project-local":
         rep.error(where, "project-local entry inside the shared knowledge base")
     if label == "shared" and meta.get("source_project"):
@@ -349,8 +362,7 @@ def check_project(root: Path, entry_schema: dict, index_schema: dict, rep: Repor
         check_task_log(log_path, skills, policy, rep, root)
 
     if pkb.exists():
-        check_knowledge(pkb, project_schema(entry_schema), project_schema(index_schema),
-                        rep, root, "project")
+        check_knowledge(pkb, entry_schema, index_schema, rep, root, "project")
     return True
 
 
@@ -732,9 +744,12 @@ def main(argv: list[str] | None = None) -> int:
     scope = "shared knowledge + project records" if has_project else "shared knowledge"
     if track_count:
         scope += f" + {track_count} tracks"
-    print(f"emw_check: {scope}; {shared} shared entries; "
-          f"{len(rep.errors)} errors, {len(rep.warnings)} warnings"
-          + (f", {len(rep.notes)} notes" if rep.notes else ""))
+    def count(n: int, singular: str, plural: str | None = None) -> str:
+        return f"{n} {singular}" if n == 1 else f"{n} {plural or singular + 's'}"
+
+    print(f"emw_check: {scope}; {count(shared, 'shared entry', 'shared entries')}; "
+          f"{count(len(rep.errors), 'error')}, {count(len(rep.warnings), 'warning')}"
+          + (f", {count(len(rep.notes), 'note')}" if rep.notes else ""))
     failed = rep.errors or (args.strict and rep.warnings)
     return 1 if failed else 0
 

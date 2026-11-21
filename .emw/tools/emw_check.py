@@ -629,6 +629,37 @@ def check_assessment_cadence(tasks: list, skills: dict[str, dict], every: int,
 
 # --- learning tracks ---------------------------------------------------------
 
+MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
+
+
+def check_links(root: Path, rep: Report) -> None:
+    """Warn for a relative markdown link whose target is not in this repository.
+
+    Only `.emw/`, the root contract and one agent adapter are copied into a consuming
+    project (see docs/INSTALLATION.md), so a link that resolves in the framework
+    repository can still dangle in every install. Those are the ones worth catching:
+    they send an agent to a file that was never going to be there.
+    """
+    files = [root / "AGENTS.md", root / "CLAUDE.md", root / "GEMINI.md"]
+    files += sorted((root / ".emw").rglob("*.md"))
+    for path in files:
+        if not path.is_file():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        for number, line in enumerate(text.splitlines(), 1):
+            for target in MARKDOWN_LINK.findall(line):
+                if target.startswith(("http://", "https://", "mailto:", "#")):
+                    continue
+                relative = target.split("#", 1)[0]
+                if relative and not (path.parent / relative).exists():
+                    rep.warn(f"{rel(path, root)}:{number}",
+                             f"link target '{target}' does not exist here; use an "
+                             "absolute URL for files outside a consuming project")
+
+
 def check_tracks(root: Path, rep: Report) -> int:
     """Validate .emw/tracks/*.yaml. Returns the number of track files checked."""
     tracks_dir = root / ".emw" / "tracks"
@@ -733,6 +764,7 @@ def main(argv: list[str] | None = None) -> int:
     rep = Report()
     shared = check_knowledge(kb, entry_schema, index_schema, rep, root, "shared")
     has_project = check_project(root, entry_schema, index_schema, rep, args.date)
+    check_links(root, rep)
     track_count = check_tracks(root, rep)
 
     for n in rep.notes:

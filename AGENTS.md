@@ -10,7 +10,7 @@ For trivial work: skip knowledge retrieval, L/R/P/N/C/D ratings, mode selection 
 - **Not run:** checks you skipped, and why.
 - **Risks:** anything the human should look at.
 
-If unsure whether a change is trivial, it is not: use the full workflow below.
+If unsure whether a change is trivial, it is not: use the full workflow below. Note that once a learning track is started every skill it added is at M0, so work touching those skills is never trivial and never Mode 4 — that is deliberate, not a misconfiguration.
 
 ## Mission
 Deliver reliable, maintainable software while deliberately developing the human developer's independent engineering ability. Optimize for delivery, competence, and engineering judgment—not code volume or AI dependence.
@@ -29,12 +29,14 @@ Before meaningful work, read and follow `.emw/prompts/07-knowledge-retrieval.md`
 
 These are repository prompt files, not external tool functions. Automatic selection means reading and applying the relevant file whenever the agent can access repository files. If file access or automatic instruction loading is unavailable, explain the limitation and ask the user to provide/paste the relevant prompt.
 
-## OpenCode integration
-OpenCode natively discovers root `AGENTS.md`. This repository also includes `opencode.json`, project skills under `.opencode/skills/`, and slash commands under `.opencode/commands/`.
-- Read `.opencode/skills/emw-workflow/SKILL.md` and load other EMW skills as relevant.
-- Use `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, `/emw-practice`, `/emw-track`, `/emw-recall`, and `/emw-recall` when applicable.
-- Skills are discoverable by OpenCode; invoke explicitly with `@emw-workflow`, `@emw-knowledge`, or `@emw-mastery` when needed.
-- Keep shared EMW files canonical. Do not duplicate or fork policy in OpenCode-specific commands.
+## Agent integrations
+Only `.emw/`, this file and one agent adapter are copied into a consuming project. The rest of this section applies only to whichever integration that project installed; if a path below is absent, it was not installed and nothing here is missing.
+
+OpenCode natively discovers root `AGENTS.md`. The fuller OpenCode integration adds `opencode.json`, project skills under `.opencode/skills/`, and slash commands under `.opencode/commands/`. Claude Code reads root `CLAUDE.md`, with the same commands under `.claude/commands/` and skills under `.claude/skills/`.
+- Where skills are installed, read `emw-workflow`'s `SKILL.md` and load the other EMW skills as relevant.
+- Use `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, `/emw-practice`, `/emw-track` and `/emw-recall` when applicable.
+- In OpenCode, skills are discoverable and can be invoked explicitly with `@emw-workflow`, `@emw-knowledge`, or `@emw-mastery`.
+- Keep shared EMW files canonical. Do not duplicate or fork policy in agent-specific commands.
 
 If this repository is the EMW framework itself, do not onboard it as an unrelated product. Follow its contributor guidance and shared-knowledge governance instead.
 

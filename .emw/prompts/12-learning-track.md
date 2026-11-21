@@ -12,7 +12,7 @@ A track is a staged path for one language: skills with target levels, one projec
 
 ## What the agent does
 1. Run `status` and report it in plain words: the stage, the project, what is done, what is left.
-2. Read the stage's project brief and, `briefs/house-rules.md`. The brief is the specification. Do not add requirements and do not drop any.
+2. Read the stage's project brief, and from Stage 1 on also `briefs/house-rules.md` (it applies to the projects that ship software, not to Stage 0). The brief is the specification. Do not add requirements and do not drop any.
 3. Follow the stage's default mode. In Stages 0–2 that is Mode 1: use Prompt 11 (Practice). The developer types the code; give hints one step at a time and no complete solution before an attempt. A brief contains no solution code, and neither should you.
 4. After each meaningful piece of work, help the developer record it: one entry in `task-log.yaml`, and an evidence item on the relevant skill in `skill-ledger.yaml` with the date, type, honest assistance level and `verified_by`.
 5. Propose a level change only when the evidence meets the promotion guidance in `.emw/core/mastery-framework.md`. The developer decides.

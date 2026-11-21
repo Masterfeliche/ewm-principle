@@ -32,7 +32,7 @@ These are repository prompt files, not external tool functions. Automatic select
 ## OpenCode integration
 OpenCode natively discovers root `AGENTS.md`. This repository also includes `opencode.json`, project skills under `.opencode/skills/`, and slash commands under `.opencode/commands/`.
 - Read `.opencode/skills/emw-workflow/SKILL.md` and load other EMW skills as relevant.
-- Use `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, `/emw-practice`, and `/emw-track` when applicable.
+- Use `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, `/emw-practice`, `/emw-track`, `/emw-recall`, and `/emw-recall` when applicable.
 - Skills are discoverable by OpenCode; invoke explicitly with `@emw-workflow`, `@emw-knowledge`, or `@emw-mastery` when needed.
 - Keep shared EMW files canonical. Do not duplicate or fork policy in OpenCode-specific commands.
 

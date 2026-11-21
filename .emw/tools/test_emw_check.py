@@ -190,6 +190,73 @@ class EmwCheckTests(unittest.TestCase):
         self.assertNotIn("1 errors", out)
         self.assertIn("shared entries", out)
 
+    def adapters(self) -> None:
+        """Two integrations carrying the same one command, as shipped."""
+        self.repo.write(".claude/commands/emw-practice.md",
+                        '---\ndescription: "Practice a concept, with hints only"\n---\n\n'
+                        'Read and follow `.emw/prompts/11-practice.md`.\n')
+        self.repo.write(".opencode/commands/emw-practice.md",
+                        '---\nname: EMW Practice\ndescription: "Practice a concept, with hints only"\n---\n\n'
+                        'Read and follow `.emw/prompts/11-practice.md`.\n')
+
+    def test_matching_adapters_pass_despite_a_different_name(self):
+        """OpenCode uses readable names where the others use slugs; only `name` may differ."""
+        self.adapters()
+        code, out = self.repo.run("--strict")
+        self.assertEqual(code, 0, out)
+
+    def test_unparseable_frontmatter_is_reported_once(self):
+        """The real defect: an unquoted colon makes the agent fall back to the body."""
+        self.adapters()
+        self.repo.write(".claude/commands/emw-practice.md",
+                        '---\ndescription: Practice a concept: with hints only\n---\n\n'
+                        'Read and follow `.emw/prompts/11-practice.md`.\n')
+        code, out = self.repo.run()
+        self.assertEqual(code, 1, out)
+        self.assertIn("does not parse as YAML", out)
+        self.assertIn("quote any value containing a colon", out)
+        self.assertNotIn("is missing from", out)   # broken, not absent
+
+    def test_an_adapter_without_a_description_is_an_error(self):
+        self.repo.write(".claude/commands/emw-practice.md",
+                        '---\nname: emw-practice\n---\n\nRead `.emw/prompts/11-practice.md`.\n')
+        code, out = self.repo.run()
+        self.assertEqual(code, 1, out)
+        self.assertIn("no description", out)
+
+    def test_adapters_may_not_drift_apart(self):
+        self.adapters()
+        self.repo.write(".opencode/commands/emw-practice.md",
+                        '---\nname: EMW Practice\ndescription: "Something else entirely"\n---\n\n'
+                        'Read and follow `.emw/prompts/11-practice.md`.\n')
+        code, out = self.repo.run()
+        self.assertEqual(code, 1, out)
+        self.assertIn("description differs", out)
+
+        self.adapters()
+        self.repo.write(".opencode/commands/emw-practice.md",
+                        '---\nname: EMW Practice\ndescription: "Practice a concept, with hints only"\n---\n\n'
+                        'Read and follow `.emw/prompts/03-learn-technology.md`.\n')
+        code, out = self.repo.run()
+        self.assertEqual(code, 1, out)
+        self.assertIn("routes to", out)
+
+    def test_an_adapter_missing_from_one_integration_is_an_error(self):
+        self.adapters()
+        self.repo.write(".claude/commands/emw-review.md",
+                        '---\ndescription: "Review a change"\n---\n\n'
+                        'Read and follow `.emw/prompts/05-code-review.md`.\n')
+        code, out = self.repo.run()
+        self.assertEqual(code, 1, out)
+        self.assertIn("'emw-review' is missing from OpenCode", out)
+
+    def test_one_integration_alone_has_nothing_to_drift_from(self):
+        self.repo.write(".claude/commands/emw-practice.md",
+                        '---\ndescription: "Practice a concept, with hints only"\n---\n\n'
+                        'Read and follow `.emw/prompts/11-practice.md`.\n')
+        code, out = self.repo.run("--strict")
+        self.assertEqual(code, 0, out)
+
     def test_a_dangling_markdown_link_warns(self):
         """A link that resolves in the framework repository can still dangle in every
         install, because only .emw/, AGENTS.md and one adapter are copied."""

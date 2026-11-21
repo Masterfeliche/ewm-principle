@@ -629,6 +629,107 @@ def check_assessment_cadence(tasks: list, skills: dict[str, dict], every: int,
 
 # --- learning tracks ---------------------------------------------------------
 
+# Each agent integration carries its own copy of the same commands and skills. They are
+# adapters with no policy of their own, so the copies must agree; `name` is the one field
+# that may differ, because OpenCode uses readable names where the others use slugs.
+ADAPTER_TREES = {
+    "Claude Code": (".claude/commands/*.md", ".claude/skills/*/SKILL.md"),
+    "OpenCode": (".opencode/commands/*.md", ".opencode/skills/*/SKILL.md"),
+    "Antigravity": (".agents/skills/*/SKILL.md",),
+}
+PROMPT_REF = re.compile(r"\.emw/prompts/\d{2}-[a-z0-9-]+\.md")
+FRONTMATTER = re.compile(r"^---\r?\n(.*?)\r?\n---\r?\n?(.*)$", re.S)
+
+
+def read_adapter(path: Path, rep: Report, root: Path) -> dict | None:
+    """Parse one adapter's frontmatter, or report why it cannot be used."""
+    where = rel(path, root)
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        rep.error(where, f"cannot be read ({exc})")
+        return None
+    match = FRONTMATTER.match(text)
+    if not match:
+        rep.error(where, "no YAML frontmatter, so the agent has no description to route on")
+        return None
+    try:
+        meta = yaml.safe_load(match.group(1))
+    except yaml.YAMLError:
+        rep.error(where, "frontmatter does not parse as YAML, so the agent falls back to "
+                         "the body text; quote any value containing a colon")
+        return None
+    if not isinstance(meta, dict):
+        rep.error(where, "frontmatter is not a mapping of fields")
+        return None
+    description = meta.get("description")
+    if not isinstance(description, str) or not description.strip():
+        rep.error(where, "frontmatter has no description; agents choose a command by it")
+        return None
+    return {"where": where, "description": description.strip(),
+            "body": match.group(2).strip(), "prompts": set(PROMPT_REF.findall(text))}
+
+
+def collect_adapters(root: Path, rep: Report) -> tuple[dict[str, dict[str, dict]],
+                                                       dict[str, set[str]]]:
+    """Return ({integration: {name: parsed}}, {integration: every name on disk}).
+
+    The second map includes adapters whose frontmatter failed to parse, so a broken file
+    is reported once as broken rather than twice, the second time as missing.
+    """
+    found: dict[str, dict[str, dict]] = {}
+    seen: dict[str, set[str]] = {}
+    for integration, patterns in ADAPTER_TREES.items():
+        here: dict[str, dict] = {}
+        here_seen: set[str] = set()
+        for pattern in patterns:
+            for path in sorted(root.glob(pattern)):
+                name = path.parent.name if path.name == "SKILL.md" else path.stem
+                here_seen.add(name)
+                parsed = read_adapter(path, rep, root)
+                if parsed:
+                    here[name] = parsed
+        if here_seen:
+            found[integration] = here
+            seen[integration] = here_seen
+    return found, seen
+
+
+def check_adapters(root: Path, rep: Report) -> None:
+    """Lint every installed agent adapter, and hold the copies to each other.
+
+    Bodies are compared only between Claude Code and OpenCode, which carry the same text
+    verbatim. The Antigravity copies are deliberately reworded, because that harness does
+    not document $ARGUMENTS substitution, so they are held to the description and to the
+    set of .emw/prompts/ files they route to -- which is what an adapter is actually for.
+    """
+    trees, seen = collect_adapters(root, rep)
+    names = sorted({n for names_here in seen.values() for n in names_here})
+    for name in names:
+        carriers = [(i, t[name]) for i, t in trees.items() if name in t]
+        missing = [i for i in seen if name not in seen[i]]
+        if not carriers:
+            continue  # every copy failed to parse; read_adapter already said so
+        if missing:
+            rep.error(carriers[0][1]["where"],
+                      f"'{name}' is missing from {', '.join(sorted(missing))}; "
+                      "every integration offers the same commands")
+        first_name, first = carriers[0]
+        for other_name, other in carriers[1:]:
+            if other["description"] != first["description"]:
+                rep.error(other["where"],
+                          f"description differs from {first['where']}; adapters carry no "
+                          "policy of their own, so the copies must agree")
+            if other["prompts"] != first["prompts"]:
+                rep.error(other["where"],
+                          f"routes to {sorted(other['prompts']) or 'no prompt'} but "
+                          f"{first['where']} routes to {sorted(first['prompts']) or 'no prompt'}")
+            verbatim = {first_name, other_name} == {"Claude Code", "OpenCode"}
+            if verbatim and other["body"] != first["body"]:
+                rep.error(other["where"], f"body differs from {first['where']}; these two "
+                                          "copies are kept identical")
+
+
 MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
 
 
@@ -764,6 +865,7 @@ def main(argv: list[str] | None = None) -> int:
     rep = Report()
     shared = check_knowledge(kb, entry_schema, index_schema, rep, root, "shared")
     has_project = check_project(root, entry_schema, index_schema, rep, args.date)
+    check_adapters(root, rep)
     check_links(root, rep)
     track_count = check_tracks(root, rep)
 

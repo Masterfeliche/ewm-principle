@@ -38,6 +38,7 @@ Do not copy this framework repository's entire root into a consuming project wit
 | `/emw-capture [discovery]` | Capture a durable, verified lesson in project knowledge. |
 | `/emw-track [start <track> / status / ship --url / next]` | Start or follow a learning track and check its stage gate. |
 | `/emw-practice [concept]` | Practice by writing the code yourself; the agent gives hints only. |
+| `/emw-recall [skill]` | Do a scheduled check from memory: no notes, no earlier code, no AI. |
 
 Commands are prompt templates. They do not run tests or change files on their own; the agent interprets the command and uses its available tools.
 

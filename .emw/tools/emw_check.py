@@ -22,6 +22,9 @@ What it checks:
   Project records (only when .emw-project/ or .project-knowledge/ exist)
     - onboarding-status.yaml status and referenced files
     - skill-ledger.yaml levels, and M3/M4 claims backed by evidence
+    - recall checks that are due (2 days, 1 week, 1 month after a skill's first
+      evidence; set recall_days in mode-policy.yaml). Reported as notes, which
+      never fail the check, even with --strict
     - task-log.yaml fields, skill ids, and the team mode policy
       (mode-policy.yaml, or built-in defaults): less support than the
       default needs mode_reason
@@ -55,12 +58,16 @@ class Report:
     def __init__(self) -> None:
         self.errors: list[str] = []
         self.warnings: list[str] = []
+        self.notes: list[str] = []
 
     def error(self, where: str, msg: str) -> None:
         self.errors.append(f"{where}: {msg}")
 
     def warn(self, where: str, msg: str) -> None:
         self.warnings.append(f"{where}: {msg}")
+
+    def note(self, where: str, msg: str) -> None:
+        self.notes.append(f"{where}: {msg}")
 
 
 # --- minimal JSON Schema subset (the keywords EMW schemas use) -------------
@@ -75,6 +82,17 @@ def _is_date(value: object) -> bool:
         return True
     except ValueError:
         return False
+
+
+def _to_date(value: object) -> _dt.date | None:
+    if isinstance(value, _dt.datetime):
+        return value.date()
+    if isinstance(value, _dt.date):
+        return value
+    try:
+        return _dt.date.fromisoformat(str(value))
+    except ValueError:
+        return None
 
 
 def validate(value: object, schema: dict, path: str = "") -> list[str]:
@@ -264,7 +282,8 @@ def check_entry_rules(meta: dict, where: str, rep: Report, label: str) -> None:
 
 # --- project records ----------------------------------------------------------
 
-def check_project(root: Path, entry_schema: dict, index_schema: dict, rep: Report) -> bool:
+def check_project(root: Path, entry_schema: dict, index_schema: dict, rep: Report,
+                  today: _dt.date | None = None) -> bool:
     proj = root / ".emw-project"
     pkb = root / ".project-knowledge"
     if not proj.exists() and not pkb.exists():
@@ -293,6 +312,8 @@ def check_project(root: Path, entry_schema: dict, index_schema: dict, rep: Repor
         skills = check_skill_ledger(ledger_path, rep, root)
 
     policy = load_policy(proj / "mode-policy.yaml", rep, root)
+    if ledger_path.exists():
+        check_recall(ledger_path, policy, today or _dt.date.today(), rep, root)
     log_path = proj / "task-log.yaml"
     if log_path.exists():
         check_task_log(log_path, skills, policy, rep, root)
@@ -370,7 +391,9 @@ DEFAULT_POLICY = {
     "default_mode_by_level": {"M0": 1, "M1": 1, "M2": 2, "M3": "any", "M4": "any"},
     "mode4_min_level": "M3",
     "assessment_every": 4,
+    "recall_days": [2, 7, 30],
 }
+RECALL_TYPES = ("recall", "rebuild")
 
 
 def load_policy(path: Path, rep: Report, root: Path) -> dict:
@@ -398,7 +421,65 @@ def load_policy(path: Path, rep: Report, root: Path) -> dict:
     if not isinstance(every, int) or isinstance(every, bool) or every < 1:
         rep.error(where, f"assessment_every {every!r} must be a whole number of tasks, 1 or more")
         policy["assessment_every"] = 4
+    days = policy.get("recall_days")
+    ok = isinstance(days, list) and all(isinstance(d, int) and not isinstance(d, bool) and d > 0 for d in days)
+    if not ok or days != sorted(set(days)):
+        rep.error(where, f"recall_days {days!r} must be a list of whole days in rising order, for example [2, 7, 30]")
+        policy["recall_days"] = DEFAULT_POLICY["recall_days"]
     return policy
+
+
+# --- recall checks ----------------------------------------------------------------
+
+def recall_schedule(skill: dict, today: _dt.date, days: list[int]) -> list[dict]:
+    """Return one slot per recall interval for a skill, or [] when none apply.
+
+    The clock starts at the skill's first dated evidence. Slot i is due `days[i]` days
+    later and stays open until the next slot is due (the last slot stays open). A slot
+    is done when an evidence item of type recall or rebuild, at assistance A0 or A1,
+    is dated inside it. Each slot is {"days", "due", "state", "on"}; state is one of
+    done, due, missed, upcoming."""
+    evidence = [e for e in (skill.get("evidence") or []) if isinstance(e, dict)]
+    dates = [d for d in (_to_date(e.get("date")) for e in evidence) if d]
+    if not dates or not days or skill.get("current_level") in (None, "M0"):
+        return []
+    start = min(dates)
+    recalls = sorted(d for e in evidence
+                     if e.get("type") in RECALL_TYPES and e.get("assistance") in ("A0", "A1")
+                     and (d := _to_date(e.get("date"))))
+    slots = []
+    for i, n in enumerate(days):
+        due = start + _dt.timedelta(days=n)
+        end = start + _dt.timedelta(days=days[i + 1]) if i + 1 < len(days) else None
+        hit = next((d for d in recalls if d >= due and (end is None or d < end)), None)
+        if hit:
+            state = "done"
+        elif today < due:
+            state = "upcoming"
+        elif end is not None and today >= end:
+            state = "missed"
+        else:
+            state = "due"
+        slots.append({"days": n, "due": due, "state": state, "on": hit})
+    return slots
+
+
+def check_recall(ledger_path: Path, policy: dict, today: _dt.date, rep: Report, root: Path) -> None:
+    try:
+        data = yaml.safe_load(ledger_path.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError):
+        return  # already reported by check_skill_ledger
+    if not isinstance(data, dict):
+        return
+    where = rel(ledger_path, root)
+    for skill in data.get("skills") or []:
+        if not isinstance(skill, dict):
+            continue
+        for slot in recall_schedule(skill, today, policy["recall_days"]):
+            if slot["state"] == "due":
+                rep.note(f"{where} {skill.get('id')}",
+                         f"{slot['days']}-day recall check is due (since {slot['due']}); "
+                         "run: python .emw/tools/emw_recall.py due")
 
 
 def check_task_log(path: Path, skills: dict[str, dict] | None, policy: dict,
@@ -581,6 +662,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Validate EMW knowledge and project records.")
     parser.add_argument("--root", default=".", help="repository root (default: current directory)")
     parser.add_argument("--strict", action="store_true", help="treat warnings as errors")
+    parser.add_argument("--date", type=_dt.date.fromisoformat, help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
 
     root = Path(args.root).resolve()
@@ -594,9 +676,11 @@ def main(argv: list[str] | None = None) -> int:
 
     rep = Report()
     shared = check_knowledge(kb, entry_schema, index_schema, rep, root, "shared")
-    has_project = check_project(root, entry_schema, index_schema, rep)
+    has_project = check_project(root, entry_schema, index_schema, rep, args.date)
     track_count = check_tracks(root, rep)
 
+    for n in rep.notes:
+        print(f"NOTE  {n}")
     for w in rep.warnings:
         print(f"WARN  {w}")
     for e in rep.errors:
@@ -605,7 +689,8 @@ def main(argv: list[str] | None = None) -> int:
     if track_count:
         scope += f" + {track_count} tracks"
     print(f"emw_check: {scope}; {shared} shared entries; "
-          f"{len(rep.errors)} errors, {len(rep.warnings)} warnings")
+          f"{len(rep.errors)} errors, {len(rep.warnings)} warnings"
+          + (f", {len(rep.notes)} notes" if rep.notes else ""))
     failed = rep.errors or (args.strict and rep.warnings)
     return 1 if failed else 0
 

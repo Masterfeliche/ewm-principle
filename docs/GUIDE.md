@@ -152,8 +152,27 @@ If anything is missing it tells you what. If the gate is met it opens the next s
 
 - **Most days:** work on the stage project with `/emw-practice`. Record evidence as you go.
 - **Once a week:** run `/emw-weekly`. It lists what you practised, what is weak, and gives you one short exercise without AI.
+- **Whenever `emw_recall.py due` lists something:** do that check from memory, with no notes and no earlier code open. It takes 15–30 minutes.
 - **When the checker says a skill is due:** do a 10–20 minute check without AI: predict what code does, trace it, or fix a planted bug.
-- **A week after building something important:** rebuild it from memory. That is the strongest evidence you can record.
+
+### Recall checks
+
+Building something once does not make it yours. Two days later, a week later, and a month later, EMW asks you to rebuild a small part of it from memory — no notes, no old repository open, no AI beyond one conceptual hint.
+
+```bash
+python .emw/tools/emw_recall.py due     # what you owe today
+python .emw/tools/emw_recall.py plan    # the whole schedule, including what is coming
+```
+
+Type `/emw-recall` and the agent will set the task from the outside only and keep your earlier code shut until you are done. When you finish, record it:
+
+```bash
+python .emw/tools/emw_recall.py done php.pdo --task "rebuilt the query layer; forgot the error mode"
+```
+
+The point is not to pass. If the rebuild needed the old code, the level in your ledger was not real — lower it by one and practise that piece this week. A check you missed is still worth doing late; the tool keeps listing it until you do.
+
+The days are 2, 7 and 30 after a skill's first evidence. A team lead can change them with `recall_days` in `.emw-project/mode-policy.yaml`, or set `[]` to switch them off.
 
 ### Find a human
 
@@ -222,10 +241,13 @@ Without a reason the checker fails. With one it passes. The point is that skippi
 | `/emw-capture <lesson>` | You found something worth remembering: a root cause, a rule, a trap |
 | `/emw-weekly` | Once a week: progress, gaps, and one exercise without AI |
 | `/emw-practice <skill>` | A skill is overdue for a check, or you want to learn by doing |
+| `/emw-recall <skill>` | A recall check is due: rebuild it from memory, nothing open |
 
 ### Checks without AI
 
 After a skill has been used in four logged tasks with no new low-help evidence, the checker warns that a check is due. Do a short one from `.emw/assessments/` or a practice session, and record it. This is how the ledger stays honest on a project where the AI writes a lot.
+
+Recall checks run on their own clock, 2, 7 and 30 days after each skill's first evidence. They apply to ongoing projects exactly as they do to learning tracks: `python .emw/tools/emw_recall.py due` lists them, and the checker prints a due one as a `NOTE`, which never fails a build. On a busy delivery team, set `recall_days` in `mode-policy.yaml` to something you will actually do — `[7, 30]` is a reasonable start — rather than switching them off.
 
 ### High-risk work
 
@@ -287,6 +309,7 @@ Start them on a track (section 4) for their first weeks, then move them to the r
 | `.emw/tracks/` | EMW | Learning tracks and project briefs |
 | `.emw/tools/emw_check.py` | EMW | Checks every record |
 | `.emw/tools/emw_track.py` | EMW | Starts and follows a track |
+| `.emw/tools/emw_recall.py` | EMW | Lists and records checks from memory |
 | `.emw-project/skill-ledger.yaml` | You and the agent | Skills, levels, evidence |
 | `.emw-project/task-log.yaml` | You and the agent | One line per meaningful task |
 | `.emw-project/mode-policy.yaml` | Team lead | How much the AI does by default |
@@ -307,6 +330,7 @@ Start them on a track (section 4) for their first weeks, then move them to the r
 | `/emw-weekly` | Prompt 09: weekly progress and gaps |
 | `/emw-practice` | Prompt 11: you type, the AI hints |
 | `/emw-track` | Prompt 12 and `emw_track.py`: start, status, ship, next |
+| `/emw-recall` | Prompt 13 and `emw_recall.py`: a check from memory |
 
 Slash commands exist for Claude Code and OpenCode. In other agents, ask in words ("follow the EMW feature prompt for…") or paste the prompt file.
 
@@ -314,6 +338,8 @@ Slash commands exist for Claude Code and OpenCode. In other agents, ask in words
 python .emw/tools/emw_check.py            # check all records
 python .emw/tools/emw_check.py --strict   # also fail on warnings
 python .emw/tools/emw_track.py status     # where you are on a track
+python .emw/tools/emw_recall.py due       # checks from memory you owe today
+python .emw/tools/emw_recall.py plan      # the whole recall schedule
 ```
 
 ## 9. Common mistakes
@@ -327,6 +353,7 @@ python .emw/tools/emw_track.py status     # where you are on a track
 | Editing `track.yaml` to get past a gate | Meet the gate. The file is the tool's, not yours |
 | Using the ledger to judge people | Use it to coach and plan |
 | Letting records go stale | Run `/emw-weekly`; fix what `emw_check` reports |
+| Skipping recall checks because the code still looks familiar | Familiarity is not recall. Do the check in an empty file |
 
 ## 10. When the checker complains
 
@@ -338,12 +365,14 @@ python .emw/tools/emw_track.py status     # where you are on a track
 | `mode 4 gives less support than the policy default` | Work was delegated on a weak skill | Add `mode_reason`, or redo it in the default mode |
 | `skill 'x' is not in skill-ledger.yaml` | The task log names an unknown skill | Add the skill to the ledger or fix the id |
 | `used in 4 tasks … run a short check without AI` | A check is due (a warning) | Do a 10–20 minute check and record it |
+| `2-day recall check is due` | A check from memory is owed (a note, never a failure) | Run `/emw-recall`, then `emw_recall.py done` |
+| `recall_days … must be a list of whole days in rising order` | `mode-policy.yaml` has a bad schedule | Use something like `[2, 7, 30]`, or `[]` to switch them off |
 | `entry is not listed in index.yaml` | A knowledge file is missing from the index | Add it to the index |
 
 ## 11. Limits to know
 
 - **EMW is instructions, not enforcement.** The checker validates records. It cannot see whether an agent really withheld a solution. That depends on the agent and on you.
 - **Its own effect is not measured yet.** It is built on research into AI and learning, and a method for a small trial is in `docs/research/pilot.md`, but no trial has been run.
-- **Scheduled reviews are partly built.** The gate checks one rebuild after a week. Reminders at 2 days, 1 week and 1 month are planned.
+- **Scheduled recall checks are reminders, not proof.** The tool schedules them and records what you say happened. Nothing stops you recording a check you did with the old file open; only you lose by it.
 - **The track tool rewrites `skill-ledger.yaml`,** so comments you add to that file are lost.
 - **Track projects use sandboxes and invented data only.** Real payments, real SMS sender names, real tax receipts and real people's data need a registered business and, for some activities, a licence. See `resources/research/`.

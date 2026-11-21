@@ -79,7 +79,7 @@ The skill ledger is rewritten by the tool, so comments you add to it are not kep
 | transfer | One `type: transfer` item (A0–A1): the stretch change in the brief |
 | check | `emw_check` passes |
 
-Evidence from an earlier stage does not count toward a later gate. Reviews at 2 days, 1 week and 1 month are planned but not built.
+Evidence from an earlier stage does not count toward a later gate. Separately from the gate, recall checks fall due 2 days, 1 week and 1 month after each skill's first evidence; `python .emw/tools/emw_recall.py due` lists them.
 
 ## Checking track files
 `python .emw/tools/emw_check.py` validates every track: the format, that each stage's skills exist, that targets never go down between stages, and that every brief file is present.

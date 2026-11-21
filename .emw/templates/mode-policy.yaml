@@ -13,3 +13,6 @@ mode4_min_level: M3
 # After this many logged tasks touch a skill without a new A0-A2 evidence item,
 # emw_check warns that a short check without AI is due (see .emw/assessments/ or Prompt 11).
 assessment_every: 4
+# Recall checks: days after a skill's first evidence when a short check from memory is due.
+# List them with: python .emw/tools/emw_recall.py due   (see Prompt 13). Use [] to turn them off.
+recall_days: [2, 7, 30]

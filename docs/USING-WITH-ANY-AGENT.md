@@ -43,7 +43,7 @@ The prompts are separate files so humans can open and copy them. The agent shoul
 - OpenCode natively loads root `AGENTS.md`; this is the primary EMW integration.
 - Keep `opencode.json` and merge its `instructions` array if your project already has a config.
 - OpenCode discovers skills in `.opencode/skills/` and slash commands in `.opencode/commands/`.
-- This framework provides `@emw-workflow`, `@emw-knowledge`, and `@emw-mastery` skills plus `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, `/emw-practice`, and `/emw-track` commands.
+- This framework provides `@emw-workflow`, `@emw-knowledge`, and `@emw-mastery` skills plus `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, `/emw-practice`, `/emw-track`, `/emw-recall`, and `/emw-recall` commands.
 - See [OpenCode Integration](OPENCODE.md) for setup and examples.
 
 ### GitHub Copilot

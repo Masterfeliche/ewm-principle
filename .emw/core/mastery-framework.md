@@ -47,6 +47,9 @@ Each evidence item records `verified_by`:
 
 M3 and M4 require at least one A0–A2 evidence item with `verified_by: human`. An agent may run and record assessments but cannot be the only judge of independent mastery.
 
+## Recall checks
+Spacing retrievals out over days is what makes a skill stick; re-reading code is not retrieval. EMW schedules a short check from memory 2, 7 and 30 days after a skill's first evidence (`recall_days` in `.emw-project/mode-policy.yaml`; `[]` turns them off). `python .emw/tools/emw_recall.py due` lists what is owed, `plan` shows the whole schedule, and `done` records the result; `emw_check` prints a due check as a NOTE, which never fails a build. A check counts only as evidence of type `recall` or `rebuild` at A0–A1, dated inside its window. A rebuild that needed the old code means the level was not real: lower it. See `.emw/prompts/13-recall.md`.
+
 ## Assessment cadence
 Checks without AI are sampled, not run on every task. `.emw-project/mode-policy.yaml` sets `assessment_every` (default 4): after that many logged tasks touch a skill with no new A0–A2 evidence, `emw_check` warns and the agent offers a short check from `.emw/assessments/` or a Prompt 11 practice session. Keep checks short (10–20 minutes): predict, trace, fix a planted bug, or rebuild from memory. Skills at M4 are exempt.
 

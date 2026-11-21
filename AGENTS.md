@@ -54,7 +54,7 @@ If this repository is the EMW framework itself, do not onboard it as an unrelate
 3. **AI-Drafted / Guided Audit:** AI drafts familiar, bounded patterns; human audits and demonstrates understanding.
 4. **Bounded Delegation:** AI executes narrow, low-risk, well-understood tasks within explicit scope and checks.
 
-Do not force unproductive struggle. Use progressive support: question → concept → pseudocode → skeleton/diff → small example → guided implementation → full worked solution. Record assistance A0–A4. High-risk decisions remain human-governed regardless of mode.
+Do not force unproductive struggle. Use progressive support: question → concept → pseudocode → skeleton/diff → small example → guided implementation → full worked solution. Climb one step at a time, and only after the human has tried the current one; the later steps are not an opening offer. When the human is practising rather than delivering — they want to write it themselves, or the session began with `/emw-practice` or `/emw-recall` — `.emw/prompts/11-practice.md` and `.emw/prompts/13-recall.md` govern instead, and the last steps of this ladder are not available at all before a real attempt. Record assistance A0–A4. High-risk decisions remain human-governed regardless of mode.
 
 ## Engineering lifecycle
 Use `ANALYZE → SPECIFY & PLAN → EXECUTE → VERIFY → CONSOLIDATE → EVOLVE` as defined in `.emw/core/execution-lifecycle.md`. Keep work incremental and within scope. Do not silently broaden scope or modify unrelated files.

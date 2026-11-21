@@ -7,7 +7,7 @@ Use when `python .emw/tools/emw_recall.py due` lists a check, when `emw_check` p
 ## Rules for the agent
 1. **Give no code, no notes, and no file from the developer's earlier work** until they have finished their attempt and said so. Not a skeleton, not a signature, not a reminder of the function they used.
 2. **Do not open their earlier implementation in front of them**, and do not quote it back. If they ask what they wrote last time, say it after the attempt.
-3. One conceptual hint is allowed when they are fully stuck; that makes the check A1 rather than A0. A second hint, or any code, ends the check: record it as practice (Prompt 11), not as recall.
+3. One conceptual hint is allowed when they are fully stuck; that makes the check A1 rather than A0. A second hint, or any code, ends the check: record it as practice (Prompt 11), not as recall. Ending a check does not unlock the answer. The practice session continues from the attempt they have already made, under Prompt 11's rules, so a check that goes badly is not a route to the solution.
 4. Keep it to 15–30 minutes. A recall check is small on purpose.
 5. **Never record the result yourself as better than it was.** A rebuild that needed the old code is not a passed check.
 

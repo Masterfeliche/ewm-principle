@@ -92,6 +92,31 @@ class EmwCheckTests(unittest.TestCase):
         self.assertIn("orphan.md: entry is not listed in index.yaml", out)
         self.assertIn("'debug' is not one of", out)
 
+    def test_pkb_ids_only_in_project_knowledge(self):
+        src = self.repo.root / ".emw/knowledge/debugging-playbooks/bisect-regressions.md"
+        text = src.read_text(encoding="utf-8")
+        self.repo.write(".project-knowledge/debugging/bisect.md", text.replace("KB-DBG-0001", "PKB-0001"))
+        self.repo.template("onboarding-status.yaml")
+        self.repo.write(".project-knowledge/index.yaml", """            schema_version: 1
+            project: "demo"
+            updated_at: "2026-11-21"
+            entries:
+              - id: "PKB-0001"
+                title: "Find the commit that introduced a regression with git bisect"
+                path: "debugging/bisect.md"
+                category: "debugging"
+                status: "proposed"
+                confidence: "high"
+            """)
+        code, out = self.repo.run()
+        self.assertEqual(code, 0, out)
+        index = self.repo.root / ".emw/knowledge/index.yaml"
+        index.write_text(index.read_text(encoding="utf-8").replace("KB-DBG-0001", "PKB-DBG-0001"), encoding="utf-8")
+        src.write_text(text.replace("KB-DBG-0001", "PKB-DBG-0001"), encoding="utf-8")
+        code, out = self.repo.run()
+        self.assertEqual(code, 1, out)
+        self.assertIn("PKB-DBG-0001", out)
+
     def test_verified_needs_strong_evidence(self):
         path = self.repo.root / ".emw/knowledge/agent-guidance/report-unrun-checks.md"
         path.write_text(path.read_text(encoding="utf-8").replace(

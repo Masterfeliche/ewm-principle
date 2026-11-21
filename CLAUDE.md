@@ -18,4 +18,4 @@ This repository ships Claude Code commands in `.claude/commands/` and skills in 
 ## Validate records
 After changing knowledge entries or project ledgers, run `python .emw/tools/emw_check.py` and fix every error before reporting the work done.
 
-Keep engineering delivery and developer mastery separate. Never infer mastery from AI-generated code or claim checks passed unless they were run. See [Using EMW with Any Agent](docs/USING-WITH-ANY-AGENT.md).
+Keep engineering delivery and developer mastery separate. Never infer mastery from AI-generated code or claim checks passed unless they were run. See [Using EMW with Any Agent](https://github.com/Masterfeliche/ewm-principle/blob/main/docs/USING-WITH-ANY-AGENT.md) (the `docs/` directory is not copied into a consuming project).

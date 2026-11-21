@@ -45,7 +45,7 @@ Users can open any prompt file and copy its complete prompt into an agent that d
 - Do not repeatedly run onboarding after it is complete; refresh only when major architecture, stack, ownership, or project goals change.
 
 ## OpenCode and Claude Code shortcuts
-When using OpenCode (`.opencode/commands/`) or Claude Code (`.claude/commands/`), the same workflows are available as project slash commands in `.opencode/commands/`:
+Each agent integration that was installed carries the same workflows as project slash commands — Claude Code in `.claude/commands/`, OpenCode in `.opencode/commands/`:
 - `/emw-onboard`
 - `/emw-feature`
 - `/emw-learn`
@@ -57,4 +57,4 @@ When using OpenCode (`.opencode/commands/`) or Claude Code (`.claude/commands/`)
 - `/emw-track`
 - `/emw-recall`
 
-Reusable skills are available under `.opencode/skills/`: `emw-workflow`, `emw-knowledge`, and `emw-mastery`. See [OpenCode Integration](../../docs/OPENCODE.md). The prompt files in this directory remain the canonical task instructions; OpenCode commands and skills are adapters that route to them.
+Reusable skills are available under `.claude/skills/` or `.opencode/skills/`: `emw-workflow`, `emw-knowledge`, and `emw-mastery`. See [OpenCode Integration](https://github.com/Masterfeliche/ewm-principle/blob/main/docs/OPENCODE.md) (the `docs/` directory is not copied into a consuming project). The prompt files in this directory remain the canonical task instructions; the commands and skills are adapters that route to them.

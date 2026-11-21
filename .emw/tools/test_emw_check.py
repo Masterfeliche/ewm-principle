@@ -190,6 +190,24 @@ class EmwCheckTests(unittest.TestCase):
         self.assertNotIn("1 errors", out)
         self.assertIn("shared entries", out)
 
+    def test_a_dangling_markdown_link_warns(self):
+        """A link that resolves in the framework repository can still dangle in every
+        install, because only .emw/, AGENTS.md and one adapter are copied."""
+        self.repo.write("CLAUDE.md", "See [the guide](docs/MISSING.md) and [upstream](https://example.test/x).\n")
+        code, out = self.repo.run()
+        self.assertEqual(code, 0, out)
+        self.assertIn("CLAUDE.md:1", out)
+        self.assertIn("docs/MISSING.md", out)
+        self.assertNotIn("example.test", out)
+        code, out = self.repo.run("--strict")
+        self.assertEqual(code, 1, out)
+
+    def test_links_that_resolve_are_quiet(self):
+        self.repo.write("docs/REAL.md", "# Real\n")
+        self.repo.write("CLAUDE.md", "See [the guide](docs/REAL.md) and [an anchor](#part).\n")
+        code, out = self.repo.run("--strict")
+        self.assertEqual(code, 0, out)
+
     def test_verified_needs_strong_evidence(self):
         path = self.repo.root / ".emw/knowledge/agent-guidance/report-unrun-checks.md"
         path.write_text(path.read_text(encoding="utf-8").replace(

@@ -26,6 +26,7 @@ Early research points the same way, though the studies are small and recent:
 EMW responds with help limits set by team policy rather than chosen task by task, evidence-based skill records, and sampled checks without AI. Whether EMW itself improves outcomes is not yet measured; see the [pilot study method](docs/research/pilot.md).
 
 ## Start here
+- **[Your first session](docs/START-HERE.md)**: new to EMW and starting a learning track? Start here — the first half hour, in order.
 - **[End-to-end guide](docs/GUIDE.md)**: learning with a track, working on an ongoing project, and leading a team. A visual version is in `resources/guide/`.
 - [Using EMW with any coding agent](docs/USING-WITH-ANY-AGENT.md)
 - [OpenCode setup and commands](docs/OPENCODE.md)

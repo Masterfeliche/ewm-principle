@@ -419,6 +419,11 @@ def check_skill_ledger(path: Path, rep: Report, root: Path) -> dict[str, dict] |
                 rep.error(at, f"evidence[{j}] assistance {e.get('assistance')!r} is not A0-A4")
             if e.get("verified_by") not in (None, "human", "self"):
                 rep.error(at, f"evidence[{j}] verified_by {e.get('verified_by')!r} is not human or self")
+            # An unknown type is not harmless: the stage gate looks for specific ones, so a
+            # typo here is work that silently never counts.
+            if e.get("type") not in (None, *EVIDENCE_TYPES):
+                rep.error(at, f"evidence[{j}] type {e.get('type')!r} is not one of "
+                              f"{', '.join(EVIDENCE_TYPES)}")
             if "date" in e and not _is_date(e.get("date")):
                 rep.error(at, f"evidence[{j}] date {e.get('date')!r} is not YYYY-MM-DD")
         if level in LEVELS and skill.get("target_level") in LEVELS:

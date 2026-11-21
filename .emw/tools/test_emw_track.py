@@ -144,6 +144,67 @@ class EmwTrackTests(unittest.TestCase):
         self.assertEqual(emw_track.check_detail(1, "... 2 errors, 0 warnings"),
                          "... 2 errors, 0 warnings")
 
+    def test_log_records_evidence_without_touching_the_level(self):
+        """Hand-editing YAML is the step most likely to be skipped."""
+        self.run_track("start", "php", "--date", "2026-11-01")
+        code, out = self.run_track("log", "core.sql", "--type", "implement",
+                                   "--assistance", "A1", "--task", "first JOIN; forgot LEFT",
+                                   "--date", "2026-11-02")
+        self.assertEqual(code, 0, out)
+        skill = next(s for s in self.ledger()["skills"] if s["id"] == "core.sql")
+        self.assertEqual(skill["evidence"], [{
+            "date": "2026-11-02", "type": "implement", "assistance": "A1",
+            "verified_by": "self", "task": "first JOIN; forgot LEFT"}])
+        self.assertEqual(skill["current_level"], "M0")
+        self.assertIn("unchanged", out)
+        check_out = io.StringIO()
+        with contextlib.redirect_stdout(check_out):
+            self.assertEqual(emw_check.main(["--root", str(self.root)]), 0, check_out.getvalue())
+
+    def test_log_refuses_what_would_silently_never_count(self):
+        self.run_track("start", "php", "--date", "2026-11-01")
+        for args, expected in (
+            (("log", "php.pdo", "--type", "implement", "--assistance", "A0", "--task", "x"),
+             "no skill 'php.pdo'"),
+            (("log", "core.sql", "--type", "rebuld", "--assistance", "A0", "--task", "x"),
+             "is not one of"),
+            (("log", "core.sql", "--type", "rebuild", "--assistance", "A9", "--task", "x"),
+             "is not one of"),
+            (("log", "core.sql", "--type", "rebuild", "--assistance", "A0", "--task", "  "),
+             "cannot be empty"),
+        ):
+            with self.subTest(args=args):
+                code, out = self.run_track(*args)
+                self.assertEqual(code, 2, out)
+                self.assertIn(expected, out)
+        self.assertEqual(self.ledger()["skills"][4].get("evidence"), [])
+
+    def test_human_verification_needs_a_named_reviewer(self):
+        """An agent must not certify its own review; naming a person makes a false
+        entry a deliberate act rather than a default."""
+        self.run_track("start", "php", "--date", "2026-11-01")
+        code, out = self.run_track("log", "core.git", "--type", "implement",
+                                   "--assistance", "A1", "--task", "x", "--verified-by", "human")
+        self.assertEqual(code, 2, out)
+        self.assertIn("--reviewer", out)
+        self.assertIn("never mark its own review", out)
+
+        code, out = self.run_track("log", "core.git", "--type", "implement",
+                                   "--assistance", "A1", "--task", "repo and first PR",
+                                   "--verified-by", "human", "--reviewer", "Asha, team lead",
+                                   "--date", "2026-11-09")
+        self.assertEqual(code, 0, out)
+        item = next(s for s in self.ledger()["skills"] if s["id"] == "core.git")["evidence"][-1]
+        self.assertEqual(item["verified_by"], "human")
+        self.assertEqual(item["reviewer"], "Asha, team lead")
+
+    def test_log_says_when_the_evidence_will_not_count(self):
+        self.run_track("start", "php", "--date", "2026-11-01")
+        code, out = self.run_track("log", "core.sql", "--type", "implement",
+                                   "--assistance", "A4", "--task", "asked for the answer")
+        self.assertEqual(code, 0, out)
+        self.assertIn("do not count toward a stage gate", out)
+
     def test_a_recall_item_meets_the_rebuild_gate(self):
         """emw_recall.py records type: recall. The gate accepted only type: rebuild,
         so the documented way to record a rebuild could never tick its own gate."""

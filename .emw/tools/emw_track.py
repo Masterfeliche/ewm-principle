@@ -314,6 +314,54 @@ def cmd_ship(root: Path, args) -> int:
     return 0
 
 
+def cmd_log(root: Path, args) -> int:
+    """Append one evidence item to a skill.
+
+    Hand-editing YAML is the step most likely to be skipped, and a ledger with gaps is
+    worse than none: the developer plans around skills they never showed. This makes it
+    one command. It deliberately does not change current_level -- promotion is the
+    developer's decision against the guidance in .emw/core/mastery-framework.md.
+    """
+    project = Project(root)
+    ledger = project.ledger()
+    skill = next((s for s in ledger["skills"]
+                  if isinstance(s, dict) and s.get("id") == args.skill), None)
+    if skill is None:
+        known = ", ".join(str(s.get("id")) for s in ledger["skills"] if isinstance(s, dict))
+        raise TrackError(f"no skill '{args.skill}' in the ledger. It has: {known or 'none'}")
+    if args.type not in emw_check.EVIDENCE_TYPES:
+        raise TrackError(f"type '{args.type}' is not one of "
+                         f"{', '.join(emw_check.EVIDENCE_TYPES)}")
+    if args.assistance not in emw_check.ASSISTANCE:
+        raise TrackError(f"assistance '{args.assistance}' is not one of "
+                         f"{', '.join(emw_check.ASSISTANCE)}")
+    if not args.task.strip():
+        raise TrackError("--task cannot be empty; write what you did and what you got wrong")
+    if args.verified_by == "human" and not (args.reviewer or "").strip():
+        raise TrackError("--verified-by human needs --reviewer '<who saw the work>'. "
+                         "Only the developer records this, after a real person reviewed it; "
+                         "an agent must never mark its own review as human-verified.")
+
+    item = {"date": (args.date or dt.date.today()).isoformat(),
+            "type": args.type, "assistance": args.assistance,
+            "verified_by": args.verified_by, "task": args.task.strip()}
+    if args.reviewer:
+        item["reviewer"] = args.reviewer.strip()
+    evidence = skill.setdefault("evidence", [])
+    if not isinstance(evidence, list):
+        raise TrackError(f"evidence on '{args.skill}' is not a list; fix the ledger by hand")
+    evidence.append(item)
+    project.save_ledger(ledger)
+
+    print(f"Recorded {args.assistance} {args.type} evidence on {args.skill} for {item['date']}.")
+    if args.assistance in ("A3", "A4"):
+        print("A3 and A4 show the work was done with the AI, not independently. They are "
+              "worth recording and they do not count toward a stage gate.")
+    print(f"{args.skill} is at {skill.get('current_level')}, unchanged. Raise a level only "
+          "when the evidence meets .emw/core/mastery-framework.md, and decide that yourself.")
+    return 0
+
+
 def cmd_next(root: Path, args) -> int:
     project = Project(root)
     state = project.state()
@@ -362,11 +410,24 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("status", help="show the current stage and gate")
     p_ship = sub.add_parser("ship", help="record the stage project's URL")
     p_ship.add_argument("--url", required=True)
+    p_log = sub.add_parser("log", help="record one evidence item on a skill")
+    p_log.add_argument("skill", help="a skill id from .emw-project/skill-ledger.yaml")
+    p_log.add_argument("--type", required=True,
+                       help="|".join(emw_check.EVIDENCE_TYPES))
+    p_log.add_argument("--assistance", required=True,
+                       help="A0 independent ... A4 AI-authored")
+    p_log.add_argument("--task", required=True, help="what you did, and what you got wrong")
+    p_log.add_argument("--verified-by", dest="verified_by", default="self",
+                       choices=["self", "human"],
+                       help="human only after a real person reviewed the work")
+    p_log.add_argument("--reviewer", help="who reviewed it; required with --verified-by human")
+    p_log.add_argument("--date", type=dt.date.fromisoformat, help=argparse.SUPPRESS)
     p_next = sub.add_parser("next", help="pass the gate and open the next stage")
     p_next.add_argument("--date", type=dt.date.fromisoformat, help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
     root = Path(args.root).resolve()
-    commands = {"start": cmd_start, "status": cmd_status, "ship": cmd_ship, "next": cmd_next}
+    commands = {"start": cmd_start, "status": cmd_status, "ship": cmd_ship,
+                "log": cmd_log, "next": cmd_next}
     try:
         return commands[args.command or "status"](root, args)
     except TrackError as exc:

@@ -257,6 +257,23 @@ class EmwCheckTests(unittest.TestCase):
         code, out = self.repo.run("--strict")
         self.assertEqual(code, 0, out)
 
+    def test_an_unknown_evidence_type_is_an_error(self):
+        """The gate looks for specific types, so a typo is work that never counts."""
+        self.repo.write(".emw-project/skill-ledger.yaml", """\
+            skills:
+              - id: php.pdo
+                name: PDO
+                scope: S1
+                target_level: M3
+                current_level: M1
+                confidence: low
+                evidence:
+                  - {date: "2026-11-02", type: rebuld, assistance: A0, verified_by: self}
+            """)
+        code, out = self.repo.run()
+        self.assertEqual(code, 1, out)
+        self.assertIn("type 'rebuld' is not one of", out)
+
     def test_a_dangling_markdown_link_warns(self):
         """A link that resolves in the framework repository can still dangle in every
         install, because only .emw/, AGENTS.md and one adapter are copied."""

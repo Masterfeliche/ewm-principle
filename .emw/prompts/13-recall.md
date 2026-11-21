@@ -11,6 +11,17 @@ Use when `python .emw/tools/emw_recall.py due` lists a check, when `emw_check` p
 4. Keep it to 15–30 minutes. A recall check is small on purpose.
 5. **Never record the result yourself as better than it was.** A rebuild that needed the old code is not a passed check.
 
+## Where the work happens
+The boundary is the same as Prompt 11: the chat is for hints, the repository is for code,
+the developer writes and runs it themselves, and the agent writes only to `.emw-project/`
+and `.project-knowledge/`.
+
+A recall check adds one rule. **Do not go looking for their earlier implementation** — not
+to refresh your own memory of it, not to prepare the comparison, not to check whether
+their rebuild is heading the right way. Open it in step 5, after they say they are
+finished, and open it with them. Searching the repository for it beforehand ends the check
+as surely as handing over the code, and it is far easier to do by accident.
+
 ## Session flow
 1. **Name the piece.** Take the skill id from the `emw_recall.py due` output. Pick the smallest thing that shows the skill: the query layer, not the whole app; the middleware, not the framework.
 2. **State the task from the outside only:** what it must do, its inputs and outputs, one edge case, and how they will know it works. No structure, no naming, no hints about approach.

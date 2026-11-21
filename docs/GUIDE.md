@@ -45,6 +45,7 @@ Copy these from the EMW repository into the root of your own repository:
 | `AGENTS.md` | The contract every agent reads first. If you already have one, merge the EMW text into it |
 | `CLAUDE.md` and `.claude/` | For Claude Code: slash commands and skills |
 | `opencode.json` and `.opencode/` | For OpenCode |
+| `.agents/` | For Antigravity: it reads `AGENTS.md` itself, so this is only the commands and skills |
 | `GEMINI.md`, `.cursor/rules/emw.mdc`, `.github/copilot-instructions.md` | For Gemini CLI, Cursor, Copilot (one pointer file each) |
 | `.github/workflows/emw-check.yml` | Optional: runs the checker on every pull request |
 

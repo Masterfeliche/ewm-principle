@@ -76,11 +76,46 @@ class EmwCheckTests(unittest.TestCase):
         code, out = emw_check.main(["--root", str(FRAMEWORK), "--strict"]), ""
         self.assertEqual(code, 0)
 
-    def test_onboarding_templates_pass(self):
+    def onboard(self, status: str = "not-started") -> None:
+        """Write the full record set prompt 01 requires."""
         for name in ("onboarding-status.yaml", "skill-ledger.yaml", "task-log.yaml", "mode-policy.yaml"):
             self.repo.template(name)
+        self.repo.write(".emw-project/project-profile.md", "# Project Profile\n")
+        self.repo.write(".emw-project/delivery-ledger.md", "# Engineering Delivery Ledger\n")
+        self.repo.write(".project-knowledge/README.md", "# Project Knowledge Base\n")
+        self.repo.write(".project-knowledge/index.yaml",
+                        'schema_version: 1\nproject: "demo"\nupdated_at: "2026-11-21"\nentries: []\n')
+        if status != "not-started":
+            path = self.repo.root / ".emw-project/onboarding-status.yaml"
+            path.write_text(path.read_text(encoding="utf-8")
+                            .replace('status: "not-started"', f'status: "{status}"')
+                            .replace('last_reviewed: ""', 'last_reviewed: "2026-11-21"'), encoding="utf-8")
+
+    def test_onboarding_templates_pass(self):
+        self.onboard()
         code, out = self.repo.run("--strict")
         self.assertEqual(code, 0, out)
+
+    def test_complete_onboarding_must_really_have_project_knowledge(self):
+        """onboarding-status.yaml points at .project-knowledge/, but that pointer was
+        never checked, so a project could claim completion with the directory gone."""
+        self.onboard(status="complete")
+        code, out = self.repo.run()
+        self.assertEqual(code, 0, out)
+        shutil.rmtree(self.repo.root / ".project-knowledge")
+        code, out = self.repo.run()
+        self.assertEqual(code, 1, out)
+        self.assertIn("project_knowledge", out)
+
+    def test_an_incomplete_record_set_warns(self):
+        self.repo.template("skill-ledger.yaml")
+        code, out = self.repo.run()
+        self.assertEqual(code, 0, out)
+        for missing in ("project-profile.md", "delivery-ledger.md", "task-log.yaml",
+                        ".project-knowledge/index.yaml"):
+            self.assertIn(missing, out)
+        code, out = self.repo.run("--strict")
+        self.assertEqual(code, 1, out)
 
     def test_unindexed_entry_and_bad_category(self):
         src = self.repo.root / ".emw/knowledge/debugging-playbooks/bisect-regressions.md"

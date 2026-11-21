@@ -282,6 +282,31 @@ def check_entry_rules(meta: dict, where: str, rep: Report, label: str) -> None:
 
 # --- project records ----------------------------------------------------------
 
+# The records prompt 01 requires a consuming project to own. mode-policy.yaml has its
+# own warning in load_policy, and the learning log is optional on existing installs.
+REQUIRED_RECORDS = (
+    ".emw-project/project-profile.md",
+    ".emw-project/delivery-ledger.md",
+    ".emw-project/skill-ledger.yaml",
+    ".emw-project/task-log.yaml",
+    ".project-knowledge/README.md",
+    ".project-knowledge/index.yaml",
+)
+
+
+def check_required_records(root: Path, rep: Report) -> None:
+    """Warn for each onboarding record that does not exist.
+
+    A warning, not an error: a project part-way through onboarding is an honest state,
+    and prompt 01 tells the agent to run this checker at the end of onboarding. A
+    project that *claims* to be onboarded is checked against its own pointers above.
+    """
+    for record in REQUIRED_RECORDS:
+        if not (root / record).exists():
+            rep.warn(record, "required onboarding record is missing; run the "
+                             "onboarding prompt (01)")
+
+
 def check_project(root: Path, entry_schema: dict, index_schema: dict, rep: Report,
                   today: _dt.date | None = None) -> bool:
     proj = root / ".emw-project"
@@ -301,10 +326,15 @@ def check_project(root: Path, entry_schema: dict, index_schema: dict, rep: Repor
         if status == "complete":
             if not data.get("last_reviewed"):
                 rep.error(where, "status is complete but last_reviewed is empty")
-            for key in ("project_profile", "delivery_ledger", "skill_ledger"):
+            # project_knowledge was missing from this list, so a project could claim
+            # completion with .project-knowledge/ deleted and still check clean.
+            for key in ("project_profile", "delivery_ledger", "skill_ledger",
+                        "project_knowledge"):
                 target = data.get(key)
                 if target and not (root / target).exists():
                     rep.error(where, f"{key} points to missing file {target}")
+
+    check_required_records(root, rep)
 
     ledger_path = proj / "skill-ledger.yaml"
     skills: dict[str, str] | None = None
@@ -393,7 +423,18 @@ DEFAULT_POLICY = {
     "assessment_every": 4,
     "recall_days": [2, 7, 30],
 }
+EVIDENCE_TYPES = ("explain", "predict", "trace", "debug", "implement", "modify",
+                  "transfer", "teach", "rebuild", "recall")
 RECALL_TYPES = ("recall", "rebuild")
+
+
+def ledger_header(note: str) -> str:
+    """The skill-ledger comment block. One source, because emw_track and emw_recall
+    both rewrite the file and their type lists had already drifted apart."""
+    return ("# Evidence-backed developer mastery ledger. " + note + "\n"
+            "# Evidence item: {date, type, assistance, verified_by, task}\n"
+            "#   type: " + " | ".join(EVIDENCE_TYPES) + "\n"
+            "#   assistance: A0-A4    verified_by: self | human\n")
 
 
 def load_policy(path: Path, rep: Report, root: Path) -> dict:
@@ -441,7 +482,10 @@ def recall_schedule(skill: dict, today: _dt.date, days: list[int]) -> list[dict]
     done, due, missed, upcoming."""
     evidence = [e for e in (skill.get("evidence") or []) if isinstance(e, dict)]
     dates = [d for d in (_to_date(e.get("date")) for e in evidence) if d]
-    if not dates or not days or skill.get("current_level") in (None, "M0"):
+    # The clock starts at the first dated evidence, so `not dates` already excludes a
+    # skill nobody has worked on. Do not also filter on current_level: every skill a
+    # track creates is M0, and those are the ones recall exists for.
+    if not dates or not days:
         return []
     start = min(dates)
     recalls = sorted(d for e in evidence

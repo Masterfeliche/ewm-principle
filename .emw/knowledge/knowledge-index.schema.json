@@ -6,6 +6,7 @@
   "required": ["schema_version", "entries"],
   "properties": {
     "schema_version": {"const": 1},
+    "project": {"type": "string"},
     "updated_at": {"type": "string"},
     "entries": {
       "type": "array",
@@ -13,7 +14,7 @@
         "type": "object",
         "required": ["id", "title", "path", "category", "status", "confidence"],
         "properties": {
-          "id": {"type": "string", "pattern": "^KB-[A-Z0-9-]+$"},
+          "id": {"type": "string", "pattern": "^P?KB-[A-Z0-9-]+$"},
           "title": {"type": "string", "minLength": 5},
           "path": {"type": "string"},
           "category": {"enum": ["engineering-pattern", "debugging", "technology", "architecture", "security", "integration", "learning", "agent-guidance", "research"]},

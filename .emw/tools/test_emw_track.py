@@ -131,6 +131,19 @@ class EmwTrackTests(unittest.TestCase):
         self.assertIn("Stage 1: Language foundations", out)
         self.assertIn("[ ] human", out)
 
+    def test_a_ticked_check_row_explains_its_warnings(self):
+        """The gate runs emw_check without --strict, so a row could tick while its own
+        text said '5 warnings', which reads as a contradiction."""
+        self.run_track("start", "php", "--date", "2026-11-01")
+        code, out = self.run_track("status")
+        self.assertEqual(code, 0, out)
+        self.assertIn("[x] check", out)
+        self.assertIn("warnings do not block the gate", out)
+        self.assertEqual(emw_track.check_detail(0, "... 0 errors, 0 warnings"),
+                         "... 0 errors, 0 warnings")
+        self.assertEqual(emw_track.check_detail(1, "... 2 errors, 0 warnings"),
+                         "... 2 errors, 0 warnings")
+
     def test_a_recall_item_meets_the_rebuild_gate(self):
         """emw_recall.py records type: recall. The gate accepted only type: rebuild,
         so the documented way to record a rebuild could never tick its own gate."""

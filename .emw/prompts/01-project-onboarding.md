@@ -27,6 +27,8 @@ Create or update:
 - `.project-knowledge/README.md`
 - `.project-knowledge/index.yaml`
 
+Optional, created when the project will use it: `.emw-project/learning-log.md` from `.emw/templates/learning-log.md`. Prompt 09 reads it when it exists and does not expect it otherwise.
+
 Use framework templates under `.emw/templates/`. Finish by running `python .emw/tools/emw_check.py` and reporting its result. Never overwrite existing project records without inspecting and merging them.
 
 ## Final onboarding report

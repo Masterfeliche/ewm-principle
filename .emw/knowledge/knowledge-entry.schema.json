@@ -2,11 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/Masterfeliche/ewm-principle/blob/main/.emw/knowledge/knowledge-entry.schema.json",
   "title": "EMW Knowledge Entry",
-  "description": "Evidence-backed reusable engineering knowledge. Markdown documents may use this schema as their metadata contract.",
+  "description": "Evidence-backed reusable engineering knowledge. Markdown documents may use this schema as their metadata contract. A shared-framework entry uses a KB- id and a project-local entry a PKB- id; which prefix is allowed depends on the knowledge base the entry lives in, and emw_check enforces that.",
   "type": "object",
   "required": ["id", "title", "status", "confidence", "category", "scope", "summary", "context", "problem", "recommended_approach", "evidence", "limitations", "created_at", "last_reviewed"],
   "properties": {
-    "id": {"type": "string", "pattern": "^KB-[A-Z0-9-]+$"},
+    "id": {"type": "string", "pattern": "^P?KB-[A-Z0-9-]+$"},
     "title": {"type": "string", "minLength": 5},
     "status": {"enum": ["draft", "proposed", "verified", "deprecated", "superseded"]},
     "confidence": {"enum": ["low", "medium", "high"]},

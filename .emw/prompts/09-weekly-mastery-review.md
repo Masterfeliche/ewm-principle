@@ -4,7 +4,7 @@ Review available project activity and records for the requested period. Do not i
 
 Read:
 - Project delivery ledger.
-- Developer skill ledger and learning log.
+- Developer skill ledger, and the learning log if the project keeps one (it is optional; see `.emw/templates/learning-log.md`). Its absence is not a gap to report.
 - Relevant task briefs and verification reports.
 - Recent ADRs and project knowledge additions.
 - Git history or issue records only when accessible and relevant.

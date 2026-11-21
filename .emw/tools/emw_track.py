@@ -163,6 +163,18 @@ def add_stage_skills(ledger: dict, track: dict, stage: dict) -> list[str]:
 
 # --- gate ---------------------------------------------------------------------------
 
+def check_detail(code: int, tail: str) -> str:
+    """Explain a ticked check row that still mentions warnings.
+
+    The gate runs emw_check without --strict on purpose: warnings mean records are
+    incomplete, which should not stop a stage-0 learner who has no product to profile
+    yet. Without this note the row reads as a contradiction.
+    """
+    if code == 0 and " 0 warnings" not in tail and "warning" in tail:
+        return tail + "  (warnings do not block the gate; run emw_check to see them)"
+    return tail
+
+
 def gate_report(project: Project, track: dict, state: dict) -> tuple[list[tuple[str, bool, str]], dict]:
     """Return ([(name, met, detail)], stage) for the current stage."""
     number = state["current_stage"]
@@ -209,7 +221,7 @@ def gate_report(project: Project, track: dict, state: dict) -> tuple[list[tuple[
          else f"no A0-A2 evidence of type rebuild or recall dated on or after {rebuild_from}"),
         ("transfer", bool(transfer), f"{len(transfer)} transfer item(s)" if transfer
          else "no A0-A1 evidence of type transfer in this stage"),
-        ("check", check_code == 0, check_tail),
+        ("check", check_code == 0, check_detail(check_code, check_tail)),
     ]
     return report, stage
 

@@ -1,6 +1,6 @@
 # Stage 4 brief: Duka POS for many shops
 
-**Track:** PHP (Laravel) · **Mode:** 2, moving to 3 for skills you have proved · **Time:** 6–12 months (estimate) · Read `php-house-rules.md` first.
+**Track:** PHP (Laravel) · **Mode:** 2, moving to 3 for skills you have proved · **Time:** 6–12 months (estimate) · Read `house-rules.md` first.
 
 ## The problem
 A shop needs to record sales, take mobile-money payments and issue fiscal receipts, in one cheap tool that works when the connection is poor. Each of those is hard alone. Together they are a real production system.

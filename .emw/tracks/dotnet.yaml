@@ -1,0 +1,211 @@
+# .NET track: from first line of C# to a load-tested ASP.NET Core system.
+# Projects are set in Tanzania and East Africa; see resources/research/.
+# Validate with: python .emw/tools/emw_check.py
+schema_version: 1
+id: dotnet
+extends: core
+title: ".NET with ASP.NET Core"
+summary: "Modern C#, then ASP.NET Core with EF Core as the platform, ending with a records system for savings groups and small SACCOs that survives load. Start with core Stage 0."
+framework: "ASP.NET Core with EF Core 10 on .NET 10 LTS"
+researched_at: "2026-11-21"
+sources:
+  - "resources/research/Dotnet ecosystem mastery path.md"
+  - "resources/research/East Africa software problems for PHP projects.md"
+  - "docs/plans/learning-tracks-plan.md"
+
+skills:
+  # Language
+  - {id: csharp.syntax-types, name: "C# syntax and types", scope: S2, covers: "Value and reference types, nullable reference types, control flow, methods, pattern matching"}
+  - {id: csharp.collections-linq, name: "Collections and LINQ", scope: S2, covers: "Lists and dictionaries, collection expressions, grouping and sorting with LINQ, deferred execution"}
+  - {id: csharp.classes-records, name: "Classes, records and generics", scope: S2, covers: "Classes, interfaces, records, generics, primary constructors, composition"}
+  - {id: csharp.errors-files, name: "Files, JSON, dates and exceptions", scope: S2, covers: "Reading and writing files, System.Text.Json, dates and time zones, exceptions, IDisposable"}
+  - {id: csharp.async, name: "Async and cancellation", scope: S2, covers: "async/await, cancellation tokens, never blocking on .Result"}
+  - {id: csharp.testing-xunit, name: "Testing with xUnit", scope: S2, covers: "xUnit v3 on Microsoft.Testing.Platform, facts and theories, testing awkward input, licence-aware assertion and mocking choices"}
+  # Platform
+  - {id: dotnet.cli-nuget, name: "The dotnet CLI and NuGet", scope: S2, covers: "File-based apps, SDK-style projects, solutions, global.json, NuGet packages and NuGet Audit"}
+  - {id: dotnet.host-di-config, name: "Host, dependency injection and configuration", scope: S1, covers: "The Generic Host, DI lifetimes, the Options pattern, ILogger"}
+  - {id: dotnet.efcore, name: "EF Core and migrations", scope: S1, covers: "Models and relationships, migrations, transactions, query filters, complex types, raw SQL where needed"}
+  - {id: dotnet.analyzers, name: "Analyzers and code style", scope: S2, covers: "Roslyn analyzers, .editorconfig, nullable warnings as errors, dotnet format, Directory.Build.props, Central Package Management"}
+  - {id: dotnet.integration-testing, name: "Integration testing", scope: S1, covers: "WebApplicationFactory, Testcontainers with a real database, test data, testing each role"}
+  - {id: dotnet.containers, name: "Container builds and hosting", scope: S1, covers: "dotnet publish container images, Kestrel behind a proxy, forwarded headers, SIGTERM shutdown, environment config"}
+  - {id: dotnet.background-services, name: "Background services", scope: S1, covers: "BackgroundService workers, queued work, retries, a final-failure path, graceful shutdown"}
+  - {id: dotnet.messaging, name: "Messaging and the outbox", scope: S1, covers: "RabbitMQ or Azure Service Bus through Wolverine, Rebus or raw clients, the outbox pattern, duplicate delivery, library licence checks"}
+  - {id: dotnet.resilience, name: "Resilient outbound calls", scope: S1, covers: "The standard resilience handler on HttpClient, timeouts, retries, circuit breaker, no retries on unsafe writes"}
+  - {id: dotnet.observability-aspire, name: "OpenTelemetry and Aspire", scope: S1, covers: "ILogger, Meter and ActivitySource, OpenTelemetry export, Aspire AppHost, ServiceDefaults and dashboard"}
+  - {id: dotnet.migrations-release, name: "Migration bundles and safe releases", scope: S1, covers: "Migration bundles run as a one-shot job, expand then contract schema changes, health checks, releases without downtime"}
+  - {id: dotnet.performance, name: "Diagnostics and performance", scope: S2, covers: "dotnet-counters, dotnet-trace, BenchmarkDotNet, allocations, EF Core query performance, N+1 queries"}
+  - {id: dotnet.scaling, name: "Scaling a .NET system", scope: S1, covers: "Stateless app instances, connection pooling, indexes and read replicas, autoscaling workers, Native AOT where it fits"}
+  # ASP.NET Core
+  - {id: aspnet.endpoints-middleware, name: "Endpoints and middleware", scope: S1, covers: "Minimal APIs, routing, the middleware pipeline, built-in validation, ProblemDetails"}
+  - {id: aspnet.razor-pages, name: "Razor Pages and forms", scope: S1, covers: "Pages and handlers, forms, antiforgery, output encoding, localisation, pagination"}
+  - {id: aspnet.identity-auth, name: "Identity and login", scope: S1, covers: "ASP.NET Core Identity, cookie authentication, password storage, roles, 401 and 403 on API endpoints"}
+  - {id: aspnet.authorization, name: "JWT and policy-based authorization", scope: S1, covers: "JWT bearer tokens, policies and requirements, resource-based checks"}
+  - {id: aspnet.api-openapi, name: "REST APIs with OpenAPI", scope: S1, covers: "Resource design, pagination, built-in OpenAPI documents with a UI such as Scalar, controllers where they fit"}
+  - {id: aspnet.frontend, name: "One front-end approach", scope: S1, covers: "Blazor with static server rendering, or React on the API; pick one"}
+  - {id: aspnet.multitenancy, name: "Multi-tenancy", scope: S1, covers: "Tenant scoping in one place with query filters, tenant-aware background work and caches, isolation tests"}
+  - {id: aspnet.caching, name: "Caching in ASP.NET Core", scope: S1, covers: "HybridCache with Redis, output caching, invalidation rules, rate limiting"}
+  - {id: aspnet.payment-notifications, name: "Payment notifications", scope: S1, covers: "A gateway contract with drivers, a state machine, signed notifications verified on the raw body, idempotency, status polling, reconciliation"}
+
+stages:
+  - number: 1
+    name: "C# foundations"
+    outcome: "A tested command-line tool, built with the dotnet CLI, that stores its records in a JSON file and gets money right to the shilling."
+    duration_estimate: "2-3 months at 10-15 hours a week (estimate)"
+    default_mode: 1
+    skills:
+      - {id: csharp.syntax-types, target: M3}
+      - {id: csharp.collections-linq, target: M3}
+      - {id: csharp.classes-records, target: M2}
+      - {id: csharp.errors-files, target: M2}
+      - {id: csharp.async, target: M1}
+      - {id: dotnet.cli-nuget, target: M2}
+      - {id: csharp.testing-xunit, target: M2}
+      - {id: core.testing, target: M2}
+      - {id: core.git, target: M3}
+    project:
+      title: "Share-out and loan-schedule calculator"
+      brief: "briefs/dotnet-stage-1.md"
+    electives:
+      - {title: "Simu", summary: "NuGet library that validates Tanzanian phone numbers, converts them to one format and guesses the operator. Recommended alongside the core project."}
+      - {title: "Mobile-money statement analyser", summary: "Reads a statement file or pasted transaction messages and prints totals per month, per sender and fees paid."}
+      - {title: "TANQR reader and writer", summary: "Build and parse the national merchant QR payload, with its checksum."}
+      - {title: "Duka day-end report", summary: "Sales, cost, profit per item and low stock from a day's sales file."}
+      - {title: "Shilingi kwa maneno", summary: "Amount in words in Kiswahili and English."}
+    resources:
+      - "Microsoft Learn: C# and .NET documentation (learn.microsoft.com/dotnet)"
+      - "Foundational C# certification on freeCodeCamp with Microsoft Learn (check it is still offered)"
+      - "Exercism C# track (exercism.org/tracks/csharp)"
+      - "C# 14 and .NET 10, 10th edition (Mark J. Price)"
+      - "xUnit documentation (xunit.net)"
+
+  - number: 2
+    name: "ASP.NET Core and EF Core"
+    outcome: "A web app with login and a small JSON API, on ASP.NET Core, EF Core and PostgreSQL, deployed as a Linux container."
+    duration_estimate: "2-3 months (estimate)"
+    default_mode: 1
+    skills:
+      - {id: csharp.classes-records, target: M3}
+      - {id: csharp.errors-files, target: M3}
+      - {id: csharp.async, target: M2}
+      - {id: dotnet.cli-nuget, target: M3}
+      - {id: dotnet.host-di-config, target: M3}
+      - {id: dotnet.efcore, target: M3}
+      - {id: aspnet.endpoints-middleware, target: M3}
+      - {id: aspnet.razor-pages, target: M3}
+      - {id: aspnet.identity-auth, target: M2}
+      - {id: dotnet.containers, target: M2}
+      - {id: core.security-basics, target: M3}
+      - {id: core.sql, target: M2}
+      - {id: core.http, target: M2}
+      - {id: core.linux-deploy, target: M2}
+      - {id: core.docker, target: M1}
+    project:
+      title: "VICOBA group ledger (records only)"
+      brief: "briefs/dotnet-stage-2.md"
+    electives:
+      - {title: "Michango pledge ledger", summary: "Pledges against payments for an event committee. Records money, never takes it. The gentler alternative to the core project."}
+      - {title: "Daftari la Duka (shop ledger)", summary: "Sales, expenses and customers on credit for one shop, with daily and monthly summaries."}
+      - {title: "Rent book", summary: "Rooms, tenancies, paid-until dates, renewal reminders and the tax withheld on rent, with rates as settings."}
+    resources:
+      - "Microsoft's ASP.NET Core documentation (learn.microsoft.com/aspnet/core)"
+      - "Microsoft's EF Core documentation (learn.microsoft.com/ef/core)"
+      - "Microsoft Learn: Host ASP.NET Core on Linux with Nginx; Containerize an app with dotnet publish"
+      - "Andrew Lock's blog and book on ASP.NET Core (andrewlock.net)"
+      - "OWASP Cheat Sheet Series (cheatsheetseries.owasp.org)"
+
+  - number: 3
+    name: "Professional habits"
+    outcome: "A deployed multi-role app with a documented API, integration tests, analyzers and a CI pipeline. Junior-employable."
+    duration_estimate: "3-6 months (estimate)"
+    default_mode: 2
+    skills:
+      - {id: dotnet.integration-testing, target: M3}
+      - {id: csharp.testing-xunit, target: M3}
+      - {id: dotnet.analyzers, target: M3}
+      - {id: aspnet.api-openapi, target: M3}
+      - {id: aspnet.authorization, target: M3}
+      - {id: aspnet.identity-auth, target: M3}
+      - {id: aspnet.frontend, target: M2}
+      - {id: dotnet.containers, target: M3}
+      - {id: csharp.async, target: M3}
+      - {id: core.testing, target: M3}
+      - {id: core.sql, target: M3}
+      - {id: core.http, target: M3}
+      - {id: core.docker, target: M2}
+      - {id: core.ci, target: M2}
+    project:
+      title: "AMCOS member and delivery records"
+      brief: "briefs/dotnet-stage-3.md"
+    electives:
+      - {title: "Fee ledger and parent reminders for a small school", summary: "Fee plans, a ledger per student, payments recorded or imported, statements and SMS reminders through a simulator. Invented pupils only."}
+      - {title: "Seller order and delivery desk", summary: "For Instagram and WhatsApp sellers: orders, stock, payment-proof matching, rider assignment, delivery status. No existing product dominates this."}
+      - {title: "ADDO stock and registers", summary: "Medicine batches, expiry alerts and the registers small drug shops must keep. No patient data."}
+      - {title: "Bus seat booking", summary: "Two people must never get the same seat. The real market needs regulator approval.", learn_only: true}
+      - {title: "Compliant loan module", summary: "Turn the Bank of Tanzania's lending rules into testable features. Fake borrowers only.", learn_only: true}
+    resources:
+      - "Microsoft Learn: integration tests in ASP.NET Core; GitHub Actions and .NET"
+      - "Microsoft Learn: code analysis overview; ASP.NET Core OpenAPI documentation"
+      - "Testcontainers for .NET documentation"
+      - "Microsoft Learn: migrating from VSTest to Microsoft.Testing.Platform"
+
+  - number: 4
+    name: "Production architecture"
+    outcome: "A multi-tenant records system with payment notifications against a mock gateway, background work, messaging, caching and tracing. Looks mid-level."
+    duration_estimate: "6-12 months (estimate)"
+    default_mode: 2
+    skills:
+      - {id: aspnet.multitenancy, target: M3}
+      - {id: aspnet.payment-notifications, target: M3}
+      - {id: aspnet.caching, target: M3}
+      - {id: dotnet.background-services, target: M3}
+      - {id: dotnet.migrations-release, target: M3}
+      - {id: dotnet.messaging, target: M2}
+      - {id: dotnet.resilience, target: M2}
+      - {id: dotnet.observability-aspire, target: M2}
+      - {id: core.caching-queues, target: M2}
+      - {id: core.observability, target: M2}
+      - {id: core.docker, target: M3}
+      - {id: core.ci, target: M3}
+      - {id: core.linux-deploy, target: M3}
+    project:
+      title: "Group and small-SACCO records platform"
+      brief: "briefs/dotnet-stage-4.md"
+    electives:
+      - {title: "Duka POS for many shops", summary: "Many shops on one system, payments against a mock gateway and fiscal receipts against a mock tax service you write."}
+      - {title: "School-fee system for many schools", summary: "The fee-ledger elective made multi-school, with simulated control numbers."}
+      - {title: "USSD menu for feature phones", summary: "Balance and statement menus for the core project, on a simulator only. Teaches session state."}
+    resources:
+      - "Microsoft's eShop reference app (github.com/dotnet/eShop)"
+      - "Aspire documentation (aspire.dev)"
+      - "Microsoft Learn: HybridCache; HTTP resilience; .NET observability with OpenTelemetry"
+      - "Microsoft Learn: Applying Migrations (EF Core migration bundles)"
+
+  - number: 5
+    name: "Systems and scale"
+    outcome: "The Stage 4 system load-tested to a stated target, with the bottlenecks fixed and a written performance report."
+    duration_estimate: "12+ months, ongoing (estimate)"
+    default_mode: 2
+    skills:
+      - {id: dotnet.scaling, target: M3}
+      - {id: dotnet.performance, target: M3}
+      - {id: dotnet.observability-aspire, target: M3}
+      - {id: dotnet.messaging, target: M3}
+      - {id: core.load-testing, target: M3}
+      - {id: core.caching-queues, target: M3}
+      - {id: core.observability, target: M3}
+      - {id: core.sql, target: M4}
+      - {id: core.http, target: M4}
+      - {id: core.testing, target: M4}
+      - {id: core.security-basics, target: M4}
+    project:
+      title: "Month-end and share-out rush"
+      brief: "briefs/dotnet-stage-5.md"
+    electives:
+      - {title: "Blackout and slow-network mode", summary: "Make key screens work offline and on a poor connection, and measure the difference."}
+      - {title: "Go regional", summary: "Add Kenya, Uganda and Rwanda behind interfaces: wallets, data rules, phone formats, currencies. Recommended as the transfer check."}
+      - {title: "A specialism", summary: "Pick one by the jobs you want: Azure platform work, .NET Framework migration, or AI services."}
+    resources:
+      - "k6 documentation (grafana.com/docs/k6) or NBomber documentation"
+      - "Microsoft Learn: .NET diagnostics tools (dotnet-counters, dotnet-trace)"
+      - "BenchmarkDotNet documentation"
+      - "Microsoft Learn: Native AOT deployment"

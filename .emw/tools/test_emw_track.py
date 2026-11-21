@@ -49,6 +49,18 @@ class EmwTrackTests(unittest.TestCase):
         with contextlib.redirect_stdout(check_out):
             self.assertEqual(emw_check.main(["--root", str(self.root), "--strict"]), 0, check_out.getvalue())
 
+    def test_every_shipped_track_starts_cleanly(self):
+        for track in ("php", "dotnet", "go", "python"):
+            with self.subTest(track=track):
+                shutil.rmtree(self.root / ".emw-project", ignore_errors=True)
+                code, out = self.run_track("start", track, "--date", "2026-11-01")
+                self.assertEqual(code, 0, out)
+                self.assertIn("stage 0: Ground floor", out)
+                check_out = io.StringIO()
+                with contextlib.redirect_stdout(check_out):
+                    self.assertEqual(emw_check.main(["--root", str(self.root), "--strict"]), 0,
+                                     check_out.getvalue())
+
     def test_unknown_track_and_double_start(self):
         code, out = self.run_track("start", "cobol")
         self.assertEqual(code, 2)

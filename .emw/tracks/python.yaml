@@ -1,0 +1,215 @@
+# Python track: from first line of Python to a load-tested pipeline with an evaluated AI feature.
+# Projects are set in Dar es Salaam, Tanzania and East Africa; see resources/research/.
+# Validate with: python .emw/tools/emw_check.py
+schema_version: 1
+id: python
+extends: core
+title: "Python with Django and FastAPI"
+summary: "Typed, tested Python, then Django for a full web app and FastAPI for an API service, then a background pipeline run in production. Most Python job demand is AI, data and cloud work and the entry level is crowded, so the track ends with an AI specialism: a message-understanding feature with an evaluation suite. Start with core Stage 0."
+framework: "Django 6 at Stage 2 and FastAPI at Stage 3 (both kept on purpose: Django for full web apps, FastAPI for API and AI services)"
+researched_at: "2026-11-21"
+sources:
+  - "resources/research/Python ecosystem mastery path.md"
+  - "resources/research/East Africa software problems for PHP projects.md"
+  - "docs/plans/learning-tracks-plan.md"
+
+skills:
+  # Language and tooling
+  - {id: python.syntax-types, name: "Python syntax and built-in types", scope: S2, covers: "Numbers, strings and f-strings, control flow, match, None handling, integer money"}
+  - {id: python.collections-functions, name: "Collections, functions and comprehensions", scope: S2, covers: "Lists, dicts, sets, tuples, sorting and grouping, comprehensions, generators, closures"}
+  - {id: python.files-errors, name: "Files, dates and error handling", scope: S2, covers: "Reading and writing files, CSV and JSON, UTF-8, datetime with time zones, exceptions, context managers"}
+  - {id: python.classes-dataclasses, name: "Classes, dataclasses and enums", scope: S2, covers: "Classes, dataclasses with slots, enums, protocols, composition, decorators"}
+  - {id: python.type-hints, name: "Type hints and type checking", scope: S2, covers: "Hints on every function, unions, generics in the current syntax, mypy or pyright with no errors"}
+  - {id: python.tooling, name: "uv, pyproject and Ruff", scope: S2, covers: "uv projects and lock files, pyproject.toml, entry points, Ruff lint and format, pre-commit"}
+  - {id: python.testing-pytest, name: "Testing with pytest", scope: S2, covers: "Unit tests, parametrised cases, fixtures, testing awkward input, coverage"}
+  - {id: python.sqlalchemy-alembic, name: "SQLAlchemy and Alembic", scope: S1, covers: "Typed mapped models, select queries, sessions and transactions, eager loading, Alembic migrations"}
+  - {id: python.async, name: "Async Python", scope: S2, covers: "async and await, the event loop, task groups, cancellation and timeouts, blocking calls kept off the loop"}
+  - {id: python.supply-chain, name: "Dependency and supply-chain hygiene", scope: S2, covers: "Locked installs with hashes, pip-audit in CI, exact pins for unstable libraries, CI tokens kept secret"}
+  - {id: python.celery-redis, name: "Celery with Redis", scope: S1, covers: "Tasks, retries with backoff, dead letters, scheduled tasks, task idempotency, Redis as broker and cache"}
+  - {id: python.db-performance, name: "Database connections and query performance", scope: S2, covers: "Connection pooling and PgBouncer, connection maths, N+1 queries, indexes, expand-then-contract migrations"}
+  - {id: python.telemetry, name: "Tracing, error tracking and structured logs", scope: S2, covers: "OpenTelemetry traces across request and task, Sentry, structured logs with a correlation id, personal data kept out of logs"}
+  - {id: python.worker-models, name: "Server and worker models", scope: S2, covers: "Gunicorn and Uvicorn, sync and async workers, processes per core, graceful shutdown, sizing workers"}
+  - {id: python.concurrency-internals, name: "The GIL and concurrency choices", scope: S2, covers: "GIL, threads against processes against asyncio, the free-threaded build and its limits, subinterpreters"}
+  - {id: python.profiling, name: "Profiling", scope: S2, covers: "py-spy on a live process, reading a flame graph, memory growth, measuring before and after a change"}
+  # Django
+  - {id: django.models-orm, name: "Models, the ORM and migrations", scope: S1, covers: "Models, relationships, querysets, select_related, constraints, migrations, transactions"}
+  - {id: django.auth-permissions, name: "Authentication, roles and permissions", scope: S1, covers: "Login, groups and permissions, object-level checks, an audit log, Django's security settings"}
+  - {id: django.forms-templates-htmx, name: "Forms, templates and HTMX", scope: S1, covers: "Forms and validation, templates and partials, HTMX requests, translation, CSRF"}
+  - {id: django.admin, name: "The Django admin", scope: S1, covers: "Registering models, list filters and search, read-only fields, limiting who can change what"}
+  - {id: django.testing, name: "Testing Django apps", scope: S1, covers: "pytest-django, the test client, database tests, permission tests, test data"}
+  # FastAPI
+  - {id: fastapi.routing-di, name: "Routes and dependency injection", scope: S1, covers: "Path operations, routers, dependencies, sync and async endpoints, an exactly pinned FastAPI version"}
+  - {id: fastapi.validation-openapi, name: "Pydantic models and OpenAPI", scope: S1, covers: "Pydantic v2 request and response models, validators, error responses, pagination, generated OpenAPI docs"}
+  - {id: fastapi.auth, name: "API authentication and authorisation", scope: S1, covers: "Token authentication, roles as dependencies, per-owner data scoping, rate limits"}
+  - {id: fastapi.testing, name: "Testing FastAPI services", scope: S1, covers: "Test client, dependency overrides, tests against a real PostgreSQL, fakes for outbound calls"}
+  # AI specialism
+  - {id: ai.llm-extraction, name: "Structured extraction with an LLM", scope: S1, covers: "An LLM SDK call, prompts, output validated against a schema, timeouts and retries, checks on what the model returns"}
+  - {id: ai.evaluation, name: "Evaluating an AI feature", scope: S2, covers: "A labelled set, accuracy per field, a held-out part, a regression gate in CI, cost and latency recorded"}
+  - {id: ai.safety-fallback, name: "Privacy, fallback and failure handling for AI features", scope: S2, covers: "No personal data sent to an external model, masking, a rule-based fallback, input treated as data, human confirmation"}
+
+stages:
+  - number: 1
+    name: "Language foundations"
+    outcome: "A typed, tested command-line tool, installed with uv, that reads messy real-world input."
+    duration_estimate: "2-3 months at 10-15 hours a week (estimate)"
+    default_mode: 1
+    skills:
+      - {id: python.syntax-types, target: M3}
+      - {id: python.collections-functions, target: M3}
+      - {id: python.files-errors, target: M2}
+      - {id: python.classes-dataclasses, target: M2}
+      - {id: python.type-hints, target: M2}
+      - {id: python.tooling, target: M2}
+      - {id: python.testing-pytest, target: M2}
+      - {id: core.testing, target: M2}
+      - {id: core.git, target: M3}
+    project:
+      title: "Mobile-money statement analyser"
+      brief: "briefs/python-stage-1.md"
+    electives:
+      - {title: "Simu", summary: "Python package that validates Tanzanian phone numbers, converts them to one format and guesses the operator. Recommended alongside the core project."}
+      - {title: "TANQR reader and writer", summary: "Build and parse the national merchant QR payload, with its checksum."}
+      - {title: "Share-out and loan calculator", summary: "Savings-group share-out per member, and a reducing-balance loan schedule."}
+      - {title: "Duka day-end report", summary: "Sales, cost, profit per item and low stock from a day's sales file."}
+      - {title: "Shilingi kwa maneno", summary: "Amount in words in Kiswahili and English."}
+    resources:
+      - "The official Python tutorial (docs.python.org/3/tutorial)"
+      - "CS50P: Introduction to Programming with Python (cs50.harvard.edu/python)"
+      - "Automate the Boring Stuff with Python, 3rd edition (automatetheboringstuff.com)"
+      - "Exercism Python track (exercism.org/tracks/python)"
+      - "uv documentation (docs.astral.sh/uv) and Ruff documentation (docs.astral.sh/ruff)"
+      - "pytest documentation (docs.pytest.org)"
+
+  - number: 2
+    name: "Web and database with Django"
+    outcome: "A Django app on PostgreSQL with login, roles and an audit log, deployed on a server."
+    duration_estimate: "2-3 months (estimate)"
+    default_mode: 1
+    skills:
+      - {id: django.models-orm, target: M3}
+      - {id: django.auth-permissions, target: M3}
+      - {id: django.forms-templates-htmx, target: M3}
+      - {id: django.admin, target: M2}
+      - {id: django.testing, target: M2}
+      - {id: python.classes-dataclasses, target: M3}
+      - {id: python.files-errors, target: M3}
+      - {id: core.security-basics, target: M3}
+      - {id: core.sql, target: M2}
+      - {id: core.http, target: M2}
+      - {id: core.linux-deploy, target: M2}
+    project:
+      title: "Michango pledge ledger"
+      brief: "briefs/python-stage-2.md"
+    electives:
+      - {title: "Daftari la Duka (shop ledger)", summary: "Sales, expenses and customer credit for a small shop, with daily and monthly summaries. The harder alternative to the core project."}
+      - {title: "VICOBA group ledger", summary: "Members, shares, social fund, loans, fines, cash count and share-out. Records only."}
+      - {title: "Rent book", summary: "Rooms, tenancies, paid-until dates, renewal reminders and the tax withheld on rent."}
+    resources:
+      - "The official Django tutorial (docs.djangoproject.com/en/stable/intro/tutorial01)"
+      - "Django Girls tutorial (tutorial.djangogirls.org)"
+      - "Django documentation: models, forms, authentication, the admin, databases"
+      - "django-htmx (pypi.org/project/django-htmx)"
+
+  - number: 3
+    name: "FastAPI and professional habits"
+    outcome: "A deployed FastAPI service with roles, a documented API, tests, a container image and a CI pipeline. Junior-employable."
+    duration_estimate: "3-6 months (estimate)"
+    default_mode: 2
+    skills:
+      - {id: fastapi.routing-di, target: M3}
+      - {id: fastapi.validation-openapi, target: M3}
+      - {id: fastapi.auth, target: M3}
+      - {id: fastapi.testing, target: M3}
+      - {id: python.sqlalchemy-alembic, target: M3}
+      - {id: python.async, target: M2}
+      - {id: python.supply-chain, target: M2}
+      - {id: python.type-hints, target: M3}
+      - {id: python.tooling, target: M3}
+      - {id: python.testing-pytest, target: M3}
+      - {id: core.testing, target: M3}
+      - {id: core.sql, target: M3}
+      - {id: core.http, target: M3}
+      - {id: core.docker, target: M2}
+      - {id: core.ci, target: M2}
+    project:
+      title: "Seller order and delivery desk API"
+      brief: "briefs/python-stage-3.md"
+    electives:
+      - {title: "Fee ledger and parent reminders for a small school", summary: "Fee plans, a ledger per student, payments recorded by the bursar, reminders by SMS simulator. An equal substitute for the core project."}
+      - {title: "Bus parcel desk", summary: "Parcel intake, tracking reference, SMS on arrival, collection by code."}
+      - {title: "ADDO stock and registers", summary: "Medicine batches, expiry alerts and the registers small drug shops must keep. No patient data."}
+      - {title: "AMCOS member and delivery records", summary: "Farmer cooperative members, deliveries by weight and grade, statements."}
+      - {title: "Bus seat booking", summary: "Two people must never get the same seat. The real market needs regulator approval.", learn_only: true}
+    resources:
+      - "FastAPI tutorial and release notes (fastapi.tiangolo.com)"
+      - "SQLAlchemy and Alembic documentation"
+      - "uv Docker guide (docs-next.astral.sh/uv/guides/integration/docker)"
+      - "pip-audit (github.com/pypa/pip-audit)"
+      - "Hypothesis documentation (hypothesis.readthedocs.io)"
+      - "Africa's Talking simulator for SMS (africastalking.com)"
+
+  - number: 4
+    name: "Production engineering"
+    outcome: "A background pipeline in production against a mock gateway you wrote, with retries, dead letters, caching, connection pooling and monitoring. Looks mid-level."
+    duration_estimate: "6-12 months (estimate)"
+    default_mode: 2
+    skills:
+      - {id: python.celery-redis, target: M3}
+      - {id: python.db-performance, target: M3}
+      - {id: python.telemetry, target: M2}
+      - {id: python.worker-models, target: M2}
+      - {id: python.supply-chain, target: M3}
+      - {id: python.sqlalchemy-alembic, target: M3}
+      - {id: core.caching-queues, target: M2}
+      - {id: core.observability, target: M2}
+      - {id: core.docker, target: M3}
+      - {id: core.ci, target: M3}
+      - {id: core.linux-deploy, target: M3}
+    project:
+      title: "Payment notification pipeline"
+      brief: "briefs/python-stage-4.md"
+    electives:
+      - {title: "Group and small-SACCO records platform", summary: "Many groups on one system, a double-entry ledger, statements by SMS, a USSD menu on a simulator. Never holds money."}
+      - {title: "School-fee system for many schools", summary: "The school fee ledger made multi-school, with simulated control numbers and payment notices from the mock gateway."}
+    resources:
+      - "Celery documentation"
+      - "Django documentation: databases and connection pooling; PgBouncer FAQ (pgbouncer.org/faq.html)"
+      - "OpenTelemetry Python documentation (opentelemetry.io/docs/zero-code/python)"
+      - "FastAPI documentation: server workers (fastapi.tiangolo.com/deployment/server-workers)"
+      - "Architecture Patterns with Python (cosmicpython.com)"
+
+  - number: 5
+    name: "Systems, scale and an AI specialism"
+    outcome: "The Stage 4 pipeline load-tested to a stated target with a written performance report, plus an LLM-backed message-understanding feature with an evaluation suite."
+    duration_estimate: "12+ months, ongoing (estimate)"
+    default_mode: 2
+    skills:
+      - {id: python.async, target: M3}
+      - {id: python.concurrency-internals, target: M2}
+      - {id: python.profiling, target: M3}
+      - {id: python.worker-models, target: M3}
+      - {id: python.telemetry, target: M3}
+      - {id: ai.llm-extraction, target: M3}
+      - {id: ai.evaluation, target: M3}
+      - {id: ai.safety-fallback, target: M3}
+      - {id: core.load-testing, target: M3}
+      - {id: core.caching-queues, target: M3}
+      - {id: core.observability, target: M3}
+      - {id: core.sql, target: M4}
+      - {id: core.http, target: M4}
+      - {id: core.testing, target: M4}
+      - {id: core.security-basics, target: M4}
+    project:
+      title: "Load test and message understanding with evaluation"
+      brief: "briefs/python-stage-5.md"
+    electives:
+      - {title: "Go regional", summary: "Add Kenya, Uganda and Rwanda message formats, currencies and phone formats to the parser, the extraction and the evaluation. Recommended as the transfer check."}
+      - {title: "Data-engineering alternative", summary: "Replace the AI part with a data pipeline: nightly reconciliation and seller statements built with Polars and scheduled with Airflow or Dagster, with data tests."}
+      - {title: "Blackout and slow-network mode", summary: "Simulate dropped requests and a poor connection against the pipeline and the order desk, and measure what is lost and what recovers."}
+    resources:
+      - "Locust documentation"
+      - "py-spy documentation"
+      - "Python documentation: the free-threading HOWTO"
+      - "Fluent Python, 2nd edition, and Effective Python, 3rd edition"
+      - "Anthropic or OpenAI Python SDK documentation (pick one)"
+      - "Architecture Patterns with Python (cosmicpython.com)"

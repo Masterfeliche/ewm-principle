@@ -1,6 +1,6 @@
 # Stage 2 brief: Daftari la Duka (shop ledger)
 
-**Track:** PHP · **Mode:** 1, you type everything · **Time:** 2–3 months (estimate) · Read `php-house-rules.md` first.
+**Track:** PHP · **Mode:** 1, you type everything · **Time:** 2–3 months (estimate) · Read `house-rules.md` first.
 
 ## The problem
 Many small shops keep sales and expenses in an exercise book, or not at all. Goods sold on credit (madeni) are written on a page that gets lost. Without records the owner cannot see profit, cannot show a lender anything, and may be taxed on an estimate.

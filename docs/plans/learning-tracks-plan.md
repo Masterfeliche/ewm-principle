@@ -137,7 +137,7 @@ Resources: official Python tutorial, CS50P, "Automate the Boring Stuff" 3rd ed.,
 
 Order: 8a → 8b (PHP first as the reference track) → 8c → 8d → 8e → 8f.
 
-**Status (21 Nov 2026):** 8a is done. 8b and 8c are done for the shared core and the PHP track (`.emw/tracks/core.yaml`, `php.yaml`, seven files under `briefs/`); .NET, Go and Python are not started. 8d is done (`.emw/tools/emw_track.py`, Prompt 12, `/emw-track`). 8e is part done: the stage gate is checked by `emw_track.py next`; the 2-day, 1-week and 1-month review schedule is not built. 8f is not started. The PHP project choices follow `resources/research/East Africa software problems for PHP projects.md`, which replaced the generic projects in section 3.
+**Status (21 Nov 2026):** 8a is done. 8b and 8c are done for the shared core and all four tracks (`core.yaml`, `php.yaml`, `dotnet.yaml`, `go.yaml`, `python.yaml`, and 21 project briefs plus shared house rules under `briefs/`). The .NET, Go and Python projects come from the same East Africa research and differ from the generic projects in section 3. 8d is done (`.emw/tools/emw_track.py`, Prompt 12, `/emw-track`). 8e is part done: the stage gate is checked by `emw_track.py next`; the 2-day, 1-week and 1-month review schedule is not built. 8f is not started. The PHP project choices follow `resources/research/East Africa software problems for PHP projects.md`, which replaced the generic projects in section 3.
 
 ## 7. Open decisions
 1. **Which track to build first.** Recommendation: PHP, as the reference, then copy its shape to the other three.

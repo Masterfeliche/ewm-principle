@@ -1,6 +1,6 @@
 # Stage 5 brief: End-of-month rush
 
-**Track:** PHP (Laravel) · **Mode:** 2–3; Mode 4 only for skills you have proved · **Time:** ongoing (estimate) · Read `php-house-rules.md` first.
+**Track:** PHP (Laravel) · **Mode:** 2–3; Mode 4 only for skills you have proved · **Time:** ongoing (estimate) · Read `house-rules.md` first.
 
 ## The problem
 Month-end sales, fee deadlines and payment callbacks arrive together. A system that works for one shop on a quiet day falls over, and the failures (lost receipts, double-counted payments, a queue that never drains) are the expensive kind.

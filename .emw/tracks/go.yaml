@@ -1,0 +1,216 @@
+# Go track: from first line of Go to a load-tested system on Kubernetes.
+# Standard library first. Projects are set in Tanzania and East Africa; see resources/research/.
+# Validate with: python .emw/tools/emw_check.py
+schema_version: 1
+id: go
+extends: core
+title: "Go for services and infrastructure"
+summary: "Go with the standard library first, ending with a payment reconciliation system load-tested on Kubernetes. Be clear before you start: there are very few junior Go jobs and most people learn Go as a second language, so a beginner should expect to enter through cloud or platform roles, or pair this track with another one. Start with core Stage 0."
+framework: "Standard library first (net/http, database/sql, log/slog); chi and Gin as reading knowledge only"
+researched_at: "2026-11-21"
+sources:
+  - "resources/research/Go ecosystem mastery path.md"
+  - "resources/research/East Africa software problems for PHP projects.md"
+  - "docs/plans/learning-tracks-plan.md"
+
+skills:
+  # Language and toolchain
+  - {id: go.syntax-types, name: "Go syntax and types", scope: S2, covers: "Zero values, slices and maps, structs, pointers, functions with multiple returns, defer, packages and exported names"}
+  - {id: go.interfaces-methods, name: "Methods and interfaces", scope: S2, covers: "Value and pointer receivers, small implicit interfaces, embedding, the nil-interface trap"}
+  - {id: go.errors, name: "Errors as values", scope: S2, covers: "Wrapping with %w, sentinel and custom errors, errors.Is, errors.As and errors.AsType, errors.Join"}
+  - {id: go.modules-toolchain, name: "Modules and the go command", scope: S2, covers: "go.mod and go.sum, go build, run and test, gofmt, go vet, cross-compiling, tool directives"}
+  - {id: go.cli-files, name: "Command-line tools, files and bytes", scope: S2, covers: "Flags, standard input and output, exit codes, reading and writing files, strings and bytes"}
+  - {id: go.testing, name: "Testing in Go", scope: S2, covers: "Table-driven tests, subtests, httptest, fuzzing, benchmarks with b.Loop"}
+  - {id: go.generics-iterators, name: "Generics and iterators", scope: S2, covers: "Type parameters where they fit, iter.Seq, the slices and maps packages"}
+  # HTTP and data
+  - {id: go.http-server, name: "HTTP services with net/http", scope: S2, covers: "ServeMux method and wildcard patterns, handlers, middleware, server timeouts"}
+  - {id: go.json-templates, name: "JSON and HTML templates", scope: S2, covers: "Decoding and validating JSON input, encoding responses, html/template with escaping"}
+  - {id: go.context-logging, name: "Context and structured logging", scope: S2, covers: "context as the first parameter, deadlines, request-scoped values, log/slog"}
+  - {id: go.database-sql, name: "Databases with database/sql", scope: S2, covers: "Queries with placeholders, transactions, connection pool settings, handling no rows"}
+  - {id: go.pgx-sqlc, name: "pgx, sqlc and goose", scope: S1, covers: "The pgx driver and pool, Go code generated from SQL with sqlc, versioned migrations with goose"}
+  - {id: go.auth-sessions, name: "Login, sessions and tokens", scope: S2, covers: "Password hashing, session cookies or JWT, role checks in middleware, signed requests"}
+  - {id: go.project-structure, name: "Service structure and wiring", scope: S2, covers: "cmd and internal layout, constructor wiring in main, a testable run function, config from the environment"}
+  # Concurrency and professional habits
+  - {id: go.concurrency, name: "Goroutines, channels and sync", scope: S2, covers: "Goroutines, channels, select, mutexes, WaitGroup, errgroup with a limit, worker pools"}
+  - {id: go.cancellation-shutdown, name: "Cancellation and graceful shutdown", scope: S2, covers: "Cancelling work through context, a clear exit for every goroutine, SIGTERM draining with Shutdown"}
+  - {id: go.race-leak-testing, name: "Race, leak and timer testing", scope: S2, covers: "The race detector, the goroutine leak profile, testing/synctest for time-dependent code"}
+  - {id: go.lint-vuln, name: "Linting and vulnerability checks", scope: S1, covers: "golangci-lint v2 with staticcheck, govulncheck, go fix"}
+  - {id: go.containers, name: "Go in containers", scope: S1, covers: "Static binaries with CGO off, distroless images, ko or a multi-stage build"}
+  # Production
+  - {id: go.api-contracts, name: "RPC and API contracts", scope: S1, covers: "Protobuf services with gRPC or Connect, an OpenAPI description generated or checked against the code"}
+  - {id: go.background-jobs, name: "Background jobs and Redis", scope: S1, covers: "River or asynq, retries and final failure, idempotency keys, Redis for shared state"}
+  - {id: go.messaging, name: "Messaging", scope: S1, covers: "NATS or Kafka, consumers that are safe to redeliver to, the outbox pattern"}
+  - {id: go.otel, name: "OpenTelemetry in Go", scope: S1, covers: "Traces and metrics, passing trace context across HTTP, RPC, queue and job boundaries"}
+  - {id: go.profiling, name: "Profiling with pprof", scope: S2, covers: "CPU, heap and goroutine profiles, benchmarks compared before and after, the flight recorder"}
+  - {id: go.runtime-tuning, name: "Runtime and memory tuning", scope: S2, covers: "GOMEMLIMIT, GOMAXPROCS in containers, garbage collector behaviour, profile-guided optimisation"}
+  - {id: go.reading-frameworks, name: "Reading chi and Gin", scope: S1, covers: "How a router and a framework context sit on net/http, and what that costs when you migrate"}
+  # Systems and scale
+  - {id: go.kubernetes, name: "Go services on Kubernetes", scope: S1, covers: "Deployments, readiness probes, rolling updates, resource limits, a first look at controllers"}
+  - {id: go.scaling, name: "Scaling a Go system", scope: S2, covers: "Stateless replicas, pgxpool sizing and a pooler, queue and worker tuning, heap pressure"}
+
+stages:
+  - number: 1
+    name: "Go foundations"
+    outcome: "A tested command-line tool and package, cross-compiled, that builds and parses a real payment format."
+    duration_estimate: "2-3 months at 10-15 hours a week (estimate)"
+    default_mode: 1
+    skills:
+      - {id: go.syntax-types, target: M3}
+      - {id: go.cli-files, target: M3}
+      - {id: go.interfaces-methods, target: M2}
+      - {id: go.errors, target: M2}
+      - {id: go.modules-toolchain, target: M2}
+      - {id: go.testing, target: M2}
+      - {id: core.testing, target: M2}
+      - {id: core.git, target: M3}
+    project:
+      title: "TANQR reader and writer"
+      brief: "briefs/go-stage-1.md"
+    electives:
+      - {title: "Mobile-money statement analyser", summary: "Reads a statement file or pasted transaction messages and prints totals per month, per sender and fees. The gentler alternative to the core project."}
+      - {title: "Simu", summary: "A Go module that validates Tanzanian phone numbers, converts them to one format and suggests the original operator, labelled as a guess."}
+      - {title: "Share-out and loan calculator", summary: "Savings-group share-out per member, and a reducing-balance loan schedule. Rates and prices are inputs."}
+      - {title: "Shilingi kwa maneno", summary: "Amount in words in Kiswahili and English, as a package with thorough tests."}
+    resources:
+      - "A Tour of Go (go.dev/tour)"
+      - "Go by Example (gobyexample.com)"
+      - "Exercism Go track (exercism.org/tracks/go)"
+      - "Learning Go, 2nd edition (Jon Bodner)"
+      - "go.dev/learn and the errors package documentation (pkg.go.dev/errors)"
+
+  - number: 2
+    name: "HTTP and database with the standard library"
+    outcome: "A REST API and a small server-rendered app on PostgreSQL, standard library only, deployed as one binary on a server."
+    duration_estimate: "2-3 months (estimate)"
+    default_mode: 1
+    skills:
+      - {id: go.http-server, target: M3}
+      - {id: go.json-templates, target: M3}
+      - {id: go.database-sql, target: M3}
+      - {id: go.interfaces-methods, target: M3}
+      - {id: go.errors, target: M3}
+      - {id: go.modules-toolchain, target: M3}
+      - {id: go.context-logging, target: M2}
+      - {id: go.pgx-sqlc, target: M2}
+      - {id: go.auth-sessions, target: M2}
+      - {id: go.project-structure, target: M2}
+      - {id: core.security-basics, target: M3}
+      - {id: core.sql, target: M2}
+      - {id: core.http, target: M2}
+      - {id: core.linux-deploy, target: M2}
+    project:
+      title: "Bus parcel desk"
+      brief: "briefs/go-stage-2.md"
+    electives:
+      - {title: "Michango pledge ledger", summary: "Pledges against payments for an event committee. Records money, never takes it. The gentler alternative to the core project."}
+      - {title: "Rent book", summary: "Rooms, tenancies, paid-until dates, renewal reminders and the tax withheld on rent."}
+      - {title: "AMCOS member and delivery records", summary: "Farmer cooperative members, deliveries by weight and grade, statements and an auditor's export."}
+    resources:
+      - "Let's Go and Let's Go Further (Alex Edwards)"
+      - "Mat Ryer: How I write HTTP services in Go after 13 years (grafana.com/blog)"
+      - "Go Blog: Routing Enhancements for Go 1.22 (go.dev/blog/routing-enhancements)"
+      - "pgx, sqlc and goose documentation"
+      - "OWASP Cheat Sheet Series (cheatsheetseries.owasp.org)"
+
+  - number: 3
+    name: "Concurrency and professional habits"
+    outcome: "A concurrent service that passes the race detector and leak profile, in a container, with a CI pipeline; and the Stage 2 API hardened the same way."
+    duration_estimate: "3-6 months (estimate)"
+    default_mode: 2
+    skills:
+      - {id: go.concurrency, target: M3}
+      - {id: go.cancellation-shutdown, target: M3}
+      - {id: go.context-logging, target: M3}
+      - {id: go.testing, target: M3}
+      - {id: go.race-leak-testing, target: M2}
+      - {id: go.generics-iterators, target: M2}
+      - {id: go.lint-vuln, target: M2}
+      - {id: go.containers, target: M2}
+      - {id: core.testing, target: M3}
+      - {id: core.sql, target: M3}
+      - {id: core.http, target: M3}
+      - {id: core.docker, target: M2}
+      - {id: core.ci, target: M2}
+    project:
+      title: "Mock mobile-money gateway and callback storm"
+      brief: "briefs/go-stage-3.md"
+    electives:
+      - {title: "Concurrent statement importer", summary: "Import many large statement files at once with a bounded worker pool, cancellation and exactly one row per reference."}
+      - {title: "SMS and USSD simulator", summary: "A fake provider other learners can point their apps at: accepts messages, drives USSD sessions with timeouts, and can fail on demand."}
+      - {title: "Bus seat booking", summary: "Two people must never get the same seat, proved under concurrent requests. The real market needs regulator approval.", learn_only: true}
+    resources:
+      - "100 Go Mistakes and How to Avoid Them (100go.co)"
+      - "Go race detector article (go.dev/doc/articles/race_detector)"
+      - "errgroup and context package documentation (pkg.go.dev)"
+      - "golangci-lint v2 documentation (golangci-lint.run)"
+      - "Go vulnerability management and govulncheck (go.dev/doc/security/vuln)"
+
+  - number: 4
+    name: "Production engineering"
+    outcome: "A multi-service system (API, worker and queue) with idempotent ingestion, background jobs and tracing across services. Job-ready for most Go roles."
+    duration_estimate: "6-12 months (estimate)"
+    default_mode: 2
+    skills:
+      - {id: go.background-jobs, target: M3}
+      - {id: go.pgx-sqlc, target: M3}
+      - {id: go.project-structure, target: M3}
+      - {id: go.lint-vuln, target: M3}
+      - {id: go.api-contracts, target: M2}
+      - {id: go.messaging, target: M2}
+      - {id: go.otel, target: M2}
+      - {id: go.profiling, target: M2}
+      - {id: go.runtime-tuning, target: M2}
+      - {id: go.reading-frameworks, target: M2}
+      - {id: core.caching-queues, target: M2}
+      - {id: core.observability, target: M2}
+      - {id: core.docker, target: M3}
+      - {id: core.ci, target: M3}
+      - {id: core.linux-deploy, target: M3}
+    project:
+      title: "Payment reconciliation system"
+      brief: "briefs/go-stage-4.md"
+    electives:
+      - {title: "Control-number simulation service", summary: "Issue a reference number, receive an asynchronous payment notice from the mock gateway, reconcile and report. Real control numbers come from a bank or aggregator."}
+      - {title: "Mock fiscal receipt service", summary: "A stand-in for the tax authority's receipt service that issues a token, accepts signed receipts and rejects bad signatures and repeated numbers. For other tracks to test against."}
+      - {title: "USSD menu for group records", summary: "A feature-phone menu on a simulator, with session state and timeouts, over a records-only savings-group ledger."}
+      - {title: "One route group in chi and in Gin", summary: "Port one Stage 2 route group to each and write down what changed in handlers, middleware and tests. Reading knowledge for job ads."}
+    resources:
+      - "River: Postgres job queue (brandur.org/river) and asynq documentation"
+      - "OpenTelemetry Go documentation (opentelemetry.io/docs/languages/go)"
+      - "A Guide to the Go Garbage Collector (go.dev/doc/gc-guide)"
+      - "connect-go and grpc-go documentation"
+      - "Go Blog: flight recorder (go.dev/blog/flight-recorder)"
+
+  - number: 5
+    name: "Systems and scale"
+    outcome: "The Stage 4 system running on Kubernetes, load-tested to a stated target, with the bottlenecks fixed and a written performance report."
+    duration_estimate: "12+ months, ongoing (estimate)"
+    default_mode: 2
+    skills:
+      - {id: go.scaling, target: M3}
+      - {id: go.profiling, target: M3}
+      - {id: go.runtime-tuning, target: M3}
+      - {id: go.otel, target: M3}
+      - {id: go.race-leak-testing, target: M3}
+      - {id: go.kubernetes, target: M2}
+      - {id: core.load-testing, target: M3}
+      - {id: core.caching-queues, target: M3}
+      - {id: core.observability, target: M3}
+      - {id: core.sql, target: M4}
+      - {id: core.http, target: M4}
+      - {id: core.testing, target: M4}
+      - {id: core.security-basics, target: M4}
+    project:
+      title: "Reconciliation under load"
+      brief: "briefs/go-stage-5.md"
+    electives:
+      - {title: "Go regional", summary: "Add Kenya, Uganda and Rwanda notification formats, phone formats and currencies behind interfaces. Recommended as the transfer check."}
+      - {title: "Rate limiter in front of the API", summary: "Per-client limits shared across replicas, with a stated rule for what happens when the shared store is down."}
+      - {title: "Small Kubernetes controller", summary: "A controller that watches one resource of your own and keeps something in the cluster matching it."}
+      - {title: "Key-value store", summary: "A small replicated key-value store, to learn consensus and failure handling by building them."}
+    resources:
+      - "Profile-guided optimization (go.dev/doc/pgo)"
+      - "A Guide to the Go Garbage Collector (go.dev/doc/gc-guide)"
+      - "k6 documentation (grafana.com/docs/k6)"
+      - "Kubernetes documentation and the CKAD curriculum"
+      - "Go Blog: container-aware GOMAXPROCS (go.dev/blog/container-aware-gomaxprocs)"

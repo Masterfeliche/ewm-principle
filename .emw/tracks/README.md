@@ -6,12 +6,26 @@ A track is a staged path for one language: what to learn, what to build, and whe
 | File | What it is |
 |---|---|
 | `core.yaml` | Skills shared by every track (Git, HTTP, SQL, testing, security and more), Stage 0, and the stage gate |
-| `php.yaml` | The PHP track: modern PHP, then Laravel as the only framework |
+| `php.yaml` | PHP: modern PHP, then Laravel as the only framework |
+| `dotnet.yaml` | .NET: C#, then ASP.NET Core with EF Core |
+| `go.yaml` | Go: standard library first, for services and infrastructure. Few junior jobs; often a second language |
+| `python.yaml` | Python: Django, then FastAPI, ending with an AI specialism |
 | `briefs/` | One brief per stage project: the problem, what to build, edge cases, a "works when" checklist. No solution code |
-| `briefs/php-house-rules.md` | Rules every PHP project follows |
+| `briefs/house-rules.md` | Rules every track project follows |
 | `track.schema.json` | The format of a track file |
 
-Tracks for .NET, Go and Python are planned; see `docs/plans/learning-tracks-plan.md`.
+All four tracks start with core Stage 0 and set their projects in Tanzania and East Africa. The design is in `docs/plans/learning-tracks-plan.md`.
+
+## The projects
+| Stage | PHP | .NET | Go | Python |
+|---|---|---|---|---|
+| 1 | Mobile-money statement analyser | Share-out and loan-schedule calculator | TANQR reader and writer | Mobile-money statement analyser |
+| 2 | Daftari la Duka (shop ledger) | VICOBA group ledger | Bus parcel desk | Michango pledge ledger |
+| 3 | School fee ledger and reminders | AMCOS member and delivery records | Mock mobile-money gateway and callback storm | Seller order and delivery desk API |
+| 4 | Duka POS for many shops | Group and small-SACCO records platform | Payment reconciliation system | Payment notification pipeline |
+| 5 | End-of-month rush | Month-end and share-out rush | Reconciliation under load | Load test and message understanding with evaluation |
+
+The Go Stage 3 gateway misbehaves on purpose (late, duplicate, out-of-order and missing callbacks), so learners on the other tracks can test their payment code against it.
 
 ## How a track is laid out
 - **`skills`**: every skill the track teaches, with an id such as `php.pdo` or `laravel.eloquent`.
@@ -71,4 +85,4 @@ Evidence from an earlier stage does not count toward a later gate. Reviews at 2 
 `python .emw/tools/emw_check.py` validates every track: the format, that each stage's skills exist, that targets never go down between stages, and that every brief file is present.
 
 ## Adding a track
-Copy `php.yaml`, change the id to match the new file name, keep `extends: core`, and write one brief per stage. Base the content on research with sources, as the PHP track is on `resources/research/`.
+Copy an existing track file, change the id to match the new file name, keep `extends: core`, and write one brief per stage. Base the content on research with sources, as the PHP track is on `resources/research/`.

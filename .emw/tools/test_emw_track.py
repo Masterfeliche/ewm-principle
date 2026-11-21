@@ -45,9 +45,14 @@ class EmwTrackTests(unittest.TestCase):
         self.assertIn("stage 0: Ground floor", out)
         ids = [s["id"] for s in self.ledger()["skills"]]
         self.assertEqual(ids, ["core.terminal", "core.git", "core.html-css", "core.http", "core.sql"])
+        # Starting a track is not onboarding: the records it did not write are reported
+        # as warnings, so the ledger is valid but the project is not yet complete.
         check_out = io.StringIO()
         with contextlib.redirect_stdout(check_out):
-            self.assertEqual(emw_check.main(["--root", str(self.root), "--strict"]), 0, check_out.getvalue())
+            self.assertEqual(emw_check.main(["--root", str(self.root)]), 0, check_out.getvalue())
+        self.assertIn("onboarding", check_out.getvalue())
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(emw_check.main(["--root", str(self.root), "--strict"]), 1)
 
     def test_every_shipped_track_starts_cleanly(self):
         for track in ("php", "dotnet", "go", "python"):
@@ -58,7 +63,7 @@ class EmwTrackTests(unittest.TestCase):
                 self.assertIn("stage 0: Ground floor", out)
                 check_out = io.StringIO()
                 with contextlib.redirect_stdout(check_out):
-                    self.assertEqual(emw_check.main(["--root", str(self.root), "--strict"]), 0,
+                    self.assertEqual(emw_check.main(["--root", str(self.root)]), 0,
                                      check_out.getvalue())
 
     def test_unknown_track_and_double_start(self):
@@ -125,6 +130,32 @@ class EmwTrackTests(unittest.TestCase):
         code, out = self.run_track("status")
         self.assertIn("Stage 1: Language foundations", out)
         self.assertIn("[ ] human", out)
+
+    def test_a_recall_item_meets_the_rebuild_gate(self):
+        """emw_recall.py records type: recall. The gate accepted only type: rebuild,
+        so the documented way to record a rebuild could never tick its own gate."""
+        self.run_track("start", "php", "--date", "2026-11-01")
+        ledger = self.ledger()
+        git = next(s for s in ledger["skills"] if s["id"] == "core.git")
+        git["evidence"] = [{"date": "2026-11-12", "type": "recall", "assistance": "A0",
+                            "verified_by": "self", "task": "new repo from memory"}]
+        self.save_ledger(ledger)
+        code, out = self.run_track("status")
+        self.assertEqual(code, 0, out)
+        self.assertIn("[x] rebuild", out)
+
+    def test_start_seeds_the_ledger_from_the_template(self):
+        """The track wrote its own ledger shape, missing the template's level and
+        assistance keys, and wrote an onboarding record claiming nothing was started."""
+        code, out = self.run_track("start", "php", "--date", "2026-11-01")
+        self.assertEqual(code, 0, out)
+        ledger = self.ledger()
+        self.assertIn("levels", ledger)
+        self.assertIn("assistance", ledger)
+        self.assertEqual(ledger["project"], "PHP with Laravel learning track")
+        self.assertNotIn("example.backend.authorization", [s["id"] for s in ledger["skills"]])
+        self.assertFalse((self.root / ".emw-project/onboarding-status.yaml").exists())
+        self.assertIn("not onboarded", out)
 
 
 if __name__ == "__main__":

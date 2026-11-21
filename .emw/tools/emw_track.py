@@ -14,7 +14,7 @@ The gate for a stage (from .emw/tracks/core.yaml) is checked as:
   shipped   the stage has a project URL (see `ship`)
   levels    every stage skill is at or above its target level
   human     an A0-A2 evidence item with verified_by: human, dated in this stage
-  rebuild   an A0-A2 evidence item of type rebuild, dated 7+ days after the stage began
+  rebuild   an A0-A2 evidence item of type rebuild or recall, dated 7+ days after the stage began
   transfer  an A0-A1 evidence item of type transfer, dated in this stage
   check     emw_check passes
 
@@ -126,10 +126,7 @@ class Project:
 
     def save_ledger(self, ledger: dict) -> None:
         dump(self.ledger_path, ledger,
-             "# Evidence-backed developer mastery ledger. Skills were added by emw_track.py.\n"
-             "# Evidence item: {date, type, assistance, verified_by, task}\n"
-             "#   type: explain | predict | trace | debug | implement | modify | transfer | teach | rebuild\n"
-             "#   assistance: A0-A4    verified_by: self | human\n")
+             emw_check.ledger_header("Skills were added by emw_track.py."))
 
 
 def add_stage_skills(ledger: dict, track: dict, stage: dict) -> list[str]:
@@ -191,7 +188,9 @@ def gate_report(project: Project, track: dict, state: dict) -> tuple[list[tuple[
 
     human = [e for e in evidence if low_help(e) and e.get("verified_by") == "human"]
     rebuild_from = began + dt.timedelta(days=REBUILD_GAP_DAYS) if began != dt.date.min else began
-    rebuild = [e for e in evidence if e.get("type") == "rebuild" and low_help(e)
+    # emw_recall.py records a from-memory rebuild as type: recall. Both words mean the
+    # same evidence here, so the gate accepts either (emw_check.RECALL_TYPES).
+    rebuild = [e for e in evidence if e.get("type") in emw_check.RECALL_TYPES and low_help(e)
                and as_date(e.get("date")) >= rebuild_from]
     transfer = [e for e in evidence if e.get("type") == "transfer" and low_help(e, ("A0", "A1"))]
 
@@ -207,7 +206,7 @@ def gate_report(project: Project, track: dict, state: dict) -> tuple[list[tuple[
         ("human", bool(human), f"{len(human)} human-verified A0-A2 item(s)" if human
          else "no A0-A2 evidence with verified_by: human in this stage"),
         ("rebuild", bool(rebuild), f"{len(rebuild)} rebuild item(s)" if rebuild
-         else f"no A0-A2 evidence of type rebuild dated on or after {rebuild_from}"),
+         else f"no A0-A2 evidence of type rebuild or recall dated on or after {rebuild_from}"),
         ("transfer", bool(transfer), f"{len(transfer)} transfer item(s)" if transfer
          else "no A0-A1 evidence of type transfer in this stage"),
         ("check", check_code == 0, check_tail),
@@ -228,7 +227,11 @@ def cmd_start(root: Path, args) -> int:
         raise TrackError(f"track '{args.track}' has no stages")
     project.dir.mkdir(exist_ok=True)
     templates = root / ".emw" / "templates"
-    for name in ("task-log.yaml", "mode-policy.yaml", "onboarding-status.yaml"):
+    # Seed the skill ledger from the template so it keeps the template's shape; its
+    # example skill is dropped by add_stage_skills below. onboarding-status.yaml is
+    # deliberately not written here: starting a track does not onboard a project, and
+    # a file saying "not-started" only makes an un-onboarded project look set up.
+    for name in ("skill-ledger.yaml", "task-log.yaml", "mode-policy.yaml"):
         if not (project.dir / name).exists() and (templates / name).is_file():
             shutil.copy(templates / name, project.dir / name)
 
@@ -239,7 +242,9 @@ def cmd_start(root: Path, args) -> int:
              "stages": [{"number": first["number"], "name": first["name"], "started_at": str(today),
                          "project_url": "", "passed_at": None}]}
     ledger = project.ledger()
-    ledger.setdefault("project", f"{track['title']} learning track")
+    # setdefault is not enough: the template seeds project with an empty string.
+    if not ledger.get("project"):
+        ledger["project"] = f"{track['title']} learning track"
     changed = add_stage_skills(ledger, track, first)
     project.save_ledger(ledger)
     project.save_state(state)
@@ -248,6 +253,8 @@ def cmd_start(root: Path, args) -> int:
         print(f"  {line}")
     print(f"Project brief: .emw/tracks/{first['project']['brief']}")
     print("Next: read the brief, then run: python .emw/tools/emw_track.py status")
+    if not (project.dir / "onboarding-status.yaml").exists():
+        print("This project is not onboarded yet. Run /emw-onboard before feature work.")
     return 0
 
 

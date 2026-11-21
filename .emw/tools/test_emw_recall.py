@@ -134,8 +134,16 @@ class EmwRecallTests(unittest.TestCase):
         self.assertIn("rising order", out.getvalue())
 
     def test_checker_reports_a_due_check_as_a_note_not_a_failure(self):
-        shutil.copy(FRAMEWORK / ".emw" / "templates" / "onboarding-status.yaml",
-                    self.root / ".emw-project" / "onboarding-status.yaml")
+        for name in ("onboarding-status.yaml", "task-log.yaml"):
+            shutil.copy(FRAMEWORK / ".emw" / "templates" / name, self.root / ".emw-project" / name)
+        self.write("project-profile.md", "# Project Profile\n")
+        self.write("delivery-ledger.md", "# Engineering Delivery Ledger\n")
+        (self.root / ".project-knowledge").mkdir()
+        (self.root / ".project-knowledge/README.md").write_text("# Project Knowledge Base\n",
+                                                                encoding="utf-8")
+        (self.root / ".project-knowledge/index.yaml").write_text(
+            'schema_version: 1\nproject: "demo"\nupdated_at: "2026-11-21"\nentries: []\n',
+            encoding="utf-8")
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
             code = emw_check.main(["--root", str(self.root), "--strict", "--date", "2026-11-04"])
@@ -154,6 +162,59 @@ class EmwRecallTests(unittest.TestCase):
         code, out = self.run_recall("done", "php.nope", "--task", "x")
         self.assertEqual(code, 2)
         self.assertIn("php.pdo", out)
+
+    def test_a_skill_at_m0_with_evidence_is_still_scheduled(self):
+        """The level used to decide this instead of the evidence. Every skill a track
+        creates starts at M0, so nobody on a new track was ever asked for a check."""
+        self.write("skill-ledger.yaml", """\
+            version: 1
+            skills:
+              - id: "core.sql"
+                name: "SQL"
+                scope: "S2"
+                target_level: "M1"
+                current_level: "M0"
+                confidence: "low"
+                evidence:
+                  - {date: "2026-11-01", type: implement, assistance: A1, verified_by: self, task: "first queries"}
+            """)
+        code, out = self.run_recall("due", "--date", "2026-11-04")
+        self.assertEqual(code, 1, out)
+        self.assertIn("2-day", out)
+        self.assertIn("core.sql", out)
+
+    def test_plan_says_why_when_nothing_is_scheduled(self):
+        """One message used to cover three different causes, and named only one."""
+        self.write("skill-ledger.yaml", "version: 1\nskills: []\n")
+        code, out = self.run_recall("plan")
+        self.assertEqual(code, 0, out)
+        self.assertIn("no skills", out.lower())
+
+        self.write("skill-ledger.yaml", """\
+            version: 1
+            skills:
+              - id: "core.sql"
+                name: "SQL"
+                scope: "S2"
+                target_level: "M1"
+                current_level: "M0"
+                confidence: "low"
+                evidence: []
+            """)
+        code, out = self.run_recall("plan")
+        self.assertEqual(code, 0, out)
+        self.assertIn("dated evidence", out)
+
+        self.write("mode-policy.yaml", "version: 1\nrecall_days: []\n")
+        code, out = self.run_recall("plan")
+        self.assertEqual(code, 0, out)
+        self.assertIn("recall_days", out)
+
+    def test_done_does_not_claim_a_last_check_when_none_is_scheduled(self):
+        self.write("mode-policy.yaml", "version: 1\nrecall_days: []\n")
+        code, out = self.run_recall("done", "php.pdo", "--task", "rebuilt", "--date", "2026-11-04")
+        self.assertEqual(code, 0, out)
+        self.assertNotIn("last scheduled check", out)
 
     def test_schedule_slots_are_exact(self):
         skill = self.ledger()["skills"][0]

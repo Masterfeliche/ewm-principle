@@ -24,7 +24,7 @@ A track is a staged path for one language: skills with target levels, one projec
 | shipped | `ship --url` with the repository or live address |
 | levels | every stage skill at its target in the skill ledger |
 | human | one A0–A2 evidence item with `verified_by: human`: a mentor or peer saw the work. The agent is not a human reviewer |
-| rebuild | one A0–A2 item with `type: rebuild`, dated at least 7 days after the stage began: the piece named in the brief, rebuilt from memory |
+| rebuild | one A0–A2 item with `type: rebuild` or `type: recall`, dated at least 7 days after the stage began: the piece named in the brief, rebuilt from memory. A check recorded with `emw_recall.py done` (Prompt 13) counts |
 | transfer | one A0–A1 item with `type: transfer`: the stretch change in the brief |
 | check | `python .emw/tools/emw_check.py` passes |
 

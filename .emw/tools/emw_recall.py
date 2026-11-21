@@ -107,11 +107,23 @@ def cmd_due(root: Path, args) -> int:
     return 1
 
 
+def no_schedule_reason(root: Path) -> str:
+    """Say which of the three causes left the schedule empty, rather than asserting one."""
+    _, data = load_ledger(root)
+    skills = [s for s in data["skills"] if isinstance(s, dict)]
+    if not load_policy(root)["recall_days"]:
+        return ("recall_days is [] in .emw-project/mode-policy.yaml, so no recall check "
+                "is scheduled.")
+    if not skills:
+        return "The skill ledger has no skills yet, so no recall check is scheduled."
+    return "No skill has dated evidence yet, so no recall check is scheduled."
+
+
 def cmd_plan(root: Path, args) -> int:
     today = args.date or dt.date.today()
     table = rows(root, today)
     if not table:
-        print("No skill has dated evidence yet, so no recall check is scheduled.")
+        print(no_schedule_reason(root))
         return 0
     print(f"Recall schedule on {today} (clock starts at each skill's first evidence):")
     for skill, slots in table:
@@ -135,20 +147,17 @@ def cmd_done(root: Path, args) -> int:
         raise RecallError(f"evidence on '{args.skill}' is not a list; fix the ledger by hand")
     skill["evidence"].append(item)
     text = yaml.safe_dump(data, sort_keys=False, allow_unicode=True, width=100)
-    path.write_text("# Evidence-backed developer mastery ledger. Recall checks are "
-                    "appended by emw_recall.py.\n"
-                    "# Evidence item: {date, type, assistance, verified_by, task}\n"
-                    "#   type: explain | predict | trace | debug | implement | modify | "
-                    "transfer | teach | rebuild | recall\n"
-                    "#   assistance: A0-A4    verified_by: self | human\n" + text,
-                    encoding="utf-8")
-    print(f"Recorded a {args.assistance} recall check on {args.skill} for {today}.")
+    path.write_text(emw_check.ledger_header("Recall checks are appended by emw_recall.py.")
+                    + text, encoding="utf-8")
+    print(f"Recorded an {args.assistance} recall check on {args.skill} for {today}.")
     slots = emw_check.recall_schedule(skill, today, load_policy(root)["recall_days"])
     nxt = next((s for s in slots if s["state"] == "upcoming"), None)
     if nxt:
         print(f"Next check on this skill: {nxt['days']}-day, due {nxt['due']}.")
-    else:
+    elif slots:
         print("That was the last scheduled check for this skill.")
+    else:
+        print(no_schedule_reason(root))
     print("If the rebuild needed notes or AI help, lower the level in the ledger "
           "rather than leaving it as it is.")
     return 0

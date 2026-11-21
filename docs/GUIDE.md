@@ -81,6 +81,8 @@ A track is a training plan for one language: six stages, a project for each, and
 
 The times are estimates. Nobody is behind.
 
+> Brand new to EMW? [Your first session](START-HERE.md) walks through the next three steps in order, with the output you should expect.
+
 ### Step 1: start
 
 Make a new repository for your learning, install EMW (section 2), then:
@@ -90,6 +92,8 @@ python .emw/tools/emw_track.py start php
 ```
 
 In Claude Code or OpenCode you can type `/emw-track start php` instead. This creates your progress file and adds the Stage 0 skills to your skill ledger at M0.
+
+Starting a track does not onboard the project. Run `/emw-onboard` as well — `emw_check` will warn until you do, and in a fresh learning repository it takes a few minutes.
 
 ### Step 2: see where you are
 
@@ -101,7 +105,7 @@ It shows your stage, each skill against its target, the project brief to read, a
 
 ### Step 3: read the brief
 
-Each stage has a brief in `.emw/tracks/briefs/`. It gives the problem, what to build, the edge cases you must handle, and a "works when" checklist. It contains no solution code. Read `house-rules.md` once too: money as whole shillings, Kiswahili and English, sandbox only, never hold other people's money.
+Each stage has a brief in `.emw/tracks/briefs/`. It gives the problem, what to build, the edge cases you must handle, and a "works when" checklist. It contains no solution code. From Stage 1 on, read `house-rules.md` once too: money as whole shillings, Kiswahili and English, sandbox only, never hold other people's money. They apply to the projects that ship software, so Stage 0 is governed by its brief alone.
 
 ### Step 4: build it, typing the code yourself
 

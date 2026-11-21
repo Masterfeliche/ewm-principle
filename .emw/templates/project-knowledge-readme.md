@@ -20,3 +20,6 @@ This directory stores durable, project-specific knowledge for <PROJECT NAME>.
 
 ## Retrieval and contribution
 Agents should inspect `index.yaml` and relevant entries before meaningful work. Use the EMW knowledge-entry template and rules. Project knowledge is not automatically shared upstream.
+
+## Entry ids
+Give every entry here an id that starts with `PKB-`, for example `PKB-0001`. Ids that start with `KB-` belong to the shared EMW knowledge base. The same id must appear in the entry's frontmatter and in `index.yaml`.

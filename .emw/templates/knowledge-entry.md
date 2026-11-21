@@ -1,5 +1,6 @@
 ---
 # Example placeholder metadata. Replace these values before publishing an entry.
+# Use a KB- id for the shared knowledge base and a PKB- id for .project-knowledge/.
 id: "KB-0001"
 title: "Replace with a descriptive knowledge title"
 status: "draft"

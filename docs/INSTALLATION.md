@@ -10,14 +10,17 @@ EMW is installed in the repository it governs. Shared framework files and the pr
 5. Copy `.emw/templates/README-project-state.md` as a guide. The onboarding prompt creates project-owned `.emw-project/` and `.project-knowledge/` records.
 6. Commit the framework integration.
 
-## Git subtree option
-From the target project repository, where `.emw/` does not already contain conflicting framework files:
+## Git remote option
+Use this to pull the framework straight from the upstream repository without copying files by hand. Run it from the target project repository.
 
 ```bash
 git remote add emw https://github.com/Masterfeliche/ewm-principle.git
 git fetch emw
-git subtree add --prefix=.emw emw main --squash
+git checkout emw/main -- .emw
+git commit -m "Add the EMW framework"
 ```
+
+This copies only the upstream `.emw/` directory into your `.emw/`. Do not use `git subtree add --prefix=.emw emw main`: it places the whole upstream repository inside `.emw/`, so the framework ends up at `.emw/.emw/` and no agent or tool finds it.
 
 Copy or merge the root agent instruction files separately. Keep project records outside `.emw/` so upstream updates cannot overwrite them.
 
@@ -25,10 +28,14 @@ To update the framework later:
 
 ```bash
 git fetch emw
-git subtree pull --prefix=.emw emw main --squash
+git rm -r -q .emw
+git checkout emw/main -- .emw
+git commit -m "Update the EMW framework"
 ```
 
-If the `emw` remote already exists, do not add it again. If the target already has an `.emw/` directory, inspect and merge it carefully before using subtree; do not overwrite local framework modifications or project data.
+The update replaces `.emw/` with the upstream copy, including removing files that upstream deleted. Any change you made inside `.emw/` is lost, so review `git diff --cached` before you commit and keep local additions outside `.emw/`.
+
+If the `emw` remote already exists, do not add it again. If the target already has an `.emw/` directory with local changes, inspect and merge it carefully first; do not overwrite local framework modifications or project data.
 
 ## Claude Code
 Claude Code reads root `CLAUDE.md`. Also copy `.claude/commands/` and `.claude/skills/` for the `/emw-*` slash commands and EMW skills. If the target already has a `.claude/` directory, add these files alongside its own; do not overwrite existing commands or settings.
@@ -79,7 +86,7 @@ project/
 6. Review baseline assumptions and approve consequential decisions before implementation.
 
 ## Updating EMW
-Update `.emw/` from the upstream repository using your chosen vendor, subtree, or carefully managed copy process. Do not replace `.emw-project/` or `.project-knowledge/`. Merge changes to `AGENTS.md`, agent-specific instruction files, and OpenCode configuration rather than overwriting project-specific rules.
+Update `.emw/` from the upstream repository using the Git remote steps above or a carefully managed copy process. Do not replace `.emw-project/` or `.project-knowledge/`. Merge changes to `AGENTS.md`, agent-specific instruction files, and OpenCode configuration rather than overwriting project-specific rules.
 
 ## Important limitation
 EMW is a set of repository files and operating instructions, not a universal executable plugin. Agents can automatically read and follow prompt files only when their environment provides repository access and supports loading project instructions. Other agents may require you to paste the relevant prompt. The instructions influence behavior; they do not guarantee correctness or compliance.

@@ -167,10 +167,11 @@ def rel(path: Path, root: Path) -> str:
 def project_schema(schema: dict) -> dict:
     """Project knowledge may use PKB- ids (see project-knowledge-index template)."""
     clone = json.loads(json.dumps(schema))
-    id_schema = clone["properties"]["id"]
-    if "items" in clone["properties"].get("entries", {}):
-        id_schema = clone["properties"]["entries"]["items"]["properties"]["id"]
-    id_schema["pattern"] = "^P?KB-[A-Z0-9-]+$"
+    props = clone["properties"]
+    if "items" in props.get("entries", {}):  # index schema: ids live on each record
+        props["project"] = {"type": "string"}  # the project index template names its project
+        props = props["entries"]["items"]["properties"]
+    props["id"]["pattern"] = "^P?KB-[A-Z0-9-]+$"
     return clone
 
 

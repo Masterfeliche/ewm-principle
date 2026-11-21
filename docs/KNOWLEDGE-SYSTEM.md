@@ -73,7 +73,7 @@ If evidence is incomplete, mark the entry `draft` or `proposed`; do not state as
 ## 5. Trust and quality controls
 
 Every entry should identify:
-- A stable ID and clear title.
+- A stable ID and clear title. Shared entries in `.emw/knowledge/` use `KB-` ids (for example `KB-SEC-0001`). Project entries in `.project-knowledge/` use `PKB-` ids (for example `PKB-0001`), so the two can never be confused. `emw_check.py` rejects a `PKB-` id in the shared knowledge base.
 - Status and confidence.
 - Scope and category.
 - Technologies and affected versions.

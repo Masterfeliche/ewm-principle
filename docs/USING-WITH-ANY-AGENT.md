@@ -5,7 +5,7 @@ EMW is agent-independent. Its core rules, knowledge, and prompts are repository 
 ## 1. One-time setup
 Install `.emw/` and root `AGENTS.md` in your project. Add the instruction adapter for the agent you use. Preserve existing project instructions by merging rather than overwriting.
 
-See [Installation](INSTALLATION.md) for copy and Git subtree approaches.
+See [Installation](INSTALLATION.md) for copy and Git remote approaches.
 
 ## 2. Automatic operation
 The portable contract is `AGENTS.md`. It instructs compatible agents to:

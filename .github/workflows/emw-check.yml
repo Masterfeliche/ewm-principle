@@ -20,6 +20,8 @@ jobs:
         run: pip install pyyaml
       - name: Validate EMW knowledge and project records
         run: python .emw/tools/emw_check.py --strict
-      - name: Test the checker itself
+      # Covers the checker, the track and recall tools, and test_fresh_learner.py,
+      # which walks one learner from `start` to passing the Stage 0 gate.
+      - name: Test the EMW tools
         if: hashFiles('.emw/tools/test_emw_check.py') != ''
         run: python -m unittest discover -s .emw/tools -p "test_*.py" -v

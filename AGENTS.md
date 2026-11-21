@@ -32,7 +32,7 @@ These are repository prompt files, not external tool functions. Automatic select
 ## Agent integrations
 Only `.emw/`, this file and one agent adapter are copied into a consuming project. The rest of this section applies only to whichever integration that project installed; if a path below is absent, it was not installed and nothing here is missing.
 
-OpenCode natively discovers root `AGENTS.md`. The fuller OpenCode integration adds `opencode.json`, project skills under `.opencode/skills/`, and slash commands under `.opencode/commands/`. Claude Code reads root `CLAUDE.md`, with the same commands under `.claude/commands/` and skills under `.claude/skills/`.
+OpenCode natively discovers root `AGENTS.md`. The fuller OpenCode integration adds `opencode.json`, project skills under `.opencode/skills/`, and slash commands under `.opencode/commands/`. Claude Code reads root `CLAUDE.md`, with the same commands under `.claude/commands/` and skills under `.claude/skills/`. Antigravity reads this file directly and needs no adapter of its own; its copies of the commands and skills are under `.agents/skills/`.
 - Where skills are installed, read `emw-workflow`'s `SKILL.md` and load the other EMW skills as relevant.
 - Use `/emw-onboard`, `/emw-feature`, `/emw-learn`, `/emw-debug`, `/emw-review`, `/emw-weekly`, `/emw-capture`, `/emw-practice`, `/emw-track` and `/emw-recall` when applicable.
 - In OpenCode, skills are discoverable and can be invoked explicitly with `@emw-workflow`, `@emw-knowledge`, or `@emw-mastery`.

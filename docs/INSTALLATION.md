@@ -5,7 +5,7 @@ EMW is installed in the repository it governs. Shared framework files and the pr
 ## Recommended: copy or vendor the framework
 1. Copy the framework's `.emw/` directory into the target repository.
 2. Copy or merge root `AGENTS.md` into the target root.
-3. Add the relevant adapter: `CLAUDE.md`, `GEMINI.md`, `.cursor/rules/emw.mdc`, `.github/copilot-instructions.md`, or the OpenCode configuration described in [OpenCode Integration](OPENCODE.md).
+3. Add the relevant adapter: `CLAUDE.md`, `GEMINI.md`, `.cursor/rules/emw.mdc`, `.github/copilot-instructions.md`, the OpenCode configuration described in [OpenCode Integration](OPENCODE.md), or the `.agents/skills/` directory described in [Antigravity Integration](ANTIGRAVITY.md). Antigravity and Codex need no adapter file of their own: they read root `AGENTS.md` directly.
 4. If the target already has an agent instruction or configuration file, merge the EMW reference into it; never blindly overwrite existing project instructions.
 5. Copy `.emw/templates/README-project-state.md` as a guide. The onboarding prompt creates project-owned `.emw-project/` and `.project-knowledge/` records.
 6. Commit the framework integration.

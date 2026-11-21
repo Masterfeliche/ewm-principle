@@ -1,5 +1,5 @@
 ---
-description: Start or follow a learning track (start <track>, status, ship --url, next)
+description: Start or follow a learning track (start <track>, status, log, ship --url, next)
 ---
 
 Read and follow `.emw/prompts/12-learning-track.md`.

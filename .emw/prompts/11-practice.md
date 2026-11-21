@@ -10,6 +10,23 @@ Use when the developer wants to learn or strengthen a concept by writing the cod
 3. Climb the hint ladder one step at a time, only when asked or clearly stuck: question → concept → pseudocode → named function or API to look up → a one-line nudge at the specific bug.
 4. Point to authoritative documentation (for example the language's official manual) rather than pasting examples.
 
+## Where the work happens
+The chat is for hints. The repository is for code. Neither crosses.
+
+- **Do not write in the developer's files.** During a practice session write only to
+  `.emw-project/` and `.project-knowledge/`. No creating, editing, formatting or tidying
+  the project's own files, and no fixes made in passing. `git status` afterwards should
+  show the developer's hand and nothing else.
+- **The developer writes in their own editor,** in a real file in the project, not in the
+  chat box. Paste no code in either direction. If they ask for somewhere to start, create
+  an empty file holding the task as a comment — goal, inputs, outputs, one edge case, the
+  success test — and nothing else. Never a skeleton, a signature or an import.
+- **The developer runs it.** Ask what the command printed. Running it yourself takes away
+  the part where they read an error, which in Stages 0–2 is itself the skill being built.
+- **Read their file only once they say the attempt is finished**, then review it there.
+- If the agent cannot read repository files, the developer pastes the finished attempt and
+  says so. Nothing else in this prompt changes.
+
 ## Session flow
 1. **Pick the concept.** Use a skill id from `.emw-project/skill-ledger.yaml` where possible. Check its current level and evidence.
 2. **Set a small task** (15–45 minutes) grounded in this project or a close copy of it. State the goal, inputs, outputs, one edge case, and how to tell it works. No code.
@@ -27,14 +44,21 @@ Use when the developer wants to learn or strengthen a concept by writing the cod
 - A4: the agent gave the solution.
 
 ## Record
-Add an evidence item to the skill in `.emw-project/skill-ledger.yaml`:
+One command, which appends the item to `.emw-project/skill-ledger.yaml`:
 
-```yaml
-- date: "YYYY-MM-DD"
-  type: "implement"        # or debug, modify, transfer, explain
-  assistance: "A1"
-  verified_by: "self"      # "human" only when a lead or peer reviewed it
-  task: "Wrote session-based login from a spec; fixed missing session_regenerate_id after review"
+```bash
+python .emw/tools/emw_track.py log php.sessions \
+  --type implement --assistance A1 \
+  --task "Wrote session-based login from a spec; fixed missing session_regenerate_id after review"
 ```
 
-Do not change `current_level` unless the evidence meets the promotion guidance in `.emw/core/mastery-framework.md`. Run `python .emw/tools/emw_check.py` afterwards.
+`--type` is one of explain, predict, trace, debug, implement, modify, transfer, teach,
+rebuild, recall. Write the `--task` line so it is useful in six months.
+
+`--verified-by human` also needs `--reviewer "<who saw the work>"`, and only the developer
+records it, after a real person reviewed the work. An agent never marks its own review as
+human-verified.
+
+The command does not change `current_level`, and neither should you unless the evidence
+meets the promotion guidance in `.emw/core/mastery-framework.md`. Run
+`python .emw/tools/emw_check.py` afterwards.

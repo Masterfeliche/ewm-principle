@@ -122,17 +122,17 @@ Why this way: what makes code stick is producing it from your own head. Reading 
 
 ### Step 5: record what you did
 
-After each real piece of work, add an evidence item to that skill in `.emw-project/skill-ledger.yaml`:
+After each real piece of work, record one evidence item against that skill:
 
-```yaml
-- date: "2026-12-03"
-  type: "implement"      # implement | debug | modify | explain | transfer | rebuild
-  assistance: "A1"
-  verified_by: "self"    # "human" only when a mentor or peer saw it
-  task: "Wrote the amount parser and its tests; needed one hint on regular expressions"
+```bash
+python .emw/tools/emw_track.py log core.sql \
+  --type implement --assistance A1 \
+  --task "Wrote the amount parser and its tests; needed one hint on regular expressions"
 ```
 
-When the evidence supports it, raise `current_level`. The agent can help you write the entry and suggest a level. It must not invent evidence or mark anything as human-verified.
+It appends to `.emw-project/skill-ledger.yaml`, refuses a skill or a type it does not recognise, and leaves your level alone. When a mentor or peer has actually reviewed the work, add `--verified-by human --reviewer "their name"` — you record that, never the agent.
+
+When the evidence supports it, raise `current_level` yourself. The agent can suggest a level. It must not invent evidence or mark anything as human-verified.
 
 ### Step 6: pass the gate
 
@@ -334,7 +334,7 @@ Start them on a track (section 4) for their first weeks, then move them to the r
 | `/emw-capture` | Prompt 08: save a verified lesson |
 | `/emw-weekly` | Prompt 09: weekly progress and gaps |
 | `/emw-practice` | Prompt 11: you type, the AI hints |
-| `/emw-track` | Prompt 12 and `emw_track.py`: start, status, ship, next |
+| `/emw-track` | Prompt 12 and `emw_track.py`: start, status, log, ship, next |
 | `/emw-recall` | Prompt 13 and `emw_recall.py`: a check from memory |
 
 Slash commands exist for Claude Code and OpenCode. In other agents, ask in words ("follow the EMW feature prompt for…") or paste the prompt file.
@@ -343,6 +343,8 @@ Slash commands exist for Claude Code and OpenCode. In other agents, ask in words
 python .emw/tools/emw_check.py            # check all records
 python .emw/tools/emw_check.py --strict   # also fail on warnings
 python .emw/tools/emw_track.py status     # where you are on a track
+python .emw/tools/emw_track.py log <skill> --type implement --assistance A1 --task "..."
+python .emw/tools/emw_track.py next       # pass the gate and open the next stage
 python .emw/tools/emw_recall.py due       # checks from memory you owe today
 python .emw/tools/emw_recall.py plan      # the whole recall schedule
 ```

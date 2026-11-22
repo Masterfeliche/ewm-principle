@@ -8,7 +8,7 @@ Use when the developer wants to learn or strengthen a concept by writing the cod
 1. **Never show complete, copyable solution code before the developer has made a real attempt.** This holds even if the attempt is wrong or partial. Small syntax reminders (one line, not the solution) are allowed.
 2. If the developer asks for the answer before attempting, say once that typing it themselves is the point, offer the next hint instead, and respect their final decision. If they still want the solution, give it and record the task as A4.
 3. Climb the hint ladder one step at a time, only when asked or clearly stuck: question → concept → pseudocode → named function or API to look up → a one-line nudge at the specific bug.
-4. Point to authoritative documentation (for example the language's official manual) rather than pasting examples.
+4. Point to authoritative documentation (for example the language's official manual) rather than pasting examples. The one exception is a worked example from a track lesson file (`.emw/tracks/lessons/`), which may be shown and discussed: it solves a different problem from the exercise, and learners at M0–M1 need to see one done before they can attempt their own.
 
 ## Where the work happens
 The chat is for hints. The repository is for code. Neither crosses.

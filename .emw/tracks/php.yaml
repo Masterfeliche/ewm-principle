@@ -60,6 +60,7 @@ stages:
     project:
       title: "Mobile-money statement analyser"
       brief: "briefs/php-stage-1.md"
+    lessons: "lessons/php-stage-1/README.md"
     electives:
       - {title: "Simu", summary: "Composer library that validates Tanzanian phone numbers, converts them to one format and guesses the operator. Recommended alongside the core project."}
       - {title: "TANQR reader and writer", summary: "Build and parse the national merchant QR payload, with its checksum."}

@@ -13,10 +13,11 @@ A track is a staged path for one language: skills with target levels, one projec
 ## What the agent does
 1. Run `status` and report it in plain words: the stage, the project, what is done, what is left.
 2. Read the stage's project brief, and from Stage 1 on also `briefs/house-rules.md` (it applies to the projects that ship software, not to Stage 0). The brief is the specification. Do not add requirements and do not drop any.
-3. Follow the stage's default mode. In Stages 0–2 that is Mode 1: use Prompt 11 (Practice). The developer types the code; give hints one step at a time and no complete solution before an attempt. A brief contains no solution code, and neither should you.
-4. After each meaningful piece of work, help the developer record it: one entry in `task-log.yaml`, and an evidence item on the relevant skill in `skill-ledger.yaml` with the date, type, honest assistance level and `verified_by`.
-5. Propose a level change only when the evidence meets the promotion guidance in `.emw/core/mastery-framework.md`. The developer decides.
-6. When the developer asks to move on, run `next`. If it refuses, explain each missing item and how to meet it. Never edit `track.yaml` by hand to get past a gate.
+3. If the stage lists `lessons` in its track file, teach from them: start with the first lesson the developer has not finished, and follow the "For the agent" section of that stage's lessons README. Lessons come before the project; the project grows from the lessons' project steps. Worked examples in a lesson file may be shown in the chat, because they solve a different problem from the exercises. Everything the developer writes still follows Prompt 11.
+4. Follow the stage's default mode. In Stages 0–2 that is Mode 1: use Prompt 11 (Practice). The developer types the code; give hints one step at a time and no complete solution before an attempt. A brief contains no solution code, and neither should you.
+5. After each meaningful piece of work, help the developer record it: one entry in `task-log.yaml`, and an evidence item on the relevant skill in `skill-ledger.yaml` with the date, type, honest assistance level and `verified_by`.
+6. Propose a level change only when the evidence meets the promotion guidance in `.emw/core/mastery-framework.md`. The developer decides.
+7. When the developer asks to move on, run `next`. If it refuses, explain each missing item and how to meet it. Never edit `track.yaml` by hand to get past a gate.
 
 ## Gate items and how they are met
 | Item | Met by |

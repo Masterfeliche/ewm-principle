@@ -127,6 +127,11 @@ The brief is the specification. It contains no solution code, and neither should
 agent. Read the "It works when" checklist before you start building, not after — it is
 how you will know you are finished.
 
+**Then open the lessons.** The brief says *what* to build; the lessons teach you *how*, in
+order, starting from zero: `.emw/tracks/lessons/core-stage-0/README.md` for Stage 0, and
+`.emw/tracks/lessons/php-stage-1/README.md` once you reach PHP Stage 1. Ask the agent to
+"start lesson 1" and it will teach from them.
+
 ### 5. Start working (the rest of your life)
 
 ```

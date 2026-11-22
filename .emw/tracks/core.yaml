@@ -47,6 +47,7 @@ stages:
     project:
       title: "Personal page and first queries"
       brief: "briefs/core-stage-0.md"
+    lessons: "lessons/core-stage-0/README.md"
     resources:
       - "MDN Learn web development (developer.mozilla.org/en-US/docs/Learn)"
       - "Pro Git, chapters 1-3 (git-scm.com/book)"

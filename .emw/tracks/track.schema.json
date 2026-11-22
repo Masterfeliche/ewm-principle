@@ -60,6 +60,7 @@
             },
             "additionalProperties": false
           },
+          "lessons": {"type": "string", "pattern": "\\.md$"},
           "electives": {
             "type": "array",
             "items": {

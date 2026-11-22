@@ -284,6 +284,8 @@ def cmd_status(root: Path, args) -> int:
           f"   ({position} of {total})")
     print(f"Outcome: {stage['outcome']}")
     print(f"Project: {stage['project']['title']}  ->  .emw/tracks/{stage['project']['brief']}")
+    if stage.get("lessons"):
+        print(f"Lessons: .emw/tracks/{stage['lessons']}")
     print(f"Default mode: {stage['default_mode']}   Time: {stage.get('duration_estimate', 'not estimated')}")
     ledger = {s.get("id"): s for s in project.ledger()["skills"] if isinstance(s, dict)}
     print("Skills (current -> target):")
@@ -397,6 +399,8 @@ def cmd_next(root: Path, args) -> int:
     for line in changed:
         print(f"  {line}")
     print(f"Project brief: .emw/tracks/{nxt['project']['brief']}")
+    if nxt.get("lessons"):
+        print(f"Lessons: .emw/tracks/{nxt['lessons']} (start with lesson 1)")
     return 0
 
 

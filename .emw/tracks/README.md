@@ -12,6 +12,7 @@ A track is a staged path for one language: what to learn, what to build, and whe
 | `python.yaml` | Python: Django, then FastAPI, ending with an AI specialism |
 | `briefs/` | One brief per stage project: the problem, what to build, edge cases, a "works when" checklist. No solution code |
 | `briefs/house-rules.md` | Rules every track project follows |
+| `lessons/` | Step-by-step lessons for a stage, for beginners: idea, worked example, predict, exercises, planted bug, done check. A stage that has them lists them under `lessons` in its track file. PHP Stage 1 is the first |
 | `track.schema.json` | The format of a track file |
 
 All four tracks start with core Stage 0 and set their projects in Tanzania and East Africa. The design is in `docs/plans/learning-tracks-plan.md`.

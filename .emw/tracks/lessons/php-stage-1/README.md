@@ -5,14 +5,14 @@ command-line tool: `hesabu`, the [Stage 1 project](../../briefs/php-stage-1.md).
 order. Each one builds on the ones before it, and the project grows a piece at a time from
 Lesson 8 on.
 
-Before Lesson 1 you need Stage 0 (terminal, Git, a little HTML and SQL): see the
-[Stage 0 lessons](../core-stage-0/README.md). If you skipped it, do at least the terminal and
-Git lessons first.
+No prerequisites. Lesson 1 teaches you the terminal and how to install PHP. Git is
+introduced in Lesson 6. HTML, SQL and HTTP come later, in Stage 2, when you actually need
+them to build a web app.
 
 ## The lessons
 | # | Lesson | Time | Project step |
 |---|---|---|---|
-| 1 | [Install PHP, run a file, read your first error](01-setup.md) | 1–2 h | |
+| 1 | [Install PHP, run a file, read your first error](01-setup.md) | 2–3 h | |
 | 2 | [Thinking before coding](02-thinking-before-coding.md) | 2–3 h | Plan the amount parser |
 | 3 | [Variables, types, and `==` versus `===`](03-variables-and-types.md) | 2–3 h | |
 | 4 | [Strings, UTF-8 and the `mb_` functions](04-strings-and-utf8.md) | 3–4 h | |

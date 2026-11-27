@@ -5,7 +5,7 @@ schema_version: 1
 id: go
 extends: core
 title: "Go for services and infrastructure"
-summary: "Go with the standard library first, ending with a payment reconciliation system load-tested on Kubernetes. Be clear before you start: there are very few junior Go jobs and most people learn Go as a second language, so a beginner should expect to enter through cloud or platform roles, or pair this track with another one. Start with core Stage 0."
+summary: "Go with the standard library first, ending with a payment reconciliation system load-tested on Kubernetes. Be clear before you start: there are very few junior Go jobs and most people learn Go as a second language, so a beginner should expect to enter through cloud or platform roles, or pair this track with another one. Starts at Stage 1."
 framework: "Standard library first (net/http, database/sql, log/slog); chi and Gin as reading knowledge only"
 researched_at: "2026-11-21"
 sources:

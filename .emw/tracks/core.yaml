@@ -1,9 +1,10 @@
-# Shared core: skills every language track reuses, the Stage 0 ground floor, and the stage gate.
+# Shared core: skills every language track reuses and the stage gate.
+# Core skills are taught in the stage where they are first needed, not in a separate Stage 0.
 # Validate with: python .emw/tools/emw_check.py
 schema_version: 1
 id: core
-title: "Shared core skills and Stage 0"
-summary: "Language-independent skills tracked once and reused by every track, plus the ground-floor stage all beginners start with."
+title: "Shared core skills"
+summary: "Language-independent skills tracked once and reused by every track. Each skill is introduced in the stage that first needs it."
 researched_at: "2026-11-21"
 sources:
   - "docs/plans/learning-tracks-plan.md"
@@ -32,23 +33,8 @@ skills:
   - {id: core.observability, name: "Logs, metrics and traces", scope: S2, covers: "Structured logs, key metrics, tracing a slow request, alerts"}
   - {id: core.load-testing, name: "Load testing", scope: S2, covers: "Stating a target, writing a load script, reading results, finding the bottleneck"}
 
-stages:
-  - number: 0
-    name: "Ground floor"
-    outcome: "A Git repository with a static page live on the internet and a file of SQL queries you wrote yourself."
-    duration_estimate: "2-4 weeks at 10-15 hours a week (estimate)"
-    default_mode: 1
-    skills:
-      - {id: core.terminal, target: M2}
-      - {id: core.git, target: M2}
-      - {id: core.html-css, target: M2}
-      - {id: core.http, target: M1}
-      - {id: core.sql, target: M1}
-    project:
-      title: "Personal page and first queries"
-      brief: "briefs/core-stage-0.md"
-    lessons: "lessons/core-stage-0/README.md"
-    resources:
-      - "MDN Learn web development (developer.mozilla.org/en-US/docs/Learn)"
-      - "Pro Git, chapters 1-3 (git-scm.com/book)"
-      - "SQLBolt interactive lessons (sqlbolt.com)"
+stages: []
+  # Stage 0 removed. Core skills are now introduced in the language track stages that need them:
+  #   core.terminal, core.git         → Stage 1 (you need them to run code and save work)
+  #   core.html-css, core.http, core.sql → Stage 2 (you need them to build a web app with a database)
+  # The old Stage 0 lessons remain in lessons/core-stage-0/ as optional reference material.

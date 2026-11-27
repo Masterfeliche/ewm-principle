@@ -32,8 +32,8 @@ aimed at people who want the ability, not just the working code.
 
 ### 1. Start a track (2 minutes)
 
-Four are available: `php`, `dotnet`, `go`, `python`. They all begin with the same
-Stage 0, which needs no programming language at all.
+Four are available: `php`, `dotnet`, `go`, `python`. Each track starts at Stage 1 —
+straight into your language.
 
 ```bash
 python .emw/tools/emw_track.py start php
@@ -42,18 +42,17 @@ python .emw/tools/emw_track.py start php
 In Claude Code or OpenCode, `/emw-track start php` does the same thing. You should see:
 
 ```
-Started track 'php' (PHP with Laravel) at stage 0: Ground floor.
+Started track 'php' (PHP with Laravel) at stage 1: Language foundations.
   added core.terminal (target M2)
-  added core.git (target M2)
-  added core.html-css (target M2)
-  added core.http (target M1)
-  added core.sql (target M1)
-Project brief: .emw/tracks/briefs/core-stage-0.md
+  added core.git (target M3)
+  added php.syntax-types (target M3)
+  ...
+Project brief: .emw/tracks/briefs/php-stage-1.md
 Next: read the brief, then run: python .emw/tools/emw_track.py status
 This project is not onboarded yet. Run /emw-onboard before feature work.
 ```
 
-Five skills, all at M0, because you have not shown this workflow anything yet. M0 means
+Several skills, all at M0, because you have not shown this workflow anything yet. M0 means
 "unknown", not "bad".
 
 ### 2. Onboard the project (5 minutes)
@@ -91,12 +90,12 @@ warnings should be gone.
 python .emw/tools/emw_track.py status
 ```
 
-The bottom half is the gate — what Stage 0 needs before it opens Stage 1:
+The bottom half is the gate — what Stage 1 needs before it opens Stage 2:
 
 ```
 Gate:
   [ ] shipped   no project URL recorded; run: emw_track.py ship --url <repo or live URL>
-  [ ] levels    behind: core.terminal M0->M2, core.git M0->M2, ...
+  [ ] levels    behind: php.syntax-types M0->M3, php.arrays-functions M0->M3, ...
   [ ] human     no A0-A2 evidence with verified_by: human in this stage
   [ ] rebuild   no A0-A2 evidence of type rebuild or recall dated on or after ...
   [ ] transfer  no A0-A1 evidence of type transfer in this stage
@@ -116,26 +115,22 @@ than discovering in six weeks:
 ### 4. Read the brief (10 minutes)
 
 ```bash
-cat .emw/tracks/briefs/core-stage-0.md
+cat .emw/tracks/briefs/php-stage-1.md
 ```
 
-Stage 0 asks for a personal page, a Git repository with real commits and one pull
-request, ten SQL queries you wrote, and notes on what your browser actually sent and
-received. No programming language yet.
-
-The brief is the specification. It contains no solution code, and neither should the
-agent. Read the "It works when" checklist before you start building, not after — it is
-how you will know you are finished.
+Stage 1 asks for a tested command-line tool that reads messy real-world input. The
+brief is the specification — it contains no solution code, and neither should the agent.
+Read the "It works when" checklist before you start building, not after.
 
 **Then open the lessons.** The brief says *what* to build; the lessons teach you *how*, in
-order, starting from zero: `.emw/tracks/lessons/core-stage-0/README.md` for Stage 0, and
-`.emw/tracks/lessons/php-stage-1/README.md` once you reach PHP Stage 1. Ask the agent to
-"start lesson 1" and it will teach from them.
+order, starting from zero: `.emw/tracks/lessons/php-stage-1/README.md` for PHP Stage 1.
+Lesson 1 covers the terminal and installing PHP — no prior experience required. Ask the
+agent to "start lesson 1" and it will teach from them.
 
 ### 5. Start working (the rest of your life)
 
 ```
-/emw-practice writing my first SELECT with a JOIN
+/emw-practice writing my first PHP function
 ```
 
 The agent sets a small task, asks what you think will be hard, and then gives one hint

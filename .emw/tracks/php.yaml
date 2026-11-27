@@ -5,7 +5,7 @@ schema_version: 1
 id: php
 extends: core
 title: "PHP with Laravel"
-summary: "Modern PHP, then Laravel as the only framework, ending with a multi-shop point-of-sale system that survives load. Start with core Stage 0."
+summary: "Modern PHP, then Laravel as the only framework, ending with a multi-shop point-of-sale system that survives load. Starts at Stage 1."
 framework: "Laravel 13 (Symfony is an optional elective after Stage 4)"
 researched_at: "2026-11-21"
 sources:
@@ -50,13 +50,14 @@ stages:
     duration_estimate: "2-3 months at 10-15 hours a week (estimate)"
     default_mode: 1
     skills:
+      - {id: core.terminal, target: M2}
+      - {id: core.git, target: M3}
       - {id: php.syntax-types, target: M3}
       - {id: php.arrays-functions, target: M3}
       - {id: php.files-errors, target: M2}
       - {id: php.composer-autoload, target: M2}
       - {id: php.testing-pest, target: M2}
       - {id: core.testing, target: M2}
-      - {id: core.git, target: M3}
     project:
       title: "Mobile-money statement analyser"
       brief: "briefs/php-stage-1.md"
@@ -87,6 +88,7 @@ stages:
       - {id: php.composer-autoload, target: M3}
       - {id: php.routing-di, target: M2}
       - {id: php.static-analysis, target: M2}
+      - {id: core.html-css, target: M2}
       - {id: core.security-basics, target: M3}
       - {id: core.sql, target: M2}
       - {id: core.http, target: M2}

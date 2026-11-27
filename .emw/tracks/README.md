@@ -5,7 +5,7 @@ A track is a staged path for one language: what to learn, what to build, and whe
 ## Files
 | File | What it is |
 |---|---|
-| `core.yaml` | Skills shared by every track (Git, HTTP, SQL, testing, security and more), Stage 0, and the stage gate |
+| `core.yaml` | Skills shared by every track (Git, HTTP, SQL, testing, security and more) and the stage gate |
 | `php.yaml` | PHP: modern PHP, then Laravel as the only framework |
 | `dotnet.yaml` | .NET: C#, then ASP.NET Core with EF Core |
 | `go.yaml` | Go: standard library first, for services and infrastructure. Few junior jobs; often a second language |
@@ -15,7 +15,7 @@ A track is a staged path for one language: what to learn, what to build, and whe
 | `lessons/` | Step-by-step lessons for a stage, for beginners: idea, worked example, predict, exercises, planted bug, done check. A stage that has them lists them under `lessons` in its track file. PHP Stage 1 is the first |
 | `track.schema.json` | The format of a track file |
 
-All four tracks start with core Stage 0 and set their projects in Tanzania and East Africa. The design is in `docs/plans/learning-tracks-plan.md`.
+All four tracks start at Stage 1 — straight into the language — and set their projects in Tanzania and East Africa. Core skills (terminal, Git, HTML, SQL, etc.) are introduced in the stage that first needs them. The design is in `docs/plans/learning-tracks-plan.md`.
 
 ## The projects
 | Stage | PHP | .NET | Go | Python |
@@ -52,11 +52,11 @@ python .emw/tools/emw_track.py ship --url https://github.com/you/your-project
 python .emw/tools/emw_track.py next
 ```
 
-- `start` creates `.emw-project/track.yaml` and adds the first stage's skills to your skill ledger at M0. A PHP learner starts at core Stage 0.
+- `start` creates `.emw-project/track.yaml` and adds the first stage's skills to your skill ledger at M0.
 - `status` shows your stage, each skill against its target, the project brief and the gate checklist.
 - `next` opens the next stage only when the gate is met; otherwise it lists what is missing.
 
-Day to day: read the stage brief, build the project (in Stages 0–2 use `/emw-practice`: you type, the agent hints), and record evidence on each skill in `skill-ledger.yaml`:
+Day to day: read the stage brief, build the project (in Stages 1–2 use `/emw-practice`: you type, the agent hints), and record evidence on each skill in `skill-ledger.yaml`:
 
 ```yaml
 - date: "2026-12-03"

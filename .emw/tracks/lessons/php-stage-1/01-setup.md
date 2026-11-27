@@ -1,11 +1,59 @@
 # Lesson 1 — Install PHP, run a file, read your first error
 
-**Time:** 1–2 hours · **Skills:** `core.terminal`, `php.syntax-types` · **Before this:** Stage 0
+**Time:** 2–3 hours · **Skills:** `core.terminal`, `php.syntax-types` · **Before this:** nothing
 **Your folder:** `exercises/stage-1/lesson-01/`
 
 ## Goal
-By the end you can install PHP, run a PHP file from the terminal, try a line in the
-interactive shell, and read a PHP error message well enough to find the line it is about.
+By the end you can open a terminal, move around folders, install PHP, run a PHP file,
+try a line in the interactive shell, and read a PHP error message well enough to find
+the line it is about.
+
+## The terminal — where everything starts
+The **terminal** (also called the command line or shell) is a text window where you type
+commands instead of clicking. You will use it every day: to run PHP, install tools, use
+Git, and later to talk to servers. It looks unfriendly at first. It is actually simple:
+you type a command, press Enter, and it prints a result.
+
+**Open it:**
+- **Linux:** open "Terminal".
+- **macOS:** open "Terminal" (Applications → Utilities).
+- **Windows:** install WSL with Ubuntu (search "install WSL" on learn.microsoft.com),
+  then open "Ubuntu". Everything in this track assumes a Linux-style terminal.
+
+**Where am I?** The terminal is always "in" one folder, the **working directory**.
+
+| Command | Does |
+|---|---|
+| `pwd` | print the folder you are in |
+| `ls` | list what is in it (`ls -la` shows hidden files and details) |
+| `cd folder` | go into a folder |
+| `cd ..` | go up one folder |
+| `cd ~` | go to your home folder |
+| `mkdir name` | make a folder (`mkdir -p a/b/c` makes several levels) |
+| `cat file` | print a file's contents |
+| `cp from to` | copy a file |
+| `mv from to` | move or rename |
+| `rm file` | delete — **there is no bin; it is gone** |
+
+**Paths.** `/home/asha/exercises/notes.md` is an **absolute** path (starts at the root `/`).
+`exercises/notes.md` is **relative** (starts from where you are now). `.` means "this
+folder", `..` means "the folder above".
+
+**Saving effort:** press **Tab** to complete a name, **↑** for the last command,
+**Ctrl+C** to stop something stuck.
+
+**Errors.** When a command fails, read the message — it is almost always exactly right.
+`command not found` = a typo or the tool is not installed.
+`No such file or directory` = wrong name or wrong folder. Run `pwd` and `ls` to check.
+
+## Finding answers
+No programmer remembers everything. When you're stuck:
+1. **Search the error message itself** — remove your file paths and add the tool name
+   (e.g. `PHP 8.4 "unexpected token"`).
+2. **Official docs first:** php.net/manual for PHP, git-scm.com/doc for Git.
+3. **Judge an answer:** how old is it? Does it explain *why*? Do you understand every line?
+4. **Ask a good question:** what you tried, what you expected, what happened instead, the
+   exact error.
 
 ## The idea
 PHP is a program that reads your `.php` file and runs it. On your machine you run it
@@ -88,6 +136,12 @@ Write your answer down *before* you run anything. Then run it and compare.
 ## Exercises
 Write each in its own file in your lesson folder. You type everything.
 
+0. **Terminal warm-up** — before writing any PHP, do this in the terminal:
+   - Run `pwd` to see where you are.
+   - Create your exercise folder: `mkdir -p exercises/stage-1/lesson-01`
+   - `cd` into it. Run `pwd` again to confirm you are there.
+   - Create an empty file: `touch hello.txt`, then `ls` to see it.
+   If any command is new to you, try it twice. No notes needed — just get comfortable.
 1. **`me.php`** — prints your name, the track you are on, and today's date, each on its own line.
 2. **`breakit.php`** — start from a working copy of `me.php`. Make *one* mistake at a time,
    run it, and copy the error into `notes.md` with one line on what caused it. Do at least:

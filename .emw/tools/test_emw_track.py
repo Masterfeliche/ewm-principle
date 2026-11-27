@@ -42,9 +42,11 @@ class EmwTrackTests(unittest.TestCase):
     def test_start_creates_valid_project(self):
         code, out = self.run_track("start", "php", "--date", "2026-11-01")
         self.assertEqual(code, 0, out)
-        self.assertIn("stage 0: Ground floor", out)
+        self.assertIn("stage 1: Language foundations", out)
         ids = [s["id"] for s in self.ledger()["skills"]]
-        self.assertEqual(ids, ["core.terminal", "core.git", "core.html-css", "core.http", "core.sql"])
+        self.assertIn("core.terminal", ids)
+        self.assertIn("core.git", ids)
+        self.assertIn("php.syntax-types", ids)
         # Starting a track is not onboarding: the records it did not write are reported
         # as warnings, so the ledger is valid but the project is not yet complete.
         check_out = io.StringIO()
@@ -60,7 +62,7 @@ class EmwTrackTests(unittest.TestCase):
                 shutil.rmtree(self.root / ".emw-project", ignore_errors=True)
                 code, out = self.run_track("start", track, "--date", "2026-11-01")
                 self.assertEqual(code, 0, out)
-                self.assertIn("stage 0: Ground floor", out)
+                self.assertIn("stage 1:", out)
                 check_out = io.StringIO()
                 with contextlib.redirect_stdout(check_out):
                     self.assertEqual(emw_check.main(["--root", str(self.root)]), 0,
@@ -75,7 +77,7 @@ class EmwTrackTests(unittest.TestCase):
         self.assertEqual(code, 2)
         self.assertIn("already started", out)
 
-    def test_gate_blocks_then_opens_stage_one(self):
+    def test_gate_blocks_then_opens_stage_two(self):
         self.run_track("start", "php", "--date", "2026-11-01")
         code, out = self.run_track("next", "--date", "2026-11-20")
         self.assertEqual(code, 1)
@@ -84,14 +86,17 @@ class EmwTrackTests(unittest.TestCase):
 
         # levels reached with self-verified evidence only: human, rebuild and transfer still missing
         ledger = self.ledger()
-        targets = {"core.terminal": "M2", "core.git": "M2", "core.html-css": "M2",
-                   "core.http": "M1", "core.sql": "M1"}
+        stage1_targets = {"core.terminal": "M2", "core.git": "M3",
+                          "php.syntax-types": "M3", "php.arrays-functions": "M3",
+                          "php.files-errors": "M2", "php.composer-autoload": "M2",
+                          "php.testing-pest": "M2", "core.testing": "M2"}
         for skill in ledger["skills"]:
-            skill["current_level"] = targets[skill["id"]]
-            skill["evidence"] = [{"date": "2026-11-05", "type": "implement", "assistance": "A1",
-                                  "verified_by": "self", "task": "stage 0 work"}]
+            if skill["id"] in stage1_targets:
+                skill["current_level"] = stage1_targets[skill["id"]]
+                skill["evidence"] = [{"date": "2026-11-05", "type": "implement", "assistance": "A1",
+                                      "verified_by": "self", "task": "stage 1 work"}]
         self.save_ledger(ledger)
-        self.run_track("ship", "--url", "https://example.test/me")
+        self.run_track("ship", "--url", "https://example.test/hesabu")
         code, out = self.run_track("next", "--date", "2026-11-20")
         self.assertEqual(code, 1)
         self.assertNotIn("levels", out)
@@ -105,6 +110,13 @@ class EmwTrackTests(unittest.TestCase):
             {"date": "2026-11-03", "type": "rebuild", "assistance": "A0", "verified_by": "self", "task": "too early"},
             {"date": "2026-11-10", "type": "transfer", "assistance": "A1", "verified_by": "human", "task": "stretch"},
         ]
+        # M3 skills need human-verified evidence
+        php_st = next(s for s in ledger["skills"] if s["id"] == "php.syntax-types")
+        php_st["evidence"].append({"date": "2026-11-10", "type": "implement", "assistance": "A1",
+                                   "verified_by": "human", "task": "mentor reviewed types"})
+        arr = next(s for s in ledger["skills"] if s["id"] == "php.arrays-functions")
+        arr["evidence"].append({"date": "2026-11-10", "type": "implement", "assistance": "A1",
+                                "verified_by": "human", "task": "mentor reviewed arrays"})
         self.save_ledger(ledger)
         code, out = self.run_track("next", "--date", "2026-11-20")
         self.assertEqual(code, 1)
@@ -115,20 +127,20 @@ class EmwTrackTests(unittest.TestCase):
         ledger = self.ledger()
         git = next(s for s in ledger["skills"] if s["id"] == "core.git")
         git["evidence"].append({"date": "2026-11-12", "type": "rebuild", "assistance": "A0",
-                                "verified_by": "self", "task": "new repo from memory"})
+                                "verified_by": "self", "task": "hesabu from memory"})
         self.save_ledger(ledger)
         code, out = self.run_track("next", "--date", "2026-11-20")
         self.assertEqual(code, 0, out)
-        self.assertIn("Now on stage 1: Language foundations", out)
-        self.assertIn("raised core.git target to M3", out)
+        self.assertIn("Now on stage 2: Web and database, built by hand", out)
 
         ledger = self.ledger()
         ids = [s["id"] for s in ledger["skills"]]
-        self.assertIn("php.syntax-types", ids)
+        self.assertIn("php.oop", ids)
+        self.assertIn("core.html-css", ids)
         self.assertEqual(len(ids), len(set(ids)))
-        # evidence from stage 0 does not count toward the stage 1 gate
+        # evidence from stage 1 does not count toward the stage 2 gate
         code, out = self.run_track("status")
-        self.assertIn("Stage 1: Language foundations", out)
+        self.assertIn("Stage 2:", out)
         self.assertIn("[ ] human", out)
 
     def test_a_ticked_check_row_explains_its_warnings(self):
@@ -147,14 +159,14 @@ class EmwTrackTests(unittest.TestCase):
     def test_log_records_evidence_without_touching_the_level(self):
         """Hand-editing YAML is the step most likely to be skipped."""
         self.run_track("start", "php", "--date", "2026-11-01")
-        code, out = self.run_track("log", "core.sql", "--type", "implement",
-                                   "--assistance", "A1", "--task", "first JOIN; forgot LEFT",
+        code, out = self.run_track("log", "php.syntax-types", "--type", "implement",
+                                   "--assistance", "A1", "--task", "first PHP types; forgot strict",
                                    "--date", "2026-11-02")
         self.assertEqual(code, 0, out)
-        skill = next(s for s in self.ledger()["skills"] if s["id"] == "core.sql")
+        skill = next(s for s in self.ledger()["skills"] if s["id"] == "php.syntax-types")
         self.assertEqual(skill["evidence"], [{
             "date": "2026-11-02", "type": "implement", "assistance": "A1",
-            "verified_by": "self", "task": "first JOIN; forgot LEFT"}])
+            "verified_by": "self", "task": "first PHP types; forgot strict"}])
         self.assertEqual(skill["current_level"], "M0")
         self.assertIn("unchanged", out)
         check_out = io.StringIO()
@@ -166,18 +178,19 @@ class EmwTrackTests(unittest.TestCase):
         for args, expected in (
             (("log", "php.pdo", "--type", "implement", "--assistance", "A0", "--task", "x"),
              "no skill 'php.pdo'"),
-            (("log", "core.sql", "--type", "rebuld", "--assistance", "A0", "--task", "x"),
+            (("log", "php.syntax-types", "--type", "rebuld", "--assistance", "A0", "--task", "x"),
              "is not one of"),
-            (("log", "core.sql", "--type", "rebuild", "--assistance", "A9", "--task", "x"),
+            (("log", "php.syntax-types", "--type", "rebuild", "--assistance", "A9", "--task", "x"),
              "is not one of"),
-            (("log", "core.sql", "--type", "rebuild", "--assistance", "A0", "--task", "  "),
+            (("log", "php.syntax-types", "--type", "rebuild", "--assistance", "A0", "--task", "  "),
              "cannot be empty"),
         ):
             with self.subTest(args=args):
                 code, out = self.run_track(*args)
                 self.assertEqual(code, 2, out)
                 self.assertIn(expected, out)
-        self.assertEqual(self.ledger()["skills"][4].get("evidence"), [])
+        php_st = next(s for s in self.ledger()["skills"] if s["id"] == "php.syntax-types")
+        self.assertEqual(php_st.get("evidence"), [])
 
     def test_human_verification_needs_a_named_reviewer(self):
         """An agent must not certify its own review; naming a person makes a false
@@ -200,7 +213,7 @@ class EmwTrackTests(unittest.TestCase):
 
     def test_log_says_when_the_evidence_will_not_count(self):
         self.run_track("start", "php", "--date", "2026-11-01")
-        code, out = self.run_track("log", "core.sql", "--type", "implement",
+        code, out = self.run_track("log", "php.syntax-types", "--type", "implement",
                                    "--assistance", "A4", "--task", "asked for the answer")
         self.assertEqual(code, 0, out)
         self.assertIn("do not count toward a stage gate", out)

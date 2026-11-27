@@ -12,7 +12,6 @@ These apply to every project from Stage 1 on. A project that breaks one is not f
 8. **Assume the power or network drops mid-request.** Make writes safe to repeat, and queue outbound calls.
 
 ## How to work
-- Stage 0: you type everything. These house rules do not apply yet; the stage 0 brief is the whole specification.
 - Stages 1 and 2: you type the code. Use `/emw-practice`; the agent gives hints one step at a time and no complete solutions before you attempt.
 - Stage 3 on: plan with the agent, write the core logic yourself, and let it scaffold only what you have already written by hand once.
 - Log each meaningful task in `.emw-project/task-log.yaml` and each demonstration in `skill-ledger.yaml` with its honest assistance level.

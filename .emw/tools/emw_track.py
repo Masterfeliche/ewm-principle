@@ -167,7 +167,7 @@ def check_detail(code: int, tail: str) -> str:
     """Explain a ticked check row that still mentions warnings.
 
     The gate runs emw_check without --strict on purpose: warnings mean records are
-    incomplete, which should not stop a stage-0 learner who has no product to profile
+    incomplete, which should not stop an early-stage learner who has no product to profile
     yet. Without this note the row reads as a contradiction.
     """
     if code == 0 and " 0 warnings" not in tail and "warning" in tail:

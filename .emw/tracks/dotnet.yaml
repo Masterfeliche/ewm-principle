@@ -5,7 +5,7 @@ schema_version: 1
 id: dotnet
 extends: core
 title: ".NET with ASP.NET Core"
-summary: "Modern C#, then ASP.NET Core with EF Core as the platform, ending with a records system for savings groups and small SACCOs that survives load. Start with core Stage 0."
+summary: "Modern C#, then ASP.NET Core with EF Core as the platform, ending with a records system for savings groups and small SACCOs that survives load. Starts at Stage 1."
 framework: "ASP.NET Core with EF Core 10 on .NET 10 LTS"
 researched_at: "2026-11-21"
 sources:
